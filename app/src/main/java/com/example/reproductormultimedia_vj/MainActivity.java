@@ -11,7 +11,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // si lees esto eres homosexual
-        //aafg
+        //aaf
+        //hola mamwebo
+
     }
 }
