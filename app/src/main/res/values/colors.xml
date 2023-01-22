@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">#C7DBEE</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+
+    <color name="base_claro">#C7DBEE</color>
+    <color name="input">#1976D2</color>
+    <color name="base">#1976D2</color>
+    <color name="base_oscuro">#040024</color>
 </resources>

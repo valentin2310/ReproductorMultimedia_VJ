@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="formInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <!-- linea inferior -->
+        <item name="boxStrokeColor">@color/base_claro</item>
+        <!-- color relleno -->
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <!-- el hint cuando el campo está vacio y sin foco -->
+        <item name="android:textColorHint">@color/base_claro</item>
+        <!-- el hint cuando se convierte en etiqueta flotante -->
+        <item name="hintTextColor">@color/base_claro</item>
+    </style>
+</resources>
