@@ -15,4 +15,9 @@
     <color name="input">#1976D2</color>
     <color name="base">#1976D2</color>
     <color name="base_oscuro">#040024</color>
+
+    <color name="text_dark">#0971ED</color>
+    <color name="text_dark_2">#000C1B</color>
+    <color name="text_light">#BEDBFF</color>
+    <color name="text">#9AC7FF</color>
 </resources>

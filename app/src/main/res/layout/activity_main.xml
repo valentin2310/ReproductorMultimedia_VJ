@@ -68,12 +68,15 @@
                 android:layout_marginTop="25dp">
 
                 <Button
-                    android:layout_height="match_parent"
+                    android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
-                    android:text="Iniciar sesion"
+                    android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:onClick="iniciarSesion"
+                    android:text="Iniciar sesion" />
                 <Button
+                    android:id="@+id/btnSignUp"
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"
                     android:text="Soy nuevo"

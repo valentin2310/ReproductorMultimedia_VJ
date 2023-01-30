@@ -13,4 +13,10 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="BottomNavigation">
+        <item name="android:background">@color/text_dark_2</item>
+        <item name="itemIconTint">@color/text</item>
+        <item name="itemTextColor">@color/text</item>
+    </style>
 </resources>
