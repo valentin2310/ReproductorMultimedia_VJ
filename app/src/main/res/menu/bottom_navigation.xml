@@ -10,7 +10,7 @@
         android:icon="@drawable/lupa"
         android:title="Buscador"/>
     <item
-        android:id="@+id/tercero"
+        android:id="@+id/bibliotecaFragment"
         android:icon="@drawable/libro"
         android:title="Mi bibllioteca"/>
 

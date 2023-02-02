@@ -6,6 +6,7 @@ public class Playlist { // playlist
     private int idPlaylist;
     private int idCreador; // id del usuario que ha creado la playlist
     private String nombre;
+    private byte[] portada;
     private boolean privada; // la playlist podra ser publica o privada
     private ArrayList<Integer> listaCanciones; // almacena los id's de las canciones de la playlist
     private ArrayList<Integer> listaUsuarios; // almacena los id's de los usuarios que tiene esta playlist en favoritos
@@ -16,10 +17,19 @@ public class Playlist { // playlist
     public Playlist(int idPlaylist){
         this.idPlaylist = idPlaylist;
     }
-    public Playlist(int idPlaylist, int idCreador, String nombre, boolean privada, ArrayList<Integer> listaCanciones, ArrayList<Integer> listaUsuarios) {
+
+    public Playlist(int idPlaylist, int idCreador, String nombre, byte[] portada) {
         this.idPlaylist = idPlaylist;
         this.idCreador = idCreador;
         this.nombre = nombre;
+        this.portada = portada;
+    }
+
+    public Playlist(int idPlaylist, int idCreador, String nombre, byte[] portada, boolean privada, ArrayList<Integer> listaCanciones, ArrayList<Integer> listaUsuarios) {
+        this.idPlaylist = idPlaylist;
+        this.idCreador = idCreador;
+        this.nombre = nombre;
+        this.portada = portada;
         this.privada = privada;
         this.listaCanciones = listaCanciones;
         this.listaUsuarios = listaUsuarios;
@@ -43,6 +53,14 @@ public class Playlist { // playlist
 
     public String getNombre() {
         return nombre;
+    }
+
+    public byte[] getPortada() {
+        return portada;
+    }
+
+    public void setPortada(byte[] portada) {
+        this.portada = portada;
     }
 
     public void setNombre(String nombre) {
