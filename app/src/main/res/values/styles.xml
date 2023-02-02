@@ -10,4 +10,15 @@
         <!-- el hint cuando se convierte en etiqueta flotante -->
         <item name="hintTextColor">@color/base_claro</item>
     </style>
+
+    <style name="buscador" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <!-- linea inferior -->
+        <item name="boxStrokeColor">@android:color/holo_blue_light</item>
+        <!-- color relleno -->
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <!-- el hint cuando el campo está vacio y sin foco -->
+        <item name="android:textColorHint">@color/black</item>
+        <!-- el hint cuando se convierte en etiqueta flotante -->
+        <item name="hintTextColor">@color/black</item>
+    </style>
 </resources>

@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MenuActivity extends AppCompatActivity {
 
     BibliotecaFragment bibliotecaFragment = new BibliotecaFragment();
+    BibliotecaLocalFragment bibliotecaLocalFragment = new BibliotecaLocalFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,10 @@ public class MenuActivity extends AppCompatActivity {
             switch(item.getItemId()){
                 case R.id.bibliotecaFragment:
                     loadFragment(bibliotecaFragment);
+                    return true;
+
+               case R.id.primero:
+                    loadFragment(bibliotecaLocalFragment);
                     return true;
             }
 

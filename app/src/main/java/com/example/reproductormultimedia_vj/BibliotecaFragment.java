@@ -35,7 +35,6 @@ public class BibliotecaFragment extends Fragment {
         //if(savedInstanceState == null){
             recycler = (RecyclerView) view.findViewById(R.id.recyclerPlaylist);
             initRecycler();
-            Toast.makeText(getContext(), "Hola", Toast.LENGTH_SHORT).show();
         //}
 
         return view;

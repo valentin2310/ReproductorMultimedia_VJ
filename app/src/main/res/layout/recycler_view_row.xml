@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp">
+
+        <ImageView
+            android:id="@+id/imagenCancion"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/black"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/photo_1614680376573_df3480f0c6ff"
+            ></ImageView>
+
+        <TextView
+            android:id="@+id/nombreCancion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre Cancion"
+            android:textStyle="bold"
+            android:lines="2"
+            android:layout_toEndOf="@+id/imagenCancion"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="80dp"
+            ></TextView>
+
+        <TextView
+            android:id="@+id/artista"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artista"
+            android:layout_below="@+id/nombreCancion"
+            android:layout_toEndOf="@+id/imagenCancion"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            ></TextView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:src="@drawable/ic_baseline_favorite_border_24"
+            android:background="@null"
+            android:outlineProvider="none"
+            app:borderWidth="0dp"
+            app:backgroundTint="@android:color/transparent"
+            app:tint="#000000"
+            app:fabSize="normal"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            ></com.google.android.material.floatingactionbutton.FloatingActionButton>
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>
