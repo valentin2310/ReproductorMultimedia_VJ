@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,9 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 public class BibliotecaFragment extends Fragment {
+
+    RecyclerView recycler;
+    UsuarioFragment usuarioFragment = new UsuarioFragment();
 
     public BibliotecaFragment() {
         // Required empty public constructor
@@ -35,12 +42,18 @@ public class BibliotecaFragment extends Fragment {
         //if(savedInstanceState == null){
             recycler = (RecyclerView) view.findViewById(R.id.recyclerPlaylist);
             initRecycler();
+
+            FloatingActionButton btnPerfil = (FloatingActionButton) view.findViewById(R.id.bibl_btn_perfil);
+            btnPerfil.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loadFragment(usuarioFragment);
+                }
+            });
         //}
 
         return view;
     }
-
-    RecyclerView recycler;
 
     public void initRecycler(){
 
@@ -70,5 +83,11 @@ public class BibliotecaFragment extends Fragment {
         }
 
         return 2;
+    }
+
+    public void loadFragment(Fragment fragment){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.commit();
     }
 }

@@ -11,15 +11,16 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/fondo_toolbar"
         android:layout_gravity="top"
+        android:background="@drawable/fondo_toolbar"
         android:paddingVertical="30dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/bibl_btn_perfil"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/text_light"
             android:layout_marginHorizontal="10dp"
+            android:backgroundTint="@color/text_light"
             android:src="@drawable/ic_baseline_person_24"
             app:tint="@color/black" />
 
@@ -38,7 +39,7 @@
             android:layout_gravity="end"
             android:layout_marginHorizontal="15dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_baseline_add_24"
+            android:src="@drawable/ic_baseline_add_42"
             app:tint="@color/text_light" />
     </Toolbar>
 

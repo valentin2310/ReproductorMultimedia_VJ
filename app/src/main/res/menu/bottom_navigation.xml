@@ -6,7 +6,7 @@
         android:icon="@drawable/notas_musicales"
         android:title="Canciones"/>
     <item
-        android:id="@+id/segundo"
+        android:id="@+id/buscadorFragment"
         android:icon="@drawable/lupa"
         android:title="Buscador"/>
     <item

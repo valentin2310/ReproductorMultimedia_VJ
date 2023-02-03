@@ -15,6 +15,7 @@ public class MenuActivity extends AppCompatActivity {
     BibliotecaFragment bibliotecaFragment = new BibliotecaFragment();
     BibliotecaLocalFragment bibliotecaLocalFragment = new BibliotecaLocalFragment();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
