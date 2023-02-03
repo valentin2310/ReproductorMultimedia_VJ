@@ -1,5 +1,11 @@
 package com.example.reproductormultimedia_vj;
 
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +24,7 @@ import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class ReproductorActivity extends AppCompatActivity {
     RV_Cancion cancion;
@@ -98,7 +106,17 @@ public class ReproductorActivity extends AppCompatActivity {
     public void empezarMusica() {
         mediaPlayer.reset();
         try {
+
+            if (!cancion.getPath().contains("file:///android_asset/"))
             mediaPlayer.setDataSource(cancion.getPath());
+            else {
+                String file = "audio/" + cancion.getNombreArchivo();
+                //Toast.makeText(artista.getContext(), cancion.getNombre(), Toast.LENGTH_LONG).show();
+                AssetManager assetManager = getResources().getAssets();
+                AssetFileDescriptor afd = assetManager.openFd(file);
+                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            }
+
             mediaPlayer.prepare();
             mediaPlayer.start();
             barra.setProgress(0);
@@ -110,16 +128,32 @@ public class ReproductorActivity extends AppCompatActivity {
         }
     }
 
+
         public void establecerDatosMusica () {
             cancion = listaCanciones.get(MyMediaPlayer.currentIndex);
 
             nombre.setText(cancion.getNombre());
             artista.setText(cancion.getArtista());
 
+            if (!cancion.getImage_path().equals("baseDatos"))
             if (!cancion.getImage_path().equals(""))
                 imagen.setImageURI(Uri.parse(cancion.getImage_path()));
             else
                 imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
+            else {
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                AssetFileDescriptor afd = null;
+                try {
+                    afd = getAssets().openFd("audio/"+ cancion.getNombreArchivo());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mmr.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                byte [] data = mmr.getEmbeddedPicture();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                imagen.setImageBitmap(bitmap);
+            }
 
             tiempoTotal.setText(convertir_MMSS(cancion.getDuracion()));
 

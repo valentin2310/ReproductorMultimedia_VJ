@@ -4,6 +4,7 @@ import static com.example.reproductormultimedia_vj.R.id.recyclerBibliotecaLocal;
 
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -16,12 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
+import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import com.example.reproductormultimedia_vj.R;
@@ -29,6 +32,8 @@ import com.example.reproductormultimedia_vj.ReproductorActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 
 public class MusicaFragment extends Fragment {
@@ -107,12 +112,39 @@ public class MusicaFragment extends Fragment {
     }
 
     public void cargarLista() {
-        //String filePath =  (context, "fileName.extension").absolutePath
+        MediaMetadataRetriever metaRetriver = new MediaMetadataRetriever();
 
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        //mmr.setDataSource(filePath);
+        try {
 
-        //String albumName = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
+            String path = "audio";
+
+            String [] files  = getContext().getAssets().list(path);
+
+            for (int i = 0; i < files.length; i++) {
+                String file = path + "/" + files[i];
+
+                AssetFileDescriptor afd = getContext().getAssets().openFd(file);
+
+                metaRetriver.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+
+                String titulo = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_TITLE);
+                String artist = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_ARTIST);
+                String duracion = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_DURATION);
+                String portada = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_ALBUM);
+
+
+                String data =  "file:///android_asset/" + path + "/" + files[i];
+                Toast.makeText(getContext(), portada, Toast.LENGTH_LONG).show();
+
+                canciones.add(new RV_Cancion(titulo, artist, duracion, data, "baseDatos", files[i]));
+                afd.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        metaRetriver.release();
+
+
 
     }
 

@@ -2,7 +2,11 @@ package com.example.reproductormultimedia_vj.Adapter;
 
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,7 @@ import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import com.example.reproductormultimedia_vj.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLocal.ViewHolder> implements View.OnClickListener {
@@ -51,10 +56,25 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         holder.nombre.setText(nombre);
         holder.artista.setText(artista);
 
+        if (canciones.get(position).getImage_path() != "baseDatos")
         if (canciones.get(position).getImage_path() != "")
             holder.imagen.setImageURI(Uri.parse(imagen_path));
         else
             holder.imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
+        else {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            AssetFileDescriptor afd = null;
+            try {
+                afd = inflater.getContext().getAssets().openFd("audio/"+ canciones.get(position).getNombreArchivo());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            mmr.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            byte [] data = mmr.getEmbeddedPicture();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            holder.imagen.setImageBitmap(bitmap);
+        }
 
 
         final boolean[] activado = {false};

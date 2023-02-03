@@ -1,5 +1,7 @@
 package com.example.reproductormultimedia_vj.Clases;
 
+import java.io.File;
+import java.io.FileDescriptor;
 import java.io.Serializable;
 
 public class RV_Cancion implements Serializable {
@@ -9,6 +11,7 @@ public class RV_Cancion implements Serializable {
     private String path;
     private int imagenID;
     private String image_path;
+    private String NombreArchivo;
 
     public RV_Cancion() {}
 
@@ -28,6 +31,23 @@ public class RV_Cancion implements Serializable {
         this.path = path;
         this.image_path = image_path;
 
+    }
+
+    public RV_Cancion(String nombre, String artista, String duracion, String path, String image_path, String nombreArchivo) {
+        this.nombre = nombre;
+        this.artista = artista;
+        this.duracion = duracion;
+        this.path = path;
+        this.image_path = image_path;
+        NombreArchivo = nombreArchivo;
+    }
+
+    public String getNombreArchivo() {
+        return NombreArchivo;
+    }
+
+    public void setNombreArchivo(String nombreArchivo) {
+        NombreArchivo = nombreArchivo;
     }
 
     public String getNombre() {
