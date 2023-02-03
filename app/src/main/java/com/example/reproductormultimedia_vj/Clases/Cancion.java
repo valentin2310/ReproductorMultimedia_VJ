@@ -9,6 +9,7 @@ public class Cancion {
     private int artista;
     private String fechaCreacion;
     private byte[] portada;
+    private String image_path;
     private ArrayList<Integer> listaFavoritos;
 
     public Cancion(){
@@ -26,6 +27,8 @@ public class Cancion {
         this.portada = portada;
         this.listaFavoritos = listaFavoritos;
     }
+
+
 
     public int getIdCancion() {
         return idCancion;
