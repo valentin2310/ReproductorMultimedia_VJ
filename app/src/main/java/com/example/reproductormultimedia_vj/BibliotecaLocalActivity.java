@@ -21,6 +21,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reproductormultimedia_vj.Adapter.AdapterCancion;
+import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
+import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

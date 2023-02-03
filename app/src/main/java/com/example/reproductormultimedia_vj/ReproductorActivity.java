@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
+import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;

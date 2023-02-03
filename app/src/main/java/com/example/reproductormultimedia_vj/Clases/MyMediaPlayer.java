@@ -1,4 +1,4 @@
-package com.example.reproductormultimedia_vj;
+package com.example.reproductormultimedia_vj.Clases;
 
 import android.media.MediaPlayer;
 

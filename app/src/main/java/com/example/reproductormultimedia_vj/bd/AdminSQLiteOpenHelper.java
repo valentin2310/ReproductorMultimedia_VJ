@@ -1,4 +1,4 @@
-package com.example.reproductormultimedia_vj;
+package com.example.reproductormultimedia_vj.bd;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

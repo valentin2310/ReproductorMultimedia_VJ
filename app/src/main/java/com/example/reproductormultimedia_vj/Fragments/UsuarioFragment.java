@@ -1,4 +1,4 @@
-package com.example.reproductormultimedia_vj;
+package com.example.reproductormultimedia_vj.Fragments;
 
 import android.os.Bundle;
 
@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import com.example.reproductormultimedia_vj.R;
 
 
 public class UsuarioFragment extends Fragment {

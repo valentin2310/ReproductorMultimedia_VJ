@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.reproductormultimedia_vj.Fragments.BibliotecaFragment;
+import com.example.reproductormultimedia_vj.Fragments.BibliotecaLocalFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MenuActivity extends AppCompatActivity {

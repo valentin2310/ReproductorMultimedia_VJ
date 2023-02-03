@@ -1,4 +1,4 @@
-package com.example.reproductormultimedia_vj;
+package com.example.reproductormultimedia_vj.Adapter;
 
 
 import android.content.Context;
@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;

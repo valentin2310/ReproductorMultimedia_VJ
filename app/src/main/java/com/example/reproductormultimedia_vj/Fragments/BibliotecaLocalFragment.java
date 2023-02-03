@@ -1,10 +1,9 @@
-package com.example.reproductormultimedia_vj;
+package com.example.reproductormultimedia_vj.Fragments;
 
 import static com.example.reproductormultimedia_vj.R.id.recyclerBibliotecaLocal;
 
 import android.content.ContentUris;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,9 +17,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.reproductormultimedia_vj.Adapter.AdapterCancion;
+import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
+import com.example.reproductormultimedia_vj.R;
+import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.ReproductorActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;

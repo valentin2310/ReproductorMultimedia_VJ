@@ -1,4 +1,4 @@
-package com.example.reproductormultimedia_vj;
+package com.example.reproductormultimedia_vj.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.reproductormultimedia_vj.Clases.Playlist;
+import com.example.reproductormultimedia_vj.R;
 
 import java.util.ArrayList;
 
