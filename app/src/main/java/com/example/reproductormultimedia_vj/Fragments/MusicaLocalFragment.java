@@ -1,9 +1,9 @@
-package com.example.reproductormultimedia_vj;
+package com.example.reproductormultimedia_vj.Fragments;
 
-import android.Manifest;
+import static com.example.reproductormultimedia_vj.R.id.recyclerBibliotecaLocal;
+
 import android.content.ContentUris;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,46 +11,57 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.reproductormultimedia_vj.Adapter.AdapterCancion;
+import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
+import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.ReproductorActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class BibliotecaLocalActivity extends AppCompatActivity {
-    AdapterCancion adapterCancion;
-    RecyclerView recyclerView;
+public class MusicaLocalFragment extends Fragment {
+
+    AdapterCancionLocal adapterCancionLocal;
+    RecyclerView recycler;
     ArrayList<RV_Cancion> canciones;
     ArrayList<RV_Cancion> cancionesFiltradas = new ArrayList<>();
 
+
+    public MusicaLocalFragment() {
+        // Required empty public constructor
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mi_biblioteca_local);
-        recyclerView = findViewById(R.id.recyclerBibliotecaLocal);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.activity_mi_biblioteca_local, container, false);
+
+
         canciones = new ArrayList<>();
-        EditText filtro = findViewById(R.id.filtroCancion);
+        EditText filtro = view.findViewById(R.id.filtroCancion);
 
-        if (comprobarPermisos() == false) {
-            pedirPermisos();
-            //return;
-        }
-        cargarLista();
-        mostrarDatos();
+        //if(savedInstanceState == null){
+            recycler = (RecyclerView) view.findViewById(recyclerBibliotecaLocal);
 
-
+            initRecycler();
+        //}
 
         filtro.addTextChangedListener(new TextWatcher() {
             @Override
@@ -65,28 +76,22 @@ public class BibliotecaLocalActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-            filtro(String.valueOf(s));
+                filtro(String.valueOf(s));
             }
         });
 
+        return view;
     }
 
-    boolean comprobarPermisos() {
-        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
-    void pedirPermisos() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
-            Toast.makeText(this, "El permiso de Lectura es Requerido, por favor activalo desde los ajustes", Toast.LENGTH_LONG).show();
-        }else
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 123);
-    }
 
+    public void initRecycler(){
+            cargarLista();
+            mostrarDatos();
+            recycler.setHasFixedSize(true);
+
+
+    }
 
     public void filtro(String s) {
         cancionesFiltradas = new ArrayList<>();
@@ -97,7 +102,7 @@ public class BibliotecaLocalActivity extends AppCompatActivity {
             }
         }
 
-        adapterCancion.filtrar(cancionesFiltradas);
+        adapterCancionLocal.filtrar(cancionesFiltradas);
     }
 
     public void cargarLista() {
@@ -111,7 +116,7 @@ public class BibliotecaLocalActivity extends AppCompatActivity {
 
         String seleccion = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 
-        Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, canciones_movil, seleccion, null, null);
+        Cursor cursor = recycler.getContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, canciones_movil, seleccion, null, null);
 
         while (cursor.moveToNext()) {
             String albumId = cursor.getString(4);
@@ -121,7 +126,7 @@ public class BibliotecaLocalActivity extends AppCompatActivity {
 
             //para comprobar si tiene una imagen o no la cancion (pfd)
             try {
-                ParcelFileDescriptor pfd = recyclerView.getContext().getContentResolver()
+                ParcelFileDescriptor pfd = recycler.getContext().getContentResolver()
                         .openFileDescriptor(albumArtUri, "r");
                 if (pfd !=null) {
                     RV_Cancion cancion = new RV_Cancion(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), albumArtUri.toString());
@@ -133,33 +138,29 @@ public class BibliotecaLocalActivity extends AppCompatActivity {
                 if (new File(cancion.getPath()).exists())
                     canciones.add(cancion);
             }
-            //Toast.makeText(this, "" + , Toast.LENGTH_SHORT).show();
+
         }
 
     }
 
     public void mostrarDatos() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapterCancion = new AdapterCancion(this, canciones);
-        recyclerView.setAdapter(adapterCancion);
+        recycler.setLayoutManager(new LinearLayoutManager(recycler.getContext()));
+        adapterCancionLocal = new AdapterCancionLocal(recycler.getContext(), canciones);
+        recycler.setAdapter(adapterCancionLocal);
 
-        adapterCancion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MyMediaPlayer.getInstance().reset();
-                MyMediaPlayer.currentIndex = recyclerView.getChildAdapterPosition(v);
-                Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
+        adapterCancionLocal.setOnClickListener(v -> {
+            MyMediaPlayer.getInstance().reset();
+            MyMediaPlayer.currentIndex = recycler.getChildAdapterPosition(v);
+            Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
 
-                if (cancionesFiltradas.isEmpty()) {
-                    intent.putExtra("listaCanciones", canciones);
-                }
-                else {
-                    intent.putExtra("listaCanciones", cancionesFiltradas);
-                }
-                v.getContext().startActivity(intent);
-
-                //Toast.makeText(recyclerView.getContext(), canciones.get(recyclerView.getChildAdapterPosition(v)).getNombre(), Toast.LENGTH_SHORT).show();
+            if (cancionesFiltradas.isEmpty()) {
+                intent.putExtra("listaCanciones", canciones);
             }
+            else {
+                intent.putExtra("listaCanciones", cancionesFiltradas);
+            }
+            v.getContext().startActivity(intent);
         });
     }
+
 }

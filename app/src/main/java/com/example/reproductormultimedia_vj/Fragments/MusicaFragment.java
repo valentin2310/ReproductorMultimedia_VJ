@@ -5,6 +5,7 @@ import static com.example.reproductormultimedia_vj.R.id.recyclerBibliotecaLocal;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -20,25 +21,25 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.reproductormultimedia_vj.Adapter.AdapterCancion;
+import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
-import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.ReproductorActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class BibliotecaLocalFragment extends Fragment {
+public class MusicaFragment extends Fragment {
 
-    AdapterCancion adapterCancion;
+    AdapterCancionLocal adapterCancionLocal;
     RecyclerView recycler;
     ArrayList<RV_Cancion> canciones;
     ArrayList<RV_Cancion> cancionesFiltradas = new ArrayList<>();
 
 
-    public BibliotecaLocalFragment() {
+    public MusicaFragment() {
         // Required empty public constructor
     }
 
@@ -102,53 +103,25 @@ public class BibliotecaLocalFragment extends Fragment {
             }
         }
 
-        adapterCancion.filtrar(cancionesFiltradas);
+        adapterCancionLocal.filtrar(cancionesFiltradas);
     }
 
     public void cargarLista() {
-        String[] canciones_movil = {
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.ALBUM_ID
-        };
+        //String filePath =  (context, "fileName.extension").absolutePath
 
-        String seleccion = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        //mmr.setDataSource(filePath);
 
-        Cursor cursor = recycler.getContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, canciones_movil, seleccion, null, null);
-
-        while (cursor.moveToNext()) {
-            String albumId = cursor.getString(4);
-            //Cancion cancion = new Cancion(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), getAlbumart(Long.parseLong(cursor.getString(4)) ));
-            Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
-            Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri,Long.parseLong(albumId));
-
-            //para comprobar si tiene una imagen o no la cancion (pfd)
-            try {
-                ParcelFileDescriptor pfd = recycler.getContext().getContentResolver()
-                        .openFileDescriptor(albumArtUri, "r");
-                if (pfd !=null) {
-                    RV_Cancion cancion = new RV_Cancion(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), albumArtUri.toString());
-                    if (new File(cancion.getPath()).exists())
-                        canciones.add(cancion);
-                }
-            } catch (FileNotFoundException e) {
-                RV_Cancion cancion = new RV_Cancion(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), "");
-                if (new File(cancion.getPath()).exists())
-                    canciones.add(cancion);
-            }
-
-        }
+        //String albumName = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
 
     }
 
     public void mostrarDatos() {
         recycler.setLayoutManager(new LinearLayoutManager(recycler.getContext()));
-        adapterCancion = new AdapterCancion(recycler.getContext(), canciones);
-        recycler.setAdapter(adapterCancion);
+        adapterCancionLocal = new AdapterCancionLocal(recycler.getContext(), canciones);
+        recycler.setAdapter(adapterCancionLocal);
 
-        adapterCancion.setOnClickListener(v -> {
+        adapterCancionLocal.setOnClickListener(v -> {
             MyMediaPlayer.getInstance().reset();
             MyMediaPlayer.currentIndex = recycler.getChildAdapterPosition(v);
             Intent intent = new Intent(v.getContext(), ReproductorActivity.class);

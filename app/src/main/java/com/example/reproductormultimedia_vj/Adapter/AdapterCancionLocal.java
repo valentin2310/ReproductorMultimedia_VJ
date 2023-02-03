@@ -19,7 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class AdapterCancion extends RecyclerView.Adapter<AdapterCancion.ViewHolder> implements View.OnClickListener {
+public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLocal.ViewHolder> implements View.OnClickListener {
 
     LayoutInflater inflater;
     ArrayList<RV_Cancion> canciones;
@@ -29,7 +29,7 @@ public class AdapterCancion extends RecyclerView.Adapter<AdapterCancion.ViewHold
 
     private Context context;
 
-    public AdapterCancion(Context context, ArrayList<RV_Cancion> canciones) {
+    public AdapterCancionLocal(Context context, ArrayList<RV_Cancion> canciones) {
     this.inflater = LayoutInflater.from(context);
     this.canciones = canciones;
 

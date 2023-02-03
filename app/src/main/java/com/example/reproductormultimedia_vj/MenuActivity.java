@@ -9,13 +9,15 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.reproductormultimedia_vj.Fragments.BibliotecaFragment;
-import com.example.reproductormultimedia_vj.Fragments.BibliotecaLocalFragment;
+import com.example.reproductormultimedia_vj.Fragments.MusicaFragment;
+import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MenuActivity extends AppCompatActivity {
 
     BibliotecaFragment bibliotecaFragment = new BibliotecaFragment();
-    BibliotecaLocalFragment bibliotecaLocalFragment = new BibliotecaLocalFragment();
+    MusicaFragment musicaFragment = new MusicaFragment();
+    MusicaLocalFragment musicaLocalFragment = new MusicaLocalFragment();
 
 
     @Override
@@ -41,7 +43,7 @@ public class MenuActivity extends AppCompatActivity {
                     return true;
 
                case R.id.primero:
-                    loadFragment(bibliotecaLocalFragment);
+                    loadFragment(musicaFragment);
                     return true;
             }
 
