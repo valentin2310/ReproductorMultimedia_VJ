@@ -28,6 +28,7 @@
                 android:hint="Usuario">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_txt_usuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text">
@@ -46,6 +47,7 @@
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_txt_passwd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword">
@@ -76,13 +78,15 @@
                     android:layout_weight="1"
                     android:onClick="iniciarSesion"
                     android:text="Iniciar sesion" />
+
                 <Button
                     android:id="@+id/btnSignUp"
-                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:text="Soy nuevo"
+                    android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:onClick="registrarse"
+                    android:text="Soy nuevo" />
 
             </LinearLayout>
 

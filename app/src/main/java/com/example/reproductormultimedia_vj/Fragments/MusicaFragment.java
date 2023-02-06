@@ -134,7 +134,6 @@ public class MusicaFragment extends Fragment {
 
 
                 String data =  "file:///android_asset/" + path + "/" + files[i];
-                Toast.makeText(getContext(), portada, Toast.LENGTH_LONG).show();
 
                 canciones.add(new RV_Cancion(titulo, artist, duracion, data, "baseDatos", files[i]));
                 afd.close();

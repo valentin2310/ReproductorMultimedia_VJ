@@ -8,8 +8,8 @@ public class Cancion {
     private String descripcion;
     private int artista;
     private String fechaCreacion;
-    private byte[] portada;
-    private String image_path;
+    private String uriPortada;
+    private String uriCancion;
     private ArrayList<Integer> listaFavoritos;
 
     public Cancion(){
@@ -18,13 +18,14 @@ public class Cancion {
     public Cancion(int idCancion){
         this.idCancion = idCancion;
     }
-    public Cancion(int idCancion, String titulo, String descripcion, int artista, String fechaCreacion, byte[] portada, ArrayList<Integer> listaFavoritos) {
+    public Cancion(int idCancion, String titulo, String descripcion, int artista, String fechaCreacion, String portada, String uriCancion, ArrayList<Integer> listaFavoritos) {
         this.idCancion = idCancion;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.artista = artista;
         this.fechaCreacion = fechaCreacion;
-        this.portada = portada;
+        this.uriPortada = portada;
+        this.uriCancion = uriCancion;
         this.listaFavoritos = listaFavoritos;
     }
 
@@ -70,12 +71,20 @@ public class Cancion {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public byte[] getPortada() {
-        return portada;
+    public String getUriPortada() {
+        return uriPortada;
     }
 
-    public void setPortada(byte[] portada) {
-        this.portada = portada;
+    public void setUriPortada(String uriPortada) {
+        this.uriPortada = uriPortada;
+    }
+
+    public String getUriCancion() {
+        return uriCancion;
+    }
+
+    public void setUriCancion(String uriCancion) {
+        this.uriCancion = uriCancion;
     }
 
     public ArrayList<Integer> getListaFavoritos() {

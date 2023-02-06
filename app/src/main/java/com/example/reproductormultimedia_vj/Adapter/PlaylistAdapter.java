@@ -1,8 +1,13 @@
 package com.example.reproductormultimedia_vj.Adapter;
 
+import android.app.Activity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reproductormultimedia_vj.Clases.Playlist;
+import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
 import com.example.reproductormultimedia_vj.R;
 
 import java.util.ArrayList;
@@ -64,8 +72,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         public void bindData(Playlist p){
             nombre.setText(p.getNombre());
-            autor.setText(p.getIdCreador()+" · Creador");
-            if(p.getPortada() != null) img.setImageBitmap(byteArrayToBitmap(p.getPortada()));
+            autor.setText(" · Creador");
+            if(p.getIdCreador() == -1) autor.setText(" · Yo");
+            if(p.getUriPortada() != null) img.setImageURI(Uri.parse(p.getUriPortada()));
 
             this.play = p;
         }
@@ -76,7 +85,20 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(context, nombre.getText(), Toast.LENGTH_SHORT).show();
+            // if local mostrar canciones locales
+            if(play.getIdPlaylist() == -1){
+                MusicaLocalFragment musicaLocalFragment = new MusicaLocalFragment();
+                loadFragment(musicaLocalFragment);
+            }
+        }
+
+        public void loadFragment(Fragment fragment){
+            Activity activity = (Activity) context;
+
+            FragmentManager ft = ((FragmentActivity)activity).getSupportFragmentManager();
+            FragmentTransaction transaction = ft.beginTransaction();
+            transaction.replace(R.id.frame_container, fragment);
+            transaction.commit();
         }
 
         Bitmap byteArrayToBitmap(byte[] data) {
