@@ -18,6 +18,7 @@ import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
+import com.google.android.material.imageview.ShapeableImageView;
 
 
 public class UsuarioFragment extends Fragment {
@@ -25,7 +26,7 @@ public class UsuarioFragment extends Fragment {
     private static final String ARG_PARAM1 = "USER_ID";
 
     TextView txt_seleccion;
-    ImageView img;
+    ShapeableImageView img;
 
     private int idUser;
 
@@ -59,12 +60,13 @@ public class UsuarioFragment extends Fragment {
         Usuario user = gestionBD.getUsuario(idUser);
 
         txt_seleccion = (TextView) view.findViewById(R.id.txt_seleccion);
-/*
+        img = view.findViewById(R.id.usuario_img);
+
         if(user.getImgAvatar() != null){
             // establecer imagen al view
-            btnPerfil.setImageBitmap(Metodos.convertByteArrayToBitmap(user.getImgAvatar()));
+            img.setImageBitmap(Metodos.convertByteArrayToBitmap(user.getImgAvatar()));
         }
-*/
+
         ImageButton btn_more_opc = (ImageButton) view.findViewById(R.id.usuario_more_opc);
         btn_more_opc.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -84,6 +84,7 @@ public class BibliotecaFragment extends Fragment {
         btnPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                usuarioFragment = UsuarioFragment.newInstance(idUser);
                 loadFragment(usuarioFragment);
             }
         });
