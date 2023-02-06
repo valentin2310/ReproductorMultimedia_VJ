@@ -23,6 +23,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.textfield.TextInputEditText;
@@ -63,10 +64,7 @@ public class RegistroActivity extends AppCompatActivity {
         byte[] avatar = null;
 
         if (imageUri != null){
-            Bitmap bit = ((BitmapDrawable) imgV.getDrawable()).getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bit.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            avatar = stream.toByteArray();
+            avatar = Metodos.convertBitmapToByteArray(imgV);
         }
 
         int sexo;

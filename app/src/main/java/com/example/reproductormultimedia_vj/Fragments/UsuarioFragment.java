@@ -10,26 +10,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.example.reproductormultimedia_vj.Clases.Metodos;
+import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.R;
+import com.example.reproductormultimedia_vj.bd.GestionBD;
 
 
 public class UsuarioFragment extends Fragment {
 
+    private static final String ARG_PARAM1 = "USER_ID";
+
     TextView txt_seleccion;
+    ImageView img;
+
+    private int idUser;
 
     public UsuarioFragment() {
         // Required empty public constructor
     }
 
-
+    public static UsuarioFragment newInstance(int idUser) {
+        UsuarioFragment fragment = new UsuarioFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, idUser);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getArguments() != null) {
+            idUser = getArguments().getInt(ARG_PARAM1);
+        }
     }
 
     @Override
@@ -38,8 +55,16 @@ public class UsuarioFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_usuario, container, false);
 
-        txt_seleccion = (TextView) view.findViewById(R.id.txt_seleccion);
+        GestionBD gestionBD = new GestionBD(this.getContext());
+        Usuario user = gestionBD.getUsuario(idUser);
 
+        txt_seleccion = (TextView) view.findViewById(R.id.txt_seleccion);
+/*
+        if(user.getImgAvatar() != null){
+            // establecer imagen al view
+            btnPerfil.setImageBitmap(Metodos.convertByteArrayToBitmap(user.getImgAvatar()));
+        }
+*/
         ImageButton btn_more_opc = (ImageButton) view.findViewById(R.id.usuario_more_opc);
         btn_more_opc.setOnClickListener(new View.OnClickListener() {
             @Override

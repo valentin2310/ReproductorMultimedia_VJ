@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.Adapter.PlaylistAdapter;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
@@ -74,13 +75,8 @@ public class BibliotecaFragment extends Fragment {
 
         txt_usuario.setText(user.getUsername());
         if(user.getImgAvatar() != null){
-            try{
-                // establecer imagen al view
-                btnPerfil.setImageBitmap(convertByteArrayToBitmap(user.getImgAvatar()));
-
-            }catch (Exception e){
-                Toast.makeText(this.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
-            }
+            // establecer imagen al view
+            btnPerfil.setImageBitmap(Metodos.convertByteArrayToBitmap(user.getImgAvatar()));
         }
 
         initRecycler();
@@ -126,11 +122,6 @@ public class BibliotecaFragment extends Fragment {
         transaction.replace(R.id.frame_container, fragment);
         transaction.commit();
     }
-    public static Bitmap convertByteArrayToBitmap(byte[] byteArrayToBeCOnvertedIntoBitMap) {
-        Bitmap bitMapImage = BitmapFactory.decodeByteArray(
-                byteArrayToBeCOnvertedIntoBitMap, 0,
-                byteArrayToBeCOnvertedIntoBitMap.length);
-        return bitMapImage;
-    }
+
 
 }

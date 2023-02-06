@@ -24,7 +24,7 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
                 "password TEXT, " +
                 "sexo INTEGER, " +
                 "fechaNac TEXT, " +
-                "avatar TEXT " +
+                "avatar BLOB " +
                 ")";
 
         String sqlCancion = "CREATE TABLE cancion(" +
