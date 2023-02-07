@@ -32,6 +32,7 @@ public class Cancion {
         this.ruta = ruta;
     }
 
+
     public String getDuracion() {
         return duracion;
     }

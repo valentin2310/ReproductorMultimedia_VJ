@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.Clases.Usuario;
+import com.example.reproductormultimedia_vj.Clases.cargarCancionesLocalReproductor;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
             pedirPermisos();
             //return;
         }
-        
+        cargarCancionesLocalReproductor.cargarCancionesLocales(this);
+
         txt_usuario = findViewById(R.id.login_txt_usuario);
         txt_passwd = findViewById(R.id.login_txt_passwd);
     }

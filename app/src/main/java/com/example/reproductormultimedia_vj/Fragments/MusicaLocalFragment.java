@@ -1,5 +1,6 @@
 package com.example.reproductormultimedia_vj.Fragments;
 
+import static com.example.reproductormultimedia_vj.R.id.portada;
 import static com.example.reproductormultimedia_vj.R.id.recyclerBibliotecaLocal;
 
 import android.content.ContentUris;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
+import com.example.reproductormultimedia_vj.Clases.cargarCancionesLocalReproductor;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import com.example.reproductormultimedia_vj.ReproductorActivity;
@@ -36,8 +38,9 @@ public class MusicaLocalFragment extends Fragment {
 
     AdapterCancionLocal adapterCancionLocal;
     RecyclerView recycler;
-    ArrayList<Cancion> canciones;
+    static ArrayList<Cancion> canciones;
     ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
+    EditText filtro;
 
     private static final String ARG_PARAM1 = "USER_ID";
     private int idUser;
@@ -71,7 +74,7 @@ public class MusicaLocalFragment extends Fragment {
 
 
         canciones = new ArrayList<>();
-        EditText filtro = view.findViewById(R.id.filtroCancion);
+        filtro = view.findViewById(R.id.filtroCancion);
 
         //if(savedInstanceState == null){
             recycler = (RecyclerView) view.findViewById(recyclerBibliotecaLocal);
@@ -110,54 +113,23 @@ public class MusicaLocalFragment extends Fragment {
     }
 
     public void filtro(String s) {
-        cancionesFiltradas = new ArrayList<>();
+        if (filtro.length() >0) {
+            cancionesFiltradas = new ArrayList<>();
 
-        for (Cancion cancion : canciones) {
-            if (cancion.getTitulo().toLowerCase().contains(s.toLowerCase())) {
-                cancionesFiltradas.add(cancion);
+            for (Cancion cancion : canciones) {
+                if (cancion.getTitulo().toLowerCase().contains(s.toLowerCase())) {
+                    cancionesFiltradas.add(cancion);
+                }
             }
-        }
 
-        adapterCancionLocal.filtrar(cancionesFiltradas);
+            adapterCancionLocal.filtrar(cancionesFiltradas);
+        } else {
+            adapterCancionLocal.filtrar(canciones);
+        }
     }
 
     public void cargarLista() {
-        String[] canciones_movil = {
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DATE_ADDED,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.ALBUM_ID
-        };
-
-        String seleccion = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-
-        Cursor cursor = recycler.getContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, canciones_movil, seleccion, null, null);
-
-       while (cursor.moveToNext()) {
-            String albumId = cursor.getString(5);
-            //Cancion cancion = new Cancion(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), getAlbumart(Long.parseLong(cursor.getString(4)) ));
-            Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
-            Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri,Long.parseLong(albumId));
-
-            //para comprobar si tiene una imagen o no la cancion (pfd)
-            try {
-                ParcelFileDescriptor pfd = recycler.getContext().getContentResolver()
-                        .openFileDescriptor(albumArtUri, "r");
-                if (pfd !=null) {
-                    Cancion cancion = new Cancion(0, cursor.getString(0), "pito", idUser, cursor.getString(1), cursor.getString(2), cursor.getString(3), albumArtUri.toString().getBytes(StandardCharsets.UTF_8),cursor.getString(4) );
-                    if (new File(cancion.getRuta()).exists())
-                        canciones.add(cancion);
-                }
-            } catch (FileNotFoundException e) {
-                Cancion cancion = new Cancion(0, cursor.getString(0), "pito", idUser, cursor.getString(1), cursor.getString(2), cursor.getString(3), "".getBytes(),cursor.getString(4) );
-                if (new File(cancion.getRuta()).exists())
-                    canciones.add(cancion);
-            }
-
-        }
-
+        canciones = cargarCancionesLocalReproductor.getCancionesLocales();
     }
 
     public void mostrarDatos() {
@@ -167,17 +139,26 @@ public class MusicaLocalFragment extends Fragment {
 
         adapterCancionLocal.setOnClickListener(v -> {
             MyMediaPlayer.getInstance().reset();
-            MyMediaPlayer.currentIndex = recycler.getChildAdapterPosition(v);
             Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
 
-            if (cancionesFiltradas.isEmpty()) {
-                intent.putExtra("listaCanciones", canciones);
+            if (!cancionesFiltradas.isEmpty()) {
+                for (int i=0; i < canciones.size(); ++i) {
+                    if (canciones.get(i).getTitulo() == cancionesFiltradas.get(recycler.getChildAdapterPosition(v)).getTitulo()) {
+                        MyMediaPlayer.currentIndex = i;
+                    }
+                }
+            } else {
+                MyMediaPlayer.currentIndex = recycler.getChildAdapterPosition(v);
             }
-            else {
-                intent.putExtra("listaCanciones", cancionesFiltradas);
-            }
+
+            intent.putExtra("esLocal", true);
+
             v.getContext().startActivity(intent);
         });
+    }
+
+    public static ArrayList<Cancion> obtenerCanciones() {
+        return canciones;
     }
 
 }

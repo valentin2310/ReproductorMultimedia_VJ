@@ -22,9 +22,11 @@ import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -45,13 +47,11 @@ public class ReproductorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reproductor);
         GestionBD gestion = new GestionBD(this);
 
-        /*if (getIntent().hasExtra("cancionesFiltradas")) {
-            listaCanciones = gestion.getCancionesFiltradas((ArrayList<Integer>) getIntent().getParcelableExtra("cancionesFiltradas"));
+        if (getIntent().hasExtra("esLocal")) {
+            listaCanciones = MusicaLocalFragment.obtenerCanciones();
         } else {
             listaCanciones = gestion.getCanciones();
-        }*/
-
-        listaCanciones = gestion.getCanciones();
+        }
 
 
         imagen = findViewById(R.id.portada);
@@ -147,8 +147,8 @@ public class ReproductorActivity extends AppCompatActivity {
         artista.setText(cancion.getNombreArtista());
 
         if (!cancion.getRuta().startsWith("audio/"))
-            if (!cancion.getPortada().equals(""))
-                imagen.setImageURI(Uri.parse(cancion.getPortada().toString()));
+            if (!new String(cancion.getPortada(), StandardCharsets.UTF_8).equals(""))
+                imagen.setImageURI(Uri.parse(new String(cancion.getPortada(), StandardCharsets.UTF_8)));
             else
                 imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
         else {
