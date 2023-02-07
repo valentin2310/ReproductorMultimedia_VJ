@@ -18,8 +18,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.reproductormultimedia_vj.Clases.Cancion;
+import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.bd.GestionBD;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,12 +30,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class ReproductorActivity extends AppCompatActivity {
-    RV_Cancion cancion;
+    Cancion cancion;
     ImageView imagen;
     TextView nombre, artista, tiempoActual, tiempoTotal;
     ImageButton pausePlay, previous, next;
     SeekBar barra;
-    ArrayList<RV_Cancion> listaCanciones;
+    ArrayList<Cancion> listaCanciones;
     MediaPlayer mediaPlayer = MyMediaPlayer.getInstance();
 
 
@@ -40,7 +43,16 @@ public class ReproductorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reproductor);
-        listaCanciones = (ArrayList<RV_Cancion>) getIntent().getSerializableExtra("listaCanciones");
+        GestionBD gestion = new GestionBD(this);
+
+        /*if (getIntent().hasExtra("cancionesFiltradas")) {
+            listaCanciones = gestion.getCancionesFiltradas((ArrayList<Integer>) getIntent().getParcelableExtra("cancionesFiltradas"));
+        } else {
+            listaCanciones = gestion.getCanciones();
+        }*/
+
+        listaCanciones = gestion.getCanciones();
+
 
         imagen = findViewById(R.id.portada);
         nombre = findViewById(R.id.nombre);
@@ -107,13 +119,12 @@ public class ReproductorActivity extends AppCompatActivity {
         mediaPlayer.reset();
         try {
 
-            if (!cancion.getPath().contains("file:///android_asset/"))
-            mediaPlayer.setDataSource(cancion.getPath());
+            if (!cancion.getRuta().startsWith("audio/"))
+                mediaPlayer.setDataSource(cancion.getRuta());
             else {
-                String file = "audio/" + cancion.getNombreArchivo();
                 //Toast.makeText(artista.getContext(), cancion.getNombre(), Toast.LENGTH_LONG).show();
                 AssetManager assetManager = getResources().getAssets();
-                AssetFileDescriptor afd = assetManager.openFd(file);
+                AssetFileDescriptor afd = assetManager.openFd(cancion.getRuta());
                 mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             }
 
@@ -129,68 +140,57 @@ public class ReproductorActivity extends AppCompatActivity {
     }
 
 
-        public void establecerDatosMusica () {
-            cancion = listaCanciones.get(MyMediaPlayer.currentIndex);
+    public void establecerDatosMusica () {
+        cancion = listaCanciones.get(MyMediaPlayer.currentIndex);
 
-            nombre.setText(cancion.getNombre());
-            artista.setText(cancion.getArtista());
+        nombre.setText(cancion.getTitulo());
+        artista.setText(cancion.getNombreArtista());
 
-            if (!cancion.getImage_path().equals("baseDatos"))
-            if (!cancion.getImage_path().equals(""))
-                imagen.setImageURI(Uri.parse(cancion.getImage_path()));
+        if (!cancion.getRuta().startsWith("audio/"))
+            if (!cancion.getPortada().equals(""))
+                imagen.setImageURI(Uri.parse(cancion.getPortada().toString()));
             else
                 imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
-            else {
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                AssetFileDescriptor afd = null;
-                try {
-                    afd = getAssets().openFd("audio/"+ cancion.getNombreArchivo());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                mmr.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                byte [] data = mmr.getEmbeddedPicture();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                imagen.setImageBitmap(bitmap);
-            }
-
-            tiempoTotal.setText(convertir_MMSS(cancion.getDuracion()));
-
-            empezarMusica();
-
-
-
+        else {
+            imagen.setImageBitmap(Metodos.convertByteArrayToBitmap(cancion.getPortada()));
         }
 
-        private void pausePlay(){
+        tiempoTotal.setText(convertir_MMSS(cancion.getDuracion()));
+
+        empezarMusica();
+
+
+
+    }
+
+    private void pausePlay(){
         if(mediaPlayer.isPlaying())
             mediaPlayer.pause();
         else
             mediaPlayer.start();
-        }
+    }
 
-        public String convertir_MMSS (String duracion){
+    public String convertir_MMSS (String duracion){
         Long milisegundos = Long.parseLong(duracion);
         return String.format("%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(milisegundos) % TimeUnit.HOURS.toMinutes(1),
                 TimeUnit.MILLISECONDS.toSeconds(milisegundos) % TimeUnit.MINUTES.toSeconds(1));
-         }
+    }
 
-         public void siguienteCancion() {
-             if(MyMediaPlayer.currentIndex== listaCanciones.size()-1)
-                 return;
-             MyMediaPlayer.currentIndex +=1;
-             mediaPlayer.reset();
-             establecerDatosMusica();
-         }
+    public void siguienteCancion() {
+        if(MyMediaPlayer.currentIndex== listaCanciones.size()-1)
+            return;
+        MyMediaPlayer.currentIndex +=1;
+        mediaPlayer.reset();
+        establecerDatosMusica();
+    }
 
-         public void anteriorCancion() {
-             if(MyMediaPlayer.currentIndex== 0)
-                 return;
-             MyMediaPlayer.currentIndex -=1;
-             mediaPlayer.reset();
-             establecerDatosMusica();
-         }
+    public void anteriorCancion() {
+        if(MyMediaPlayer.currentIndex== 0)
+            return;
+        MyMediaPlayer.currentIndex -=1;
+        mediaPlayer.reset();
+        establecerDatosMusica();
+    }
 
 }

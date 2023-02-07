@@ -34,6 +34,7 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         bibliotecaFragment = BibliotecaFragment.newInstance(USER_ID);
+        musicaFragment = MusicaFragment.newInstance(USER_ID);
 
         BottomNavigationView navigation = findViewById(R.id.botton_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

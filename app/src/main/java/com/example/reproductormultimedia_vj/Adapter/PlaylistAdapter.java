@@ -87,7 +87,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         public void onClick(View v) {
             // if local mostrar canciones locales
             if(play.getIdPlaylist() == -1){
-                MusicaLocalFragment musicaLocalFragment = new MusicaLocalFragment();
+                MusicaLocalFragment musicaLocalFragment = MusicaLocalFragment.newInstance(1);
                 loadFragment(musicaLocalFragment);
             }
         }

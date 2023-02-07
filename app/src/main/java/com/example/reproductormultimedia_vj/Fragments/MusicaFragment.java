@@ -6,6 +6,8 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,10 +27,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
+import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.ReproductorActivity;
+import com.example.reproductormultimedia_vj.bd.GestionBD;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,17 +44,29 @@ public class MusicaFragment extends Fragment {
 
     AdapterCancionLocal adapterCancionLocal;
     RecyclerView recycler;
-    ArrayList<RV_Cancion> canciones;
-    ArrayList<RV_Cancion> cancionesFiltradas = new ArrayList<>();
+    ArrayList<Cancion> canciones;
+    ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
+    private int idUser;
 
+    private static final String ARG_PARAM1 = "USER_ID";
 
     public MusicaFragment() {
         // Required empty public constructor
+    }
+    public static MusicaFragment newInstance(int idUser) {
+        MusicaFragment fragment = new MusicaFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, idUser);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+            if (getArguments() != null) {
+                idUser = getArguments().getInt(ARG_PARAM1);
+            }
     }
 
     @Override
@@ -64,9 +80,9 @@ public class MusicaFragment extends Fragment {
         EditText filtro = view.findViewById(R.id.filtroCancion);
 
         //if(savedInstanceState == null){
-            recycler = (RecyclerView) view.findViewById(recyclerBibliotecaLocal);
+        recycler = (RecyclerView) view.findViewById(recyclerBibliotecaLocal);
 
-            initRecycler();
+        initRecycler();
         //}
 
         filtro.addTextChangedListener(new TextWatcher() {
@@ -92,9 +108,10 @@ public class MusicaFragment extends Fragment {
 
 
     public void initRecycler(){
-            cargarLista();
-            mostrarDatos();
-            recycler.setHasFixedSize(true);
+        agregarCancionesBaseDatos();
+        cargarCancionesBaseDatos();
+        mostrarDatos();
+        recycler.setHasFixedSize(true);
 
 
     }
@@ -102,8 +119,8 @@ public class MusicaFragment extends Fragment {
     public void filtro(String s) {
         cancionesFiltradas = new ArrayList<>();
 
-        for (RV_Cancion cancion : canciones) {
-            if (cancion.getNombre().toLowerCase().contains(s.toLowerCase())) {
+        for (Cancion cancion : canciones) {
+            if (cancion.getTitulo().toLowerCase().contains(s.toLowerCase())) {
                 cancionesFiltradas.add(cancion);
             }
         }
@@ -111,7 +128,7 @@ public class MusicaFragment extends Fragment {
         adapterCancionLocal.filtrar(cancionesFiltradas);
     }
 
-    public void cargarLista() {
+    public void agregarCancionesBaseDatos() {
         MediaMetadataRetriever metaRetriver = new MediaMetadataRetriever();
 
         try {
@@ -130,12 +147,12 @@ public class MusicaFragment extends Fragment {
                 String titulo = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_TITLE);
                 String artist = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_ARTIST);
                 String duracion = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_DURATION);
-                String portada = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_ALBUM);
+                String fechaCreacion = metaRetriver.extractMetadata(metaRetriver.METADATA_KEY_YEAR);
 
+                byte [] portada = metaRetriver.getEmbeddedPicture();
 
-                String data =  "file:///android_asset/" + path + "/" + files[i];
-
-                canciones.add(new RV_Cancion(titulo, artist, duracion, data, "baseDatos", files[i]));
+                GestionBD gestion = new GestionBD(recycler.getContext());
+                gestion.agregarCancion(new Cancion(0, titulo, "descripcion pito",idUser, artist, fechaCreacion, duracion, portada, path + "/" + files[i] ));
                 afd.close();
             }
         } catch (IOException e) {
@@ -147,6 +164,11 @@ public class MusicaFragment extends Fragment {
 
     }
 
+    public void cargarCancionesBaseDatos() {
+        GestionBD gestion = new GestionBD(recycler.getContext());
+        canciones = gestion.getCanciones();
+    }
+
     public void mostrarDatos() {
         recycler.setLayoutManager(new LinearLayoutManager(recycler.getContext()));
         adapterCancionLocal = new AdapterCancionLocal(recycler.getContext(), canciones);
@@ -154,15 +176,27 @@ public class MusicaFragment extends Fragment {
 
         adapterCancionLocal.setOnClickListener(v -> {
             MyMediaPlayer.getInstance().reset();
-            MyMediaPlayer.currentIndex = recycler.getChildAdapterPosition(v);
+
+            if (!cancionesFiltradas.isEmpty()) {
+                for (int i=0; i < canciones.size(); ++i) {
+                    if (canciones.get(i).getIdCancion() == cancionesFiltradas.get(recycler.getChildAdapterPosition(v)).getIdCancion()) {
+                        MyMediaPlayer.currentIndex = i;
+                    }
+                }
+            } else {
+                MyMediaPlayer.currentIndex = recycler.getChildAdapterPosition(v);
+            }
+
             Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
 
-            if (cancionesFiltradas.isEmpty()) {
-                intent.putExtra("listaCanciones", canciones);
-            }
-            else {
-                intent.putExtra("listaCanciones", cancionesFiltradas);
-            }
+           /*if (!cancionesFiltradas.isEmpty()) {
+               ArrayList<Integer> id_canciones = new ArrayList<Integer>();
+               for (Cancion cancion : cancionesFiltradas) {
+                   id_canciones.add(cancion.getIdCancion());
+               }
+                intent.putExtra("cancionesFiltradas", id_canciones);
+            }*/
+
             v.getContext().startActivity(intent);
         });
     }

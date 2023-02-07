@@ -7,10 +7,11 @@ public class Cancion {
     private String titulo;
     private String descripcion;
     private int artista;
+    private String nombreArtista;
     private String fechaCreacion;
-    private String uriPortada;
-    private String uriCancion;
-    private ArrayList<Integer> listaFavoritos;
+    private String duracion;
+    private byte[] portada;
+    private String ruta;
 
     public Cancion(){
 
@@ -18,18 +19,50 @@ public class Cancion {
     public Cancion(int idCancion){
         this.idCancion = idCancion;
     }
-    public Cancion(int idCancion, String titulo, String descripcion, int artista, String fechaCreacion, String portada, String uriCancion, ArrayList<Integer> listaFavoritos) {
+
+    public Cancion(int idCancion, String titulo, String descripcion, int artista, String nombreArtista, String fechaCreacion, String duracion, byte[] portada, String ruta) {
         this.idCancion = idCancion;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.artista = artista;
+        this.nombreArtista = nombreArtista;
         this.fechaCreacion = fechaCreacion;
-        this.uriPortada = portada;
-        this.uriCancion = uriCancion;
-        this.listaFavoritos = listaFavoritos;
+        this.duracion = duracion;
+        this.portada = portada;
+        this.ruta = ruta;
     }
 
+    public String getDuracion() {
+        return duracion;
+    }
 
+    public void setDuracion(String duracion) {
+        this.duracion = duracion;
+    }
+
+    public byte[] getPortada() {
+        return portada;
+    }
+
+    public void setPortada(byte[] portada) {
+        this.portada = portada;
+    }
+
+    public String getRuta() {
+        return ruta;
+    }
+
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
+    }
+
+    public String getNombreArtista() {
+        return nombreArtista;
+    }
+
+    public void setNombreArtista(String nombreArtista) {
+        this.nombreArtista = nombreArtista;
+    }
 
     public int getIdCancion() {
         return idCancion;
@@ -71,32 +104,9 @@ public class Cancion {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getUriPortada() {
-        return uriPortada;
-    }
 
-    public void setUriPortada(String uriPortada) {
-        this.uriPortada = uriPortada;
-    }
-
-    public String getUriCancion() {
-        return uriCancion;
-    }
-
-    public void setUriCancion(String uriCancion) {
-        this.uriCancion = uriCancion;
-    }
-
-    public ArrayList<Integer> getListaFavoritos() {
-        return listaFavoritos;
-    }
-
-    public void setListaFavoritos(ArrayList<Integer> listaFavoritos) {
-        this.listaFavoritos = listaFavoritos;
-    }
-
-    @Override
+    /*@Override
     public String toString() {
         return titulo+" ❤️ "+listaFavoritos.size();
-    }
+    }*/
 }

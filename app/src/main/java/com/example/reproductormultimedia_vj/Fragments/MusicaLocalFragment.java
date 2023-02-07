@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
+import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
@@ -28,24 +29,39 @@ import com.example.reproductormultimedia_vj.ReproductorActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class MusicaLocalFragment extends Fragment {
 
     AdapterCancionLocal adapterCancionLocal;
     RecyclerView recycler;
-    ArrayList<RV_Cancion> canciones;
-    ArrayList<RV_Cancion> cancionesFiltradas = new ArrayList<>();
+    ArrayList<Cancion> canciones;
+    ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
 
+    private static final String ARG_PARAM1 = "USER_ID";
+    private int idUser;
 
     public MusicaLocalFragment() {
         // Required empty public constructor
     }
 
+    public static MusicaLocalFragment newInstance(int idUser) {
+        MusicaLocalFragment fragment = new MusicaLocalFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, idUser);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            idUser = getArguments().getInt(ARG_PARAM1);
+        }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,8 +112,8 @@ public class MusicaLocalFragment extends Fragment {
     public void filtro(String s) {
         cancionesFiltradas = new ArrayList<>();
 
-        for (RV_Cancion cancion : canciones) {
-            if (cancion.getNombre().toLowerCase().contains(s.toLowerCase())) {
+        for (Cancion cancion : canciones) {
+            if (cancion.getTitulo().toLowerCase().contains(s.toLowerCase())) {
                 cancionesFiltradas.add(cancion);
             }
         }
@@ -109,6 +125,7 @@ public class MusicaLocalFragment extends Fragment {
         String[] canciones_movil = {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.DATE_ADDED,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.ALBUM_ID
@@ -118,8 +135,8 @@ public class MusicaLocalFragment extends Fragment {
 
         Cursor cursor = recycler.getContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, canciones_movil, seleccion, null, null);
 
-        while (cursor.moveToNext()) {
-            String albumId = cursor.getString(4);
+       while (cursor.moveToNext()) {
+            String albumId = cursor.getString(5);
             //Cancion cancion = new Cancion(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), getAlbumart(Long.parseLong(cursor.getString(4)) ));
             Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
             Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri,Long.parseLong(albumId));
@@ -129,13 +146,13 @@ public class MusicaLocalFragment extends Fragment {
                 ParcelFileDescriptor pfd = recycler.getContext().getContentResolver()
                         .openFileDescriptor(albumArtUri, "r");
                 if (pfd !=null) {
-                    RV_Cancion cancion = new RV_Cancion(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), albumArtUri.toString());
-                    if (new File(cancion.getPath()).exists())
+                    Cancion cancion = new Cancion(0, cursor.getString(0), "pito", idUser, cursor.getString(1), cursor.getString(2), cursor.getString(3), albumArtUri.toString().getBytes(StandardCharsets.UTF_8),cursor.getString(4) );
+                    if (new File(cancion.getRuta()).exists())
                         canciones.add(cancion);
                 }
             } catch (FileNotFoundException e) {
-                RV_Cancion cancion = new RV_Cancion(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), "");
-                if (new File(cancion.getPath()).exists())
+                Cancion cancion = new Cancion(0, cursor.getString(0), "pito", idUser, cursor.getString(1), cursor.getString(2), cursor.getString(3), "".getBytes(),cursor.getString(4) );
+                if (new File(cancion.getRuta()).exists())
                     canciones.add(cancion);
             }
 

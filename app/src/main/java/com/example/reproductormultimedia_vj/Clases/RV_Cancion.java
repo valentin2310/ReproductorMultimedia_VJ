@@ -9,20 +9,11 @@ public class RV_Cancion implements Serializable {
     private String artista;
     private String duracion;
     private String path;
-    private int imagenID;
     private String image_path;
-    private String NombreArchivo;
 
     public RV_Cancion() {}
 
-    public RV_Cancion(String nombre, String artista, String duracion, String path, int imagenID) {
-        this.nombre = nombre;
-        this.artista = artista;
-        this.duracion = duracion;
-        this.path = path;
-        this.imagenID = imagenID;
 
-    }
 
     public RV_Cancion(String nombre, String artista, String duracion, String path, String image_path) {
         this.nombre = nombre;
@@ -33,21 +24,13 @@ public class RV_Cancion implements Serializable {
 
     }
 
-    public RV_Cancion(String nombre, String artista, String duracion, String path, String image_path, String nombreArchivo) {
+    public RV_Cancion(String nombre, String artista, String duracion, String path) {
         this.nombre = nombre;
         this.artista = artista;
         this.duracion = duracion;
         this.path = path;
         this.image_path = image_path;
-        NombreArchivo = nombreArchivo;
-    }
 
-    public String getNombreArchivo() {
-        return NombreArchivo;
-    }
-
-    public void setNombreArchivo(String nombreArchivo) {
-        NombreArchivo = nombreArchivo;
     }
 
     public String getNombre() {
@@ -64,14 +47,6 @@ public class RV_Cancion implements Serializable {
 
     public void setArtista(String artista) {
         this.artista = artista;
-    }
-
-    public int getImagenID() {
-        return imagenID;
-    }
-
-    public void setImagenID(int imagenID) {
-        this.imagenID = imagenID;
     }
 
     public String getDuracion() {

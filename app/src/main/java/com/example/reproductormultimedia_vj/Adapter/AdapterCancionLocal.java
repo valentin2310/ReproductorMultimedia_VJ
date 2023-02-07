@@ -17,26 +17,29 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reproductormultimedia_vj.Clases.Cancion;
+import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import com.example.reproductormultimedia_vj.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLocal.ViewHolder> implements View.OnClickListener {
 
     LayoutInflater inflater;
-    ArrayList<RV_Cancion> canciones;
+    ArrayList<Cancion> canciones;
 
     //listener
     private View.OnClickListener listener;
 
     private Context context;
 
-    public AdapterCancionLocal(Context context, ArrayList<RV_Cancion> canciones) {
-    this.inflater = LayoutInflater.from(context);
-    this.canciones = canciones;
+    public AdapterCancionLocal(Context context, ArrayList<Cancion> canciones) {
+        this.inflater = LayoutInflater.from(context);
+        this.canciones = canciones;
 
     }
 
@@ -50,30 +53,19 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String nombre = canciones.get(position).getNombre();
-        String artista = canciones.get(position).getArtista();
-        String imagen_path = canciones.get(position).getImage_path();
+        String nombre = canciones.get(position).getTitulo();
+        String artista = canciones.get(position).getNombreArtista();
+        String portada = new String(canciones.get(position).getPortada(), StandardCharsets.UTF_8);
         holder.nombre.setText(nombre);
         holder.artista.setText(artista);
 
-        if (canciones.get(position).getImage_path() != "baseDatos")
-        if (canciones.get(position).getImage_path() != "")
-            holder.imagen.setImageURI(Uri.parse(imagen_path));
-        else
-            holder.imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
+        if (!canciones.get(position).getRuta().startsWith("audio/"))
+            if (!portada.equals(""))
+                holder.imagen.setImageURI(Uri.parse(portada));
+            else
+                holder.imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
         else {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            AssetFileDescriptor afd = null;
-            try {
-                afd = inflater.getContext().getAssets().openFd("audio/"+ canciones.get(position).getNombreArchivo());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            mmr.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            byte [] data = mmr.getEmbeddedPicture();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            holder.imagen.setImageBitmap(bitmap);
+            holder.imagen.setImageBitmap(Metodos.convertByteArrayToBitmap(canciones.get(position).getPortada()));
         }
 
 
@@ -82,14 +74,14 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    if (!activado[0]) {
-                        holder.like.setImageResource(R.drawable.ic_baseline_favorite_24);
-                        holder.like.setColorFilter(Color.argb(255, 0,170,255));
-                    }
-                    else
-                        holder.like.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                if (!activado[0]) {
+                    holder.like.setImageResource(R.drawable.ic_baseline_favorite_24);
+                    holder.like.setColorFilter(Color.argb(255, 0,170,255));
+                }
+                else
+                    holder.like.setImageResource(R.drawable.ic_baseline_favorite_border_24);
 
-                    activado[0] = !activado[0];
+                activado[0] = !activado[0];
             }
         });
 
@@ -124,7 +116,7 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         }
     }
 
-    public void filtrar(ArrayList<RV_Cancion> cancionesFiltradas) {
+    public void filtrar(ArrayList<Cancion> cancionesFiltradas) {
         canciones = cancionesFiltradas;
         notifyDataSetChanged();
     }

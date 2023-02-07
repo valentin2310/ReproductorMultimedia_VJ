@@ -32,10 +32,11 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
                 "titulo TEXT, " +
                 "descripcion TEXT, " +
                 "artista INTEGER, " +
-                "fechaCreacion Date, " +
+                "nombreArtista TEXT, " +
+                "fechaCreacion TEXT, " +
+                "duracion TEXT, " +
                 "portada TEXT, " +
-                "ruta TEXT, " +
-                "listaFav TEXT" +
+                "ruta TEXT " +
                 ")";
 
         String sqlPlaylist = "CREATE TABLE playlist(" +
