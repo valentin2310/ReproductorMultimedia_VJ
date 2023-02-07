@@ -35,7 +35,7 @@
                     android:id="@+id/img_registro"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:src="@drawable/ic_baseline_person_24"
+                    android:src="@drawable/ic_baseline_person_42"
                     android:background="@drawable/fondo_toolbar"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -59,7 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="6dp"
-                    app:startIconDrawable="@drawable/ic_baseline_person_24"
+                    app:startIconDrawable="@drawable/ic_baseline_person_42"
                     android:hint="Usuario">
 
                     <com.google.android.material.textfield.TextInputEditText

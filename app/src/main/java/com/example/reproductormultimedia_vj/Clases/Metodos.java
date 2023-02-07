@@ -6,8 +6,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 public class Metodos {
+
+    public static final String FILTRO_USUARIO = "^[A-Za-zÑñ_0-9]{3,23}$";
+    public static final String FILTRO_NOMBRE = "^[A-Za-zÑñ]{3}[A-Za-zÑñ ]{0,20}$";
+    public static final String FILTRO_FECHA = "^[\\d]{2}/[\\d]{2}/[\\d]{4}$";
+
     public static Bitmap convertByteArrayToBitmap(byte[] byteArrayToBeCOnvertedIntoBitMap) {
         Bitmap bitMapImage = BitmapFactory.decodeByteArray(
                 byteArrayToBeCOnvertedIntoBitMap, 0,
@@ -19,5 +28,18 @@ public class Metodos {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bit.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         return stream.toByteArray();
+    }
+    public static boolean validarCampo(String filtro, String text){
+        return Pattern.matches(filtro, text);
+    }
+    public static Date obtenerDate(String fecha){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        try{
+            Date date = format.parse(fecha);
+            if(new Date().before(date)) return null;
+            return date;
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

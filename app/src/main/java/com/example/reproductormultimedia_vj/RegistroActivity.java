@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -48,6 +49,7 @@ public class RegistroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         imgV = findViewById(R.id.img_registro);
         txt_usuario = findViewById(R.id.registro_txt_usuario);
@@ -57,26 +59,20 @@ public class RegistroActivity extends AppCompatActivity {
         txt_passwd2 = findViewById(R.id.registro_txt_passwd2);
         rd_sexo = findViewById(R.id.registro_rd_sexo);
 
+        rd_sexo.check(R.id.registro_rd_none);
     }
 
     public void iniciarSesion(View view){
-
-        byte[] avatar = null;
-
-        if (imageUri != null){
-            avatar = Metodos.convertBitmapToByteArray(imgV);
-        }
-
-        int sexo;
-        int selectedSexo = rd_sexo.getCheckedRadioButtonId();
-        RadioButton rd = findViewById(selectedSexo);
-        if(rd.getText().toString().equalsIgnoreCase("hombre")) sexo = 0;
-        else if(rd.getText().toString().equalsIgnoreCase("mujer")) sexo = 1;
-        else sexo = 2;
-
-        Usuario user = new Usuario(0, txt_nombre.getText().toString(), txt_usuario.getText().toString(), txt_passwd.getText().toString(), sexo, txt_fecha.getText().toString(), avatar, null, null);
+        Usuario user = comprobarCampos();
+        if(user == null) return;
 
         GestionBD gestionBD = new GestionBD(this);
+
+        if(gestionBD.usuarioExiste(user.getUsername())){
+            txt_usuario.setError("Ya existe un usuario con ese username, prueba con otro username");
+            return;
+        }
+
         if(gestionBD.crearUsuario(user)){
             Toast.makeText(this, "Usuario creado exitosamente", Toast.LENGTH_SHORT).show();
 
@@ -85,7 +81,63 @@ public class RegistroActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "No se ha podido crear", Toast.LENGTH_SHORT).show();
         }
-        
+
+    }
+    public Usuario comprobarCampos(){
+        String nombre = txt_nombre.getText().toString();
+        String username = txt_usuario.getText().toString();
+        String passwd = txt_passwd.getText().toString();
+        String passwd2 = txt_passwd2.getText().toString();
+        String fecha = txt_fecha.getText().toString();
+
+        if(nombre.isEmpty() || username.isEmpty() || passwd.isEmpty() || passwd2.isEmpty() || fecha.isEmpty()){
+            mostrarError(txt_nombre);
+            mostrarError(txt_usuario);
+            mostrarError(txt_passwd);
+            mostrarError(txt_passwd2);
+            mostrarError(txt_fecha);
+            return null;
+        }
+        if(!passwd.equals(passwd2)){
+            txt_passwd.setError("Las contraseñas no coinciden!!");
+            return null;
+        }
+
+        if(!Metodos.validarCampo(Metodos.FILTRO_USUARIO, username)){
+            txt_usuario.setError("El formato no es valido, trata de no usar caracteres extraños");
+            return null;
+        }
+        else if(!Metodos.validarCampo(Metodos.FILTRO_NOMBRE, nombre)){
+            txt_nombre.setError("El formato no es valido");
+            return null;
+        }
+        else if(!Metodos.validarCampo(Metodos.FILTRO_FECHA, fecha) || Metodos.obtenerDate(fecha) == null){
+            txt_fecha.setError("La fecha no es valida");
+            return null;
+        }
+
+        byte[] avatar = imageUri != null? Metodos.convertBitmapToByteArray(imgV): null;
+        int sexo = sexoSeleccionado();
+
+        Usuario user = new Usuario(0, nombre, username, passwd, sexo, fecha, avatar, null, null);
+
+        return user;
+    }
+    public void mostrarError(TextInputEditText et){
+        if(et.getText().toString().isEmpty()){
+            et.setError("El campo no debe estar vacio!!");
+        }
+    }
+    public int sexoSeleccionado(){
+        int sexo;
+
+        int selectedSexo = rd_sexo.getCheckedRadioButtonId();
+        RadioButton rd = findViewById(selectedSexo);
+        if(rd.getText().toString().equalsIgnoreCase("hombre")) sexo = 0;
+        else if(rd.getText().toString().equalsIgnoreCase("mujer")) sexo = 1;
+        else sexo = 2;
+
+        return sexo;
     }
 
     int requestedcode = 1;
@@ -94,24 +146,14 @@ public class RegistroActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // si se ha seleccionado una imagen
         if(this.requestedcode == requestCode && resultCode == Activity.RESULT_OK){
             if(data == null){
                 return;
             }
+            // almaceno la uri de la img seleecionada, asi compruebo si el usuario ha elegido una imagen personalizada
             imageUri = data.getData();
             imgV.setImageURI(imageUri);
-
-            //createImage();
-/*
-            Bitmap bitmap = ((BitmapDrawable) imgV.getDrawable()).getBitmap();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] imageInByte = baos.toByteArray();
-
-            Bitmap b = BitmapFactory.decodeByteArray(imageInByte, 0, imageInByte.length);
-            imgV.setImageBitmap(Bitmap.createScaledBitmap(b, 1080, 1080, false));
-
- */
         }
     }
 
@@ -120,42 +162,5 @@ public class RegistroActivity extends AppCompatActivity {
         fileChooser.addCategory(Intent.CATEGORY_OPENABLE);
         fileChooser.setType("image/*");
         startActivityForResult(Intent.createChooser(fileChooser, "Elige opcion"), requestedcode);
-    }
-
-    private Uri createImage(){
-        Uri uri = null;
-
-        BitmapDrawable drawable = (BitmapDrawable) imgV.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-
-        File filepath = Environment.getExternalStorageDirectory();
-        File dir = new File(filepath.getAbsolutePath()+"/REPRODUCTOR_VJ/");
-        dir.mkdir();
-        File file = new File(dir, System.currentTimeMillis()+".jpg");
-        FileOutputStream outputStream = null;
-
-        try{
-            outputStream = new FileOutputStream(file);
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
-
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-        Toast.makeText(this, "Image saved to internal", Toast.LENGTH_SHORT).show();
-
-        Toast.makeText(this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-
-        try{
-            outputStream.flush();
-            outputStream.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        return uri;
-    }
-
-    private void startCrop(Uri uri){
-
     }
 }

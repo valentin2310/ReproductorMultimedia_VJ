@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         if (comprobarPermisos() == false) {
             pedirPermisos();
@@ -40,23 +42,37 @@ public class MainActivity extends AppCompatActivity {
         txt_passwd = findViewById(R.id.login_txt_passwd);
     }
 
-    public void iniciarSesion(View view){
+    private Usuario comprobarRegistro(){
+
+        String username = txt_usuario.getText().toString();
+        String passwd = txt_passwd.getText().toString();
+
+        if(username.isEmpty() || passwd.isEmpty()){
+            txt_usuario.setError("Debes rellenar todos los datos!!");
+            return null;
+        }
 
         GestionBD gestionBD = new GestionBD(this);
-        Usuario user = gestionBD.comprobarUsuario(txt_usuario.getText().toString(), txt_passwd.getText().toString());
-        
-        if(user != null){
+        Usuario user = gestionBD.comprobarUsuario(username, passwd);
 
-            Toast.makeText(this, "Exitoso", Toast.LENGTH_SHORT).show();
-            
-            Intent intent = new Intent(this, MenuActivity.class);
-            intent.putExtra("USER_ID", gestionBD.getUsuarioId(txt_usuario.getText().toString()));
-
-            startActivity(intent);
-            
-        }else{
-            Toast.makeText(this, "No has introducido bien los datos", Toast.LENGTH_SHORT).show();
+        if(user == null){
+            txt_usuario.setError("El usuario o contraseña no son correctos!!");
+            txt_passwd.setText("");
         }
+
+        return user;
+    }
+
+    public void iniciarSesion(View view){
+        Usuario user = comprobarRegistro();
+
+        if(user == null){
+            return;
+        }
+        Intent intent = new Intent(this, MenuActivity.class);
+        intent.putExtra("USER_ID", user.getIdUser());
+
+        startActivity(intent);
         
     }
 

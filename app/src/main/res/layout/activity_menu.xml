@@ -5,21 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MenuActivity">
-
+<!--
     <androidx.core.widget.NestedScrollView
         android:id="@+id/menuNestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true">
-
+-->
         <FrameLayout
             android:id="@+id/frame_container"
+            android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
+<!--
     </androidx.core.widget.NestedScrollView>
-
+-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/botton_navigation"
         android:layout_width="match_parent"

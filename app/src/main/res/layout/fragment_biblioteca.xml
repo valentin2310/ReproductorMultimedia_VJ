@@ -15,15 +15,15 @@
         android:background="@drawable/fondo_toolbar"
         android:paddingVertical="30dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/bibl_btn_perfil"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginHorizontal="10dp"
-            android:padding="5dp"
-            android:background="@drawable/fondo_toolbar"
+            android:padding="15dp"
+            android:background="@drawable/fondo_linear_img"
             app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-            android:src="@drawable/ic_baseline_person_24"
+            android:src="@drawable/ic_baseline_person_42"
             android:layout_weight="0"/>
 
         <TextView

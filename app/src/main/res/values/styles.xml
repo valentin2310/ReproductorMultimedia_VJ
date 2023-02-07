@@ -9,6 +9,7 @@
         <item name="android:textColorHint">@color/base_claro</item>
         <!-- el hint cuando se convierte en etiqueta flotante -->
         <item name="hintTextColor">@color/base_claro</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="buscador" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
