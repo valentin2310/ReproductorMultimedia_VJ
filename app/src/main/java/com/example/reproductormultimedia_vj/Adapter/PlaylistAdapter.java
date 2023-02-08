@@ -98,6 +98,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             FragmentManager ft = ((FragmentActivity)activity).getSupportFragmentManager();
             FragmentTransaction transaction = ft.beginTransaction();
             transaction.replace(R.id.frame_container, fragment);
+            transaction.addToBackStack(null);
             transaction.commit();
         }
 

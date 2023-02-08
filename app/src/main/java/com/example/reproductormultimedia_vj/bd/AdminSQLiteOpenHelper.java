@@ -43,15 +43,37 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
                 "idPlaylist INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "idCreador INTEGER, " +
                 "nombre TEXT, " +
-                "portada TEXT, " +
-                "privada INTEGER, " +
-                "listaCanciones TEXT, " +
-                "listaUsuarios TEXT" +
+                "portada BLOB, " +
+                "privada INTEGER " +
+                ")";
+
+        String sqlUsuarioCancionFav = "CREATE TABLE user_song_fav(" +
+                "idUser INTEGER," +
+                "idCancion INTEGER" +
+                ")";
+
+        String sqlUsuarioPlaylistFav = "CREATE TABLE user_play_fav(" +
+                "idUser INTEGER," +
+                "idPlaylist INTEGER" +
+                ")";
+
+        String sqlCancionPlaylist = "CREATE TABLE play_song(" +
+                "idPlaylist INTEGER," +
+                "idCancion INTEGER" +
+                ")";
+
+        String sqlLogIn = "CREATE TABLE usuario_login(" +
+                "idUser INTEGER," +
+                "activo INTEGER" +
                 ")";
 
         db.execSQL(sqlUsuario);
         db.execSQL(sqlCancion);
         db.execSQL(sqlPlaylist);
+        db.execSQL(sqlCancionPlaylist);
+        db.execSQL(sqlUsuarioCancionFav);
+        db.execSQL(sqlUsuarioPlaylistFav);
+        //db.execSQL(sqlLogIn);
     }
 
     @Override
@@ -59,9 +81,17 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
         String ordenBorrado = "drop table if exists usuario";
         String ordenBorrado2 = "drop table if exists cancion";
         String ordenBorrado3 = "drop table if exists playlist";
+        String ordenBorrado4 = "drop table if exists usuario_login";
+        String ordenBorrado5 = "drop table if exists play_song";
+        String ordenBorrado6 = "drop table if exists user_song_fav";
+        String ordenBorrado7 = "drop table if exists user_play_fav";
         db.execSQL(ordenBorrado);
         db.execSQL(ordenBorrado2);
         db.execSQL(ordenBorrado3);
+        db.execSQL(ordenBorrado4);
+        db.execSQL(ordenBorrado5);
+        db.execSQL(ordenBorrado6);
+        db.execSQL(ordenBorrado7);
         onCreate(db);
     }
 }

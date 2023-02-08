@@ -4,8 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.Clases.Cancion;
+import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 
 import java.nio.charset.StandardCharsets;
@@ -17,6 +19,12 @@ public class GestionBD {
     private static final String TABLA_USUARIO = "usuario";
     private static final String TABLA_CANCION = "cancion";
     private static final String TABLA_PLAYLIST = "playlist";
+
+    private static final String TABLA_USUARIO_LOGIN = "usuario_login";
+    private static final String TABLA_USUARIO_CANCION_FAV = "user_song_fav";
+    private static final String TABLA_USUARIO_PLAYLIST_FAV = "user_play_fav";
+    private static final String TABLA_PLAYLIST_CANCION = "play_song";
+
     private static int version = 1;
     private AdminSQLiteOpenHelper admin;
 
@@ -92,7 +100,6 @@ public class GestionBD {
             if(bd.isOpen()) bd.close();
         }
     }
-
 
     public boolean agregarCancion(Cancion cancion){
         // si la canción existe, no se puede sobreescribir
@@ -186,6 +193,103 @@ public class GestionBD {
         return canciones;
     }*/
 
+    public boolean crearPlaylist(Playlist play){
+
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            ContentValues registro = new ContentValues();
+
+            registro.put("idPlaylist", play.getIdPlaylist());
+            registro.put("idCreador", play.getIdCreador());
+            registro.put("nombre", play.getNombre());
+            registro.put("portada", play.getUriPortada());
+            registro.put("privada", 0);
+
+            bd.insert(TABLA_PLAYLIST, null, registro);
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+
+    public boolean setCancionPlaylist(int idPlayist, int idCancion){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            ContentValues registro = new ContentValues();
+
+            registro.put("idPlaylist", idPlayist);
+            registro.put("idCancion", idCancion);
+
+            bd.insert(TABLA_PLAYLIST_CANCION, null, registro);
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+    public int eliminarCancionPlaylist(int idPlaylist, int idCancion){
+        SQLiteDatabase db = admin.getWritableDatabase();
+        int cant = db.delete(TABLA_PLAYLIST_CANCION, "where idPlaylist = "+idPlaylist+" and idCancion = "+idCancion, null);
+        db.close();
+
+        return cant;
+    }
+
+    public boolean setPlaylistFav(int idUser, int idPlaylist){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            ContentValues registro = new ContentValues();
+
+            registro.put("idUser", idUser);
+            registro.put("idPlaylist", idPlaylist);
+
+            bd.insert(TABLA_USUARIO_PLAYLIST_FAV, null, registro);
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+    public int eliminarPlaylistFav(int idUser, int idPlaylist){
+        SQLiteDatabase db = admin.getWritableDatabase();
+        int cant = db.delete(TABLA_USUARIO_PLAYLIST_FAV, "where idUser = "+idUser+" and idPlaylist = "+idPlaylist, null);
+        db.close();
+
+        return cant;
+    }
+
+    public boolean setCancionFav(int idUser, int idCancion){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            ContentValues registro = new ContentValues();
+
+            registro.put("idUser", idUser);
+            registro.put("idCancion", idCancion);
+
+            bd.insert(TABLA_USUARIO_CANCION_FAV, null, registro);
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+    public int eliminarCancionFav(int idUser, int idCancion){
+        SQLiteDatabase db = admin.getWritableDatabase();
+        int cant = db.delete(TABLA_USUARIO_CANCION_FAV, "where idUser = "+idUser+" and idCancion = "+idCancion, null);
+        db.close();
+
+        return cant;
+    }
+
     public Usuario getUsuario(int idUser){
         Usuario user = null;
         SQLiteDatabase bd = admin.getWritableDatabase();
@@ -266,4 +370,51 @@ public class GestionBD {
         return user;
     }
 
+    public boolean setUsuarioDefault(int idUser){
+        if(!usuarioExisteId(idUser)) return false;
+
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            ContentValues registro = new ContentValues();
+
+            registro.put("idUser", idUser);
+            registro.put("valido", 1);
+
+            Cursor fila = bd.rawQuery("select * from "+TABLA_USUARIO_LOGIN, null);
+
+            if(fila.moveToFirst()){
+                bd.update(TABLA_USUARIO_LOGIN, registro, null, null);
+            }else{
+                bd.insert(TABLA_USUARIO_LOGIN, null, registro);
+            }
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+    public int getUsuarioDefaultId(){
+        int idUser = -1;
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        try{
+
+            String sql = "select * from "+TABLA_USUARIO_LOGIN;
+
+            Cursor fila = bd.rawQuery(sql, null);
+
+            if(fila.moveToFirst()){
+                idUser = fila.getInt(0);
+                if(fila.getInt(1) == 0) return -1;
+            }
+
+        }catch (Exception e){
+            // no hacer nada
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+        return idUser;
+    }
 }

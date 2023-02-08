@@ -35,8 +35,7 @@
                     android:id="@+id/img_registro"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:src="@drawable/ic_baseline_person_42"
-                    android:background="@drawable/fondo_toolbar"/>
+                    android:src="@drawable/ic_baseline_person_42"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:layout_width="wrap_content"

@@ -1,5 +1,7 @@
 package com.example.reproductormultimedia_vj.Fragments;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,14 +16,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.reproductormultimedia_vj.AddPlaylistActivity;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.Adapter.PlaylistAdapter;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
+import com.example.reproductormultimedia_vj.MenuActivity;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -38,6 +43,7 @@ public class BibliotecaFragment extends Fragment {
 
     ImageView btnPerfil;
     TextView txt_usuario;
+    ImageButton btnAddPlay;
 
     private int idUser;
 
@@ -60,6 +66,7 @@ public class BibliotecaFragment extends Fragment {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,6 +79,7 @@ public class BibliotecaFragment extends Fragment {
         txt_usuario = (TextView) view.findViewById(R.id.bibl_txt_usuario);
         btnPerfil = (ImageView) view.findViewById(R.id.bibl_btn_perfil);
         recycler = (RecyclerView) view.findViewById(R.id.recyclerPlaylist);
+        btnAddPlay = (ImageButton) view.findViewById(R.id.bibl_btn_add_playlist);
 
         txt_usuario.setText(user.getUsername());
         if(user.getImgAvatar() != null){
@@ -86,6 +94,16 @@ public class BibliotecaFragment extends Fragment {
             public void onClick(View v) {
                 usuarioFragment = UsuarioFragment.newInstance(idUser);
                 loadFragment(usuarioFragment);
+            }
+        });
+
+        btnAddPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AddPlaylistActivity.class);
+                intent.putExtra("USER_ID", user.getIdUser());
+
+                startActivity(intent);
             }
         });
 
@@ -121,6 +139,7 @@ public class BibliotecaFragment extends Fragment {
     public void loadFragment(Fragment fragment){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 

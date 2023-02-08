@@ -36,6 +36,7 @@
             android:textStyle="bold" />
 
         <ImageButton
+            android:id="@+id/bibl_btn_add_playlist"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="end"

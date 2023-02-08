@@ -9,7 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -23,9 +25,13 @@ import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     TextInputEditText txt_usuario, txt_passwd;
+
+    int idUser;
     
     @SuppressLint({"MissingInflatedId"})
     @Override
@@ -42,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
         txt_usuario = findViewById(R.id.login_txt_usuario);
         txt_passwd = findViewById(R.id.login_txt_passwd);
+
+        GestionBD gestionBD = new GestionBD(this);
+
+        // no hace nada, dejar para luego
+        idUser = gestionBD.getUsuarioDefaultId();
+        //if(idUser != -1) iniciarSesion(txt_usuario);
+
     }
 
     private Usuario comprobarRegistro(){
@@ -66,13 +79,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void iniciarSesion(View view){
-        Usuario user = comprobarRegistro();
 
-        if(user == null){
-            return;
+        if(idUser == -1){
+            Usuario user = comprobarRegistro();
+
+            if(user == null){
+                return;
+            }
+
+            idUser = user.getIdUser();
+            new GestionBD(this).setUsuarioDefault(idUser);
         }
+
         Intent intent = new Intent(this, MenuActivity.class);
-        intent.putExtra("USER_ID", user.getIdUser());
+        intent.putExtra("USER_ID", idUser);
 
         startActivity(intent);
         
