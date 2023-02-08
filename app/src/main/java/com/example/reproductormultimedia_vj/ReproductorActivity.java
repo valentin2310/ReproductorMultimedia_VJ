@@ -1,19 +1,22 @@
 package com.example.reproductormultimedia_vj;
 
+import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ResourceCursorAdapter;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,8 +26,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
-import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.Clases.CrearNotificacion;
 import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
+import com.example.reproductormultimedia_vj.Servicios.OnClearFromRecentService;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 
 import java.io.IOException;
@@ -32,7 +36,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 public class ReproductorActivity extends AppCompatActivity {
     Cancion cancion;
@@ -45,6 +48,8 @@ public class ReproductorActivity extends AppCompatActivity {
 
     ArrayList<Cancion> listaCanciones;
     MediaPlayer mediaPlayer = MyMediaPlayer.getInstance();
+
+    NotificationManager notificationManager;
 
 
     @Override
@@ -78,29 +83,36 @@ public class ReproductorActivity extends AppCompatActivity {
         bucle = false;
 
 
-        establecerDatosMusica();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel();
+            registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
+            startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
+        }
 
+
+        establecerDatosMusica();
+        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
         mediaPlayer.setOnCompletionListener(v -> {
-            tiempoActual.setText(convertir_MMSS(mediaPlayer.getDuration()+""));
+            tiempoActual.setText(convertir_MMSS(mediaPlayer.getDuration() + ""));
             siguienteCancion();
         });
 
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(mediaPlayer!=null){
+                if (mediaPlayer != null) {
                     barra.setProgress(mediaPlayer.getCurrentPosition());
-                    tiempoActual.setText(convertir_MMSS(mediaPlayer.getCurrentPosition()+""));
+                    tiempoActual.setText(convertir_MMSS(mediaPlayer.getCurrentPosition() + ""));
 
-                    if(mediaPlayer.isPlaying()){
+                    if (mediaPlayer.isPlaying()) {
                         pausePlay.setImageResource(R.drawable.ic_baseline_pause_circle_filled_24);
 
-                    }else{
+                    } else {
                         pausePlay.setImageResource(R.drawable.ic_baseline_play_circle_filled_24);
                     }
 
                 }
-                new Handler().postDelayed(this,100);
+                new Handler().postDelayed(this, 100);
             }
         });
 
@@ -130,18 +142,53 @@ public class ReproductorActivity extends AppCompatActivity {
         loop.setOnClickListener(v -> cancionBucle());
         primeraCancion.setOnClickListener(v -> primeraCancion());
         ultimaCancion.setOnClickListener(v -> ultimaCancion());
+
+
+    }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getExtras().getString("actionname");
+            switch (action) {
+                case CrearNotificacion.ACTION_PREVIUOS:
+                    anteriorCancion();
+                    break;
+                case CrearNotificacion.ACTION_PLAY:
+                    pausePlay();
+                    break;
+                case CrearNotificacion.ACTION_NEXT:
+                    siguienteCancion();
+                    break;
+            }
+        }
+    };
+
+    private void createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CrearNotificacion.CHANNEL_ID,
+                    "Javi Valentin", NotificationManager.IMPORTANCE_LOW);
+            notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     public void primeraCancion() {
         MyMediaPlayer.currentIndex = 0;
         mediaPlayer.reset();
         establecerDatosMusica();
+        restartActivity(this);
+        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
     }
 
     public void ultimaCancion() {
         MyMediaPlayer.currentIndex = listaCanciones.size()-1;
         mediaPlayer.reset();
         establecerDatosMusica();
+        restartActivity(this);
+        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
     }
 
     public void cancionAleatoria() {
@@ -181,8 +228,6 @@ public class ReproductorActivity extends AppCompatActivity {
             barra.setMax(mediaPlayer.getDuration());
         } catch (IOException e) {
             e.printStackTrace();
-
-
         }
     }
 
@@ -208,11 +253,29 @@ public class ReproductorActivity extends AppCompatActivity {
 
     }
 
+    public static void restartActivity(Activity activity){
+        if (!Build.VERSION.RELEASE.equals("13"))
+        if (Build.VERSION.SDK_INT >= 11) {
+            activity.recreate();
+        } else {
+            activity.finish();
+            activity.startActivity(activity.getIntent());
+        }
+    }
+
     private void pausePlay(){
-        if(mediaPlayer.isPlaying())
+
+        if(mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-        else
+            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_play_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+
+        }
+        else {
             mediaPlayer.start();
+            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+
+        }
+
     }
 
     public String convertir_MMSS (String duracion){
@@ -223,6 +286,7 @@ public class ReproductorActivity extends AppCompatActivity {
     }
 
     public void siguienteCancion() {
+
         if (bucle && !aleatorio && MyMediaPlayer.currentIndex == listaCanciones.size() - 1)  {
             MyMediaPlayer.currentIndex = 0;
             mediaPlayer.reset();
@@ -246,9 +310,13 @@ public class ReproductorActivity extends AppCompatActivity {
                 }
             }
         }
+        restartActivity(this);
+        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+
     }
 
     public void anteriorCancion() {
+
         if (mediaPlayer.getCurrentPosition() < 3000) {
             if (MyMediaPlayer.currentIndex == 0) {
                 mediaPlayer.reset();
@@ -262,6 +330,17 @@ public class ReproductorActivity extends AppCompatActivity {
             mediaPlayer.reset();
             establecerDatosMusica();
         }
+        restartActivity(this);
+        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.cancelAll();
+        }
+        unregisterReceiver(broadcastReceiver);
+    }
 }
