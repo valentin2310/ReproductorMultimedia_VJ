@@ -91,7 +91,11 @@ public class ReproductorActivity extends AppCompatActivity {
 
 
         establecerDatosMusica();
-        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        try {
+            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         mediaPlayer.setOnCompletionListener(v -> {
             tiempoActual.setText(convertir_MMSS(mediaPlayer.getDuration() + ""));
             siguienteCancion();
@@ -148,7 +152,7 @@ public class ReproductorActivity extends AppCompatActivity {
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, Intent intent)  {
             String action = intent.getExtras().getString("actionname");
             switch (action) {
                 case CrearNotificacion.ACTION_PREVIUOS:
@@ -180,7 +184,11 @@ public class ReproductorActivity extends AppCompatActivity {
         mediaPlayer.reset();
         establecerDatosMusica();
         restartActivity(this);
-        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        try {
+            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void ultimaCancion() {
@@ -188,7 +196,11 @@ public class ReproductorActivity extends AppCompatActivity {
         mediaPlayer.reset();
         establecerDatosMusica();
         restartActivity(this);
-        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        try {
+            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void cancionAleatoria() {
@@ -267,12 +279,20 @@ public class ReproductorActivity extends AppCompatActivity {
 
         if(mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_play_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+            try {
+                CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_play_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
         else {
             mediaPlayer.start();
-            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+            try {
+                CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
 
@@ -311,7 +331,11 @@ public class ReproductorActivity extends AppCompatActivity {
             }
         }
         restartActivity(this);
-        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        try {
+            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -331,7 +355,11 @@ public class ReproductorActivity extends AppCompatActivity {
             establecerDatosMusica();
         }
         restartActivity(this);
-        CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        try {
+            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24, MyMediaPlayer.currentIndex, listaCanciones.size()-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
