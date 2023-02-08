@@ -21,102 +21,140 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="80dp"
-        >
-    <TextView
-        android:id="@+id/nombre"
-        android:text="Nombre Cancion"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:layout_width="315dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="30dp"
+        android:layout_marginBottom="50dp">
 
-        android:layout_marginStart="40dp"></TextView>
+        <TextView
+            android:id="@+id/nombre"
+            android:layout_width="315dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="Nombre Cancion"
+            android:textColor="@color/white"
 
-    <TextView
-        android:id="@+id/artista"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Artista"
-        android:textColor="#838282"
-        android:layout_below="@id/nombre"
-        android:layout_marginStart="40dp"></TextView>
+            android:textSize="30dp"></TextView>
 
-    <SeekBar
-        android:id="@+id/barra"
-        android:layout_marginHorizontal="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/artista"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/white"
-        android:thumbTint="@android:color/holo_blue_dark"
-        android:progressTint="@android:color/holo_blue_dark"
-        android:progress="30"
-        android:progressBackgroundTint="@color/white"
-        >
+        <TextView
+            android:id="@+id/artista"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nombre"
+            android:layout_marginStart="40dp"
+            android:text="Artista"
+            android:textColor="#838282"></TextView>
 
-    </SeekBar>
+        <SeekBar
+            android:id="@+id/barra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/artista"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/white"
+            android:progress="30"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@android:color/holo_blue_dark"
+            android:thumbTint="@android:color/holo_blue_dark">
 
-    <TextView
-        android:id="@+id/tiempo_actual"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0:00"
-        android:layout_below="@id/barra"
-        android:textColor="@color/white"
-        android:layout_marginStart="40dp"
-        ></TextView>
+        </SeekBar>
 
-    <TextView
-        android:id="@+id/tiempo_total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0:00"
-        android:layout_below="@id/barra"
-        android:textColor="@color/white"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="40dp"
-        >
+        <TextView
+            android:id="@+id/tiempo_actual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/barra"
+            android:layout_marginStart="40dp"
+            android:text="0:00"
+            android:textColor="@color/white"></TextView>
+
+        <TextView
+            android:id="@+id/tiempo_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/barra"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="40dp"
+            android:text="0:00"
+            android:textColor="@color/white">
 
 
-    </TextView>
+        </TextView>
 
 
-    <ImageButton
-        android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/barra"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_baseline_play_circle_filled_24"></ImageButton>
+        <ImageButton
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/barra"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_play_circle_filled_24"></ImageButton>
 
-    <ImageButton
-        android:id="@+id/siguiente"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/barra"
-        android:layout_toEndOf="@+id/play"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="10dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_baseline_skip_next_24"></ImageButton>
+        <ImageButton
+            android:id="@+id/siguiente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/barra"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_toEndOf="@+id/play"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_skip_next_24"></ImageButton>
 
-    <ImageButton
-        android:id="@+id/anterior"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/barra"
-        android:layout_toStartOf="@id/play"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_baseline_skip_previous_24"></ImageButton>
+        <ImageButton
+            android:id="@+id/anterior"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/barra"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@id/play"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_skip_previous_24"></ImageButton>
+
+        <ImageButton
+            android:id="@+id/aleatorio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="40dp"
+            android:layout_toStartOf="@+id/anterior"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_shuffle_24"></ImageButton>
+
+        <ImageButton
+            android:id="@+id/primeraCancion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/aleatorio"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_first_page_40"></ImageButton>
+
+        <ImageButton
+            android:id="@+id/bucle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="120dp"
+            android:layout_toEndOf="@+id/siguiente"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_repeat_50"></ImageButton>
+
+        <ImageButton
+            android:id="@+id/ultimaCancion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bucle"
+            android:layout_marginStart="333dp"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_last_page_24"></ImageButton>
 
     </RelativeLayout>
 </RelativeLayout>

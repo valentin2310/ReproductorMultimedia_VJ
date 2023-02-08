@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ResourceCursorAdapter;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.example.reproductormultimedia_vj.bd.GestionBD;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -35,8 +38,11 @@ public class ReproductorActivity extends AppCompatActivity {
     Cancion cancion;
     ImageView imagen;
     TextView nombre, artista, tiempoActual, tiempoTotal;
-    ImageButton pausePlay, previous, next;
+    ImageButton pausePlay, previous, next, shuffle, loop, primeraCancion, ultimaCancion;
     SeekBar barra;
+    boolean aleatorio;
+    boolean bucle;
+
     ArrayList<Cancion> listaCanciones;
     MediaPlayer mediaPlayer = MyMediaPlayer.getInstance();
 
@@ -64,9 +70,20 @@ public class ReproductorActivity extends AppCompatActivity {
         next = findViewById(R.id.siguiente);
         previous = findViewById(R.id.anterior);
         nombre.setSelected(true);
+        shuffle = findViewById(R.id.aleatorio);
+        loop = findViewById(R.id.bucle);
+        primeraCancion = findViewById(R.id.primeraCancion);
+        ultimaCancion = findViewById(R.id.ultimaCancion);
+        aleatorio = false;
+        bucle = false;
 
 
         establecerDatosMusica();
+
+        mediaPlayer.setOnCompletionListener(v -> {
+            tiempoActual.setText(convertir_MMSS(mediaPlayer.getDuration()+""));
+            siguienteCancion();
+        });
 
         this.runOnUiThread(new Runnable() {
             @Override
@@ -80,7 +97,6 @@ public class ReproductorActivity extends AppCompatActivity {
 
                     }else{
                         pausePlay.setImageResource(R.drawable.ic_baseline_play_circle_filled_24);
-
                     }
 
                 }
@@ -110,10 +126,41 @@ public class ReproductorActivity extends AppCompatActivity {
         pausePlay.setOnClickListener(v -> pausePlay());
         next.setOnClickListener(v -> siguienteCancion());
         previous.setOnClickListener(v -> anteriorCancion());
-
-
-
+        shuffle.setOnClickListener(v -> cancionAleatoria());
+        loop.setOnClickListener(v -> cancionBucle());
+        primeraCancion.setOnClickListener(v -> primeraCancion());
+        ultimaCancion.setOnClickListener(v -> ultimaCancion());
     }
+
+    public void primeraCancion() {
+        MyMediaPlayer.currentIndex = 0;
+        mediaPlayer.reset();
+        establecerDatosMusica();
+    }
+
+    public void ultimaCancion() {
+        MyMediaPlayer.currentIndex = listaCanciones.size()-1;
+        mediaPlayer.reset();
+        establecerDatosMusica();
+    }
+
+    public void cancionAleatoria() {
+        aleatorio = !aleatorio;
+        if (aleatorio)
+        shuffle.setColorFilter(Color.argb(255, 0,170,255));
+        else
+            shuffle.clearColorFilter();
+    }
+
+    public void cancionBucle() {
+        bucle = !bucle;
+        if (bucle)
+            loop.setColorFilter(Color.argb(255, 0,170,255));
+        else
+            loop.clearColorFilter();
+    }
+
+
 
     public void empezarMusica() {
         mediaPlayer.reset();
@@ -159,8 +206,6 @@ public class ReproductorActivity extends AppCompatActivity {
 
         empezarMusica();
 
-
-
     }
 
     private void pausePlay(){
@@ -178,19 +223,45 @@ public class ReproductorActivity extends AppCompatActivity {
     }
 
     public void siguienteCancion() {
-        if(MyMediaPlayer.currentIndex== listaCanciones.size()-1)
-            return;
-        MyMediaPlayer.currentIndex +=1;
-        mediaPlayer.reset();
-        establecerDatosMusica();
+        if (bucle && !aleatorio && MyMediaPlayer.currentIndex == listaCanciones.size() - 1)  {
+            MyMediaPlayer.currentIndex = 0;
+            mediaPlayer.reset();
+            establecerDatosMusica();
+        }else if (!aleatorio) {
+            if (MyMediaPlayer.currentIndex == listaCanciones.size() - 1)
+                return;
+            MyMediaPlayer.currentIndex += 1;
+            mediaPlayer.reset();
+            establecerDatosMusica();
+        }else {
+            boolean comprobar = false;
+            while (!comprobar) {
+                Random r = new Random();
+                int index_cancion = r.nextInt(listaCanciones.size());
+                if (index_cancion != MyMediaPlayer.currentIndex) {
+                    comprobar = true;
+                    MyMediaPlayer.currentIndex = index_cancion;
+                    mediaPlayer.reset();
+                    establecerDatosMusica();
+                }
+            }
+        }
     }
 
     public void anteriorCancion() {
-        if(MyMediaPlayer.currentIndex== 0)
-            return;
-        MyMediaPlayer.currentIndex -=1;
-        mediaPlayer.reset();
-        establecerDatosMusica();
+        if (mediaPlayer.getCurrentPosition() < 3000) {
+            if (MyMediaPlayer.currentIndex == 0) {
+                mediaPlayer.reset();
+                establecerDatosMusica();
+            } else {
+                MyMediaPlayer.currentIndex -= 1;
+                mediaPlayer.reset();
+                establecerDatosMusica();
+            }
+        } else {
+            mediaPlayer.reset();
+            establecerDatosMusica();
+        }
     }
 
 }
