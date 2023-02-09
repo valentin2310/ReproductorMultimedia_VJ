@@ -170,7 +170,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:onClick="showDatePickerDialog"
-                        android:inputType="date">
+                        android:inputType="date"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:maxLines="1" >
 
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>

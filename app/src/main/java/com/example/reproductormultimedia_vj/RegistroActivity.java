@@ -66,6 +66,20 @@ public class RegistroActivity extends AppCompatActivity {
         rd_sexo.check(R.id.registro_rd_none);
     }
 
+    public void showDatePickerDialog(View view){
+        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                final String selectedDate = twoDigits(day) + "/"+twoDigits(month+1)+"/"+year;
+                txt_fecha.setText(selectedDate);
+            }
+        });
+        newFragment.show(this.getSupportFragmentManager(), "datePicker");
+    }
+    private String twoDigits(int n) {
+        return (n<=9) ? ("0"+n) : String.valueOf(n);
+    }
+
     public void iniciarSesion(View view){
         Usuario user = comprobarCampos();
         if(user == null) return;
