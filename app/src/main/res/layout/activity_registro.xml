@@ -169,6 +169,7 @@
                         android:id="@+id/registro_txt_fechaNac"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:onClick="showDatePickerDialog"
                         android:inputType="date">
 
                     </com.google.android.material.textfield.TextInputEditText>

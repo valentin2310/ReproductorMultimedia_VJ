@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -19,6 +20,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
+import com.example.reproductormultimedia_vj.Fragments.DatePickerFragment;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -163,4 +167,5 @@ public class RegistroActivity extends AppCompatActivity {
         fileChooser.setType("image/*");
         startActivityForResult(Intent.createChooser(fileChooser, "Elige opcion"), requestedcode);
     }
+
 }

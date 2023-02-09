@@ -128,6 +128,31 @@ public class GestionBD {
         }
     }
 
+    public Cancion getCancionSimple(int idCancion){
+        Cancion c = null;
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        try{
+
+            String sql = "select * from "+TABLA_CANCION+" where idCancion = "+idCancion;
+
+            Cursor fila = bd.rawQuery(sql, null);
+
+            if(fila.moveToFirst()){
+                int id = fila.getInt(0);
+                String titulo = fila.getString(1);
+                byte[] portada = fila.getBlob(7);
+
+                c = new Cancion(id, titulo, null, -1, null, null, null, portada, null);
+            }
+
+        }catch (Exception e){
+            return null;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+        return c;
+    }
     public ArrayList<Cancion> getCanciones(){
         ArrayList<Cancion> canciones = new ArrayList<>();
         SQLiteDatabase bd = admin.getWritableDatabase();
@@ -193,16 +218,50 @@ public class GestionBD {
         return canciones;
     }*/
 
+    public ArrayList<Playlist> getPlaylist(int idUser){
+        ArrayList<Playlist> lista = new ArrayList<>();
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        Cursor fila = bd.rawQuery("SELECT * FROM "+TABLA_PLAYLIST+" where idCreador = "+idUser, null);
+
+        while(fila.moveToNext()){
+            int idPlay = fila.getInt(0);
+            int idCreador = fila.getInt(1);
+            String nombre = fila.getString(2);
+            byte[] portada = fila.getBlob(3);
+            int privada  = fila.getInt(4);
+
+            Playlist play = new Playlist(idPlay, idCreador, nombre, portada, privada == 1, null, null);
+            lista.add(play);
+        }
+
+        return  lista;
+    }
+    public int obtenerUltimoPlaylist(){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        int id = -1;
+        try{
+            Cursor fila = bd.rawQuery("select max(idPlaylist) from playlist", null);
+            if(fila.moveToFirst()){
+                id = fila.getInt(0);
+            }
+
+        }catch (Exception e){
+            // no hacer nada
+        }finally {
+            if(bd.isOpen()) bd.close();
+            return id;
+        }
+    }
     public boolean crearPlaylist(Playlist play){
 
         SQLiteDatabase bd = admin.getWritableDatabase();
         try{
             ContentValues registro = new ContentValues();
 
-            registro.put("idPlaylist", play.getIdPlaylist());
             registro.put("idCreador", play.getIdCreador());
             registro.put("nombre", play.getNombre());
-            registro.put("portada", play.getUriPortada());
+            registro.put("portada", play.getImgPortada());
             registro.put("privada", 0);
 
             bd.insert(TABLA_PLAYLIST, null, registro);
@@ -214,13 +273,94 @@ public class GestionBD {
             if(bd.isOpen()) bd.close();
         }
     }
+    public Playlist getPlaylistId(int idPlay){
+        Playlist play = null;
+        SQLiteDatabase bd = admin.getWritableDatabase();
 
-    public boolean setCancionPlaylist(int idPlayist, int idCancion){
+        try{
+
+            String sql = "select * from "+TABLA_PLAYLIST+" where idPlaylist = "+idPlay;
+
+            Cursor fila = bd.rawQuery(sql, null);
+
+            if(fila.moveToFirst()){
+                int id = fila.getInt(0);
+                int creador = fila.getInt(1);
+                String nombre = fila.getString(2);
+                byte[] portada = fila.getBlob(3);
+                int privada = fila.getInt(4);
+
+                play = new Playlist(id, creador, nombre, portada, privada == 1, null, null);
+            }
+
+        }catch (Exception e){
+            return null;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+        return play;
+    }
+    public boolean setCancionesPlaylist(int idPlaylist, ArrayList<Integer> listaCanciones){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+
+            for(Integer i : listaCanciones){
+                ContentValues registro = new ContentValues();
+
+                registro.put("idPlaylist", idPlaylist);
+                registro.put("idCancion", i);
+
+                bd.insert(TABLA_PLAYLIST_CANCION, null, registro);
+            }
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+    public ArrayList<Cancion> getPlaylistCanciones(int idPlaylist){
+        ArrayList<Cancion> lista = new ArrayList<>();
+        try{
+            SQLiteDatabase bd = admin.getWritableDatabase();
+
+            Cursor fila = bd.rawQuery("SELECT * FROM "+TABLA_PLAYLIST_CANCION+" where idPlaylist = "+idPlaylist, null);
+
+            while(fila.moveToNext()){
+                int idCancion = fila.getInt(1);
+
+                Cursor fila2 = bd.rawQuery("SELECT * FROM "+TABLA_CANCION+" WHERE idCancion = "+idCancion, null);
+
+                while (fila2.moveToNext()){
+                    String titulo = fila2.getString(1);
+                    String descripcion = fila2.getString(2);
+                    int artista = fila2.getInt(3);
+                    String nombreArtista = fila2.getString(4);
+                    String fechaCreacion = fila2.getString(5);
+                    String duracion = fila2.getString(6);
+                    byte[] portada = fila2.getBlob(7);
+                    String ruta = fila2.getString(8);
+
+
+                    Cancion c = new Cancion(idCancion, titulo, descripcion, artista, nombreArtista, fechaCreacion, duracion, portada, ruta);
+                    lista.add(c);
+                }
+
+            }
+
+        }catch (Exception e){
+            String hola = e.toString();
+        }
+
+        return  lista;
+    }
+    public boolean setCancionPlaylist(int idPlaylist, int idCancion){
         SQLiteDatabase bd = admin.getWritableDatabase();
         try{
             ContentValues registro = new ContentValues();
 
-            registro.put("idPlaylist", idPlayist);
+            registro.put("idPlaylist", idPlaylist);
             registro.put("idCancion", idCancion);
 
             bd.insert(TABLA_PLAYLIST_CANCION, null, registro);
@@ -240,6 +380,22 @@ public class GestionBD {
         return cant;
     }
 
+    public int getPlaylistFav(int idPlaylist){
+        int n = 0;
+        SQLiteDatabase db = admin.getWritableDatabase();
+        try{
+            Cursor fila = db.rawQuery("SELECT COUNT(idUser) FROM "+TABLA_USUARIO_PLAYLIST_FAV+" WHERE idPlaylist = "+idPlaylist, null);
+
+            fila.moveToFirst();
+            n = fila.getInt(0);
+
+        }catch (Exception e){
+            e.toString();
+        }finally {
+            db.close();
+        }
+        return n;
+    }
     public boolean setPlaylistFav(int idUser, int idPlaylist){
         SQLiteDatabase bd = admin.getWritableDatabase();
         try{

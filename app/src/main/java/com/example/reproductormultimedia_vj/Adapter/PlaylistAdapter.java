@@ -20,9 +20,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
+import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
+import com.example.reproductormultimedia_vj.Fragments.PlaylistFragment;
 import com.example.reproductormultimedia_vj.R;
+import com.example.reproductormultimedia_vj.bd.GestionBD;
 
 import java.util.ArrayList;
 
@@ -32,11 +36,13 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     private Context context;
 
     private ArrayList<Playlist> lista;
+    private int idUser;
 
-    public PlaylistAdapter(ArrayList<Playlist> lista, Context context){
+    public PlaylistAdapter(int idUser, ArrayList<Playlist> lista, Context context){
         this.context = context;
         this.minflate = LayoutInflater.from(context);
         this.lista = lista;
+        this.idUser = idUser;
     }
 
     @NonNull
@@ -72,9 +78,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         public void bindData(Playlist p){
             nombre.setText(p.getNombre());
-            autor.setText(" · Creador");
             if(p.getIdCreador() == -1) autor.setText(" · Yo");
-            if(p.getUriPortada() != null) img.setImageURI(Uri.parse(p.getUriPortada()));
+            else autor.setText(new GestionBD(context).getUsuario(p.getIdCreador()).getUsername());
+            if(p.getImgPortada() != null) img.setImageBitmap(Metodos.convertByteArrayToBitmap(p.getImgPortada()));
 
             this.play = p;
         }
@@ -89,6 +95,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             if(play.getIdPlaylist() == -1){
                 MusicaLocalFragment musicaLocalFragment = MusicaLocalFragment.newInstance(1);
                 loadFragment(musicaLocalFragment);
+            }else{
+                PlaylistFragment playlistFragment = PlaylistFragment.newInstance(idUser, play.getIdPlaylist());
+                loadFragment(playlistFragment);
             }
         }
 
@@ -100,10 +109,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             transaction.replace(R.id.frame_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
-
-        Bitmap byteArrayToBitmap(byte[] data) {
-            return BitmapFactory.decodeByteArray(data, 0, data.length);
         }
     }
 }

@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextInputEditText txt_usuario, txt_passwd;
 
-    int idUser;
+    int idUser = -1;
     
     @SuppressLint({"MissingInflatedId"})
     @Override
@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         GestionBD gestionBD = new GestionBD(this);
 
-        // no hace nada, dejar para luego
-        idUser = gestionBD.getUsuarioDefaultId();
+        // TODO saltar login
+        //idUser = gestionBD.getUsuarioDefaultId();
         //if(idUser != -1) iniciarSesion(txt_usuario);
 
     }

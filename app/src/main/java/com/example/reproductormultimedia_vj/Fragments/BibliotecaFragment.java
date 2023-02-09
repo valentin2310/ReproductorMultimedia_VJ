@@ -110,13 +110,19 @@ public class BibliotecaFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        initRecycler();
+    }
+
     public void initRecycler(){
 
-        ArrayList<Playlist> lista = new ArrayList<>();
+        ArrayList<Playlist> lista = new GestionBD(getContext()).getPlaylist(idUser);
 
-        lista.add(new Playlist(-1, -1, "Canciones locales", null));
+        lista.add(0, new Playlist(-1, -1, "Canciones locales", null));
 
-        PlaylistAdapter adapter = new PlaylistAdapter(lista, this.getContext());
+        PlaylistAdapter adapter = new PlaylistAdapter(idUser, lista, this.getContext());
         recycler.setHasFixedSize(true);
         GridLayoutManager grid = new GridLayoutManager(this.getContext(), columnasGrid());
         recycler.setLayoutManager(grid);

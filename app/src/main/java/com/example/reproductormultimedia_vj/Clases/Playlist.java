@@ -6,10 +6,10 @@ public class Playlist { // playlist
     private int idPlaylist;
     private int idCreador; // id del usuario que ha creado la playlist
     private String nombre;
-    private String uriPortada;
+    private byte[] imgPortada;
     private boolean privada; // la playlist podra ser publica o privada
-    private ArrayList<Integer> listaCanciones; // almacena los id's de las canciones de la playlist
-    private ArrayList<Integer> listaUsuarios; // almacena los id's de los usuarios que tiene esta playlist en favoritos
+    private ArrayList<Integer> listaCanciones = new ArrayList<>(); // almacena los id's de las canciones de la playlist
+    private ArrayList<Integer> listaUsuarios = new ArrayList<>(); // almacena los id's de los usuarios que tiene esta playlist en favoritos
 
     public Playlist(){
 
@@ -18,18 +18,18 @@ public class Playlist { // playlist
         this.idPlaylist = idPlaylist;
     }
 
-    public Playlist(int idPlaylist, int idCreador, String nombre, String portada) {
+    public Playlist(int idPlaylist, int idCreador, String nombre, byte[] portada) {
         this.idPlaylist = idPlaylist;
         this.idCreador = idCreador;
         this.nombre = nombre;
-        this.uriPortada = portada;
+        this.imgPortada = portada;
     }
 
-    public Playlist(int idPlaylist, int idCreador, String nombre, String portada, boolean privada, ArrayList<Integer> listaCanciones, ArrayList<Integer> listaUsuarios) {
+    public Playlist(int idPlaylist, int idCreador, String nombre, byte[] portada, boolean privada, ArrayList<Integer> listaCanciones, ArrayList<Integer> listaUsuarios) {
         this.idPlaylist = idPlaylist;
         this.idCreador = idCreador;
         this.nombre = nombre;
-        this.uriPortada = portada;
+        this.imgPortada = portada;
         this.privada = privada;
         this.listaCanciones = listaCanciones;
         this.listaUsuarios = listaUsuarios;
@@ -55,12 +55,12 @@ public class Playlist { // playlist
         return nombre;
     }
 
-    public String getUriPortada() {
-        return uriPortada;
+    public byte[] getImgPortada() {
+        return imgPortada;
     }
 
-    public void setUriPortada(String uriPortada) {
-        this.uriPortada = uriPortada;
+    public void setImgPortada(byte[] imgPortada) {
+        this.imgPortada = imgPortada;
     }
 
     public void setNombre(String nombre) {
