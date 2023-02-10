@@ -42,7 +42,7 @@ public class BibliotecaFragment extends Fragment {
     UsuarioFragment usuarioFragment = new UsuarioFragment();
 
     ImageView btnPerfil;
-    TextView txt_usuario;
+    TextView txt_usuario, txt_n_play;
     ImageButton btnAddPlay;
 
     private int idUser;
@@ -77,6 +77,7 @@ public class BibliotecaFragment extends Fragment {
         Usuario user = gestionBD.getUsuario(idUser);
 
         txt_usuario = (TextView) view.findViewById(R.id.bibl_txt_usuario);
+        txt_n_play = (TextView) view.findViewById(R.id.bibl_txt_n_play);
         btnPerfil = (ImageView) view.findViewById(R.id.bibl_btn_perfil);
         recycler = (RecyclerView) view.findViewById(R.id.recyclerPlaylist);
         btnAddPlay = (ImageButton) view.findViewById(R.id.bibl_btn_add_playlist);
@@ -121,6 +122,8 @@ public class BibliotecaFragment extends Fragment {
         ArrayList<Playlist> lista = new GestionBD(getContext()).getPlaylist(idUser);
 
         lista.add(0, new Playlist(-1, -1, "Canciones locales", null));
+
+        txt_n_play.setText("Tienes "+lista.size()+" playlist");
 
         PlaylistAdapter adapter = new PlaylistAdapter(idUser, lista, this.getContext());
         recycler.setHasFixedSize(true);

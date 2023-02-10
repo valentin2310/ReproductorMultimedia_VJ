@@ -20,6 +20,8 @@ import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.textfield.TextInputEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
 
@@ -109,27 +111,29 @@ public class AddPlaylistActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
     }
 
-    int requestedcode = 1;
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // si se ha seleccionado una imagen
-        if(this.requestedcode == requestCode && resultCode == Activity.RESULT_OK){
-            if(data == null){
-                return;
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                imageUri = result.getUri();
+                imgV.setImageURI(imageUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
             }
-            // almaceno la uri de la img seleecionada, asi compruebo si el usuario ha elegido una imagen personalizada
-            imageUri = data.getData();
-            imgV.setImageURI(imageUri);
         }
     }
 
     public void showFileChooser(View view){
-        Intent fileChooser = new Intent(Intent.ACTION_GET_CONTENT);
-        fileChooser.addCategory(Intent.CATEGORY_OPENABLE);
-        fileChooser.setType("image/*");
-        startActivityForResult(Intent.createChooser(fileChooser, "Elige opcion"), requestedcode);
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setActivityTitle("Seleccionada una imagen para tu foto de perfil")
+                .setRequestedSize(500, 500)
+                .setMaxCropResultSize(1020, 1020)
+                .setMinCropResultSize(200, 200)
+                .setFixAspectRatio(true)
+                .start(this);
     }
 }

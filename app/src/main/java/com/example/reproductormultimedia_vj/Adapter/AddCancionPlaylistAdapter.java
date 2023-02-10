@@ -88,7 +88,7 @@ public class AddCancionPlaylistAdapter extends RecyclerView.Adapter<AddCancionPl
             if(check.isChecked()){
                 AddPlaylistActivity.playlist.getListaCanciones().add(cancion.getIdCancion());
             }else{
-                AddPlaylistActivity.playlist.getListaCanciones().remove(cancion.getIdCancion());
+                AddPlaylistActivity.playlist.getListaCanciones().remove((Integer)cancion.getIdCancion());
             }
         }
     }
