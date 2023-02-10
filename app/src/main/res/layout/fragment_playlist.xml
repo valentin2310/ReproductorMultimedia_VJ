@@ -16,49 +16,59 @@
             android:orientation="vertical"
             android:layout_margin="10dp">
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/play_padre_buscador"
                 android:layout_width="match_parent"
-                android:layout_height="500dp">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:id="@+id/play_padre_buscador"
+                <ImageButton
+                    android:id="@+id/play_no_buscar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:tint="@color/base"
+                    android:layout_marginEnd="5dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:visibility="invisible"
+                    android:src="@drawable/ic_baseline_keyboard_backspace_24"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/formInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_alignParentTop="true"
+                    android:layout_weight="1"
+                    app:startIconDrawable="@drawable/lupa"
+                    android:hint="Buscar en la lista">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/formInput"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/play_buscador"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="50dp"
-                        android:layout_margin="6dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_weight="1"
-                        app:startIconDrawable="@drawable/lupa"
-                        android:hint="Buscar en la lista">
+                        android:inputType="text"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/play_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    app:tint="@color/white"
+                    android:backgroundTint="@color/text_dark"
+                    android:src="@drawable/ic_baseline_edit_24"/>
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/play_datos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/play_buscador"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"/>
-                    </com.google.android.material.textfield.TextInputLayout>
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-
-                        android:src="@drawable/ic_baseline_edit_24"/>
-                </LinearLayout>
                 <ImageView
                     android:id="@+id/play_img"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_below="@+id/play_padre_buscador"
                     android:layout_marginVertical="20dp"
                     android:src="@drawable/photo_1614680376573_df3480f0c6ff" />
                 <LinearLayout
-                    android:id="@+id/play_datos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/play_img"

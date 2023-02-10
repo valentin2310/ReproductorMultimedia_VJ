@@ -8,14 +8,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
@@ -26,6 +30,7 @@ import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.ReproductorActivity;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.w3c.dom.Text;
@@ -48,9 +53,10 @@ public class PlaylistFragment extends Fragment {
 
     private TextInputEditText buscador;
     private ImageView img;
-    private LinearLayout ly_datos;
+    private RelativeLayout ly_datos;
     private TextView nombre, creador, likes;
-    private ImageButton btn_like, btn_bucle, btn_aleatorio, btn_play;
+    private ImageButton btn_like, btn_bucle, btn_aleatorio, btn_play, btn_no_buscar;
+    private FloatingActionButton btn_edit;
     private RecyclerView recycler;
 
     public PlaylistFragment() {
@@ -85,7 +91,29 @@ public class PlaylistFragment extends Fragment {
         initViews(view);
         mostrarDatos();
 
+        if(userId == playlist.getIdCreador()){
+            btn_edit.setVisibility(View.VISIBLE);
+        }else{
+            btn_edit.setVisibility(View.GONE);
+        }
 
+        buscador.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    ly_datos.setVisibility(View.GONE);
+                    btn_no_buscar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        btn_no_buscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ly_datos.setVisibility(View.VISIBLE);
+                v.setVisibility(View.INVISIBLE);
+            }
+        });
 
         return view;
     }
@@ -106,6 +134,8 @@ public class PlaylistFragment extends Fragment {
         btn_bucle = view.findViewById(R.id.play_btn_bucle);
         btn_play = view.findViewById(R.id.play_btn_play);
         recycler = view.findViewById(R.id.play_recycler);
+        btn_no_buscar = view.findViewById(R.id.play_no_buscar);
+        btn_edit = view.findViewById(R.id.play_edit);
 
         if(playlist.getImgPortada() != null){
             img.setImageBitmap(Metodos.convertByteArrayToBitmap(playlist.getImgPortada()));
@@ -113,6 +143,8 @@ public class PlaylistFragment extends Fragment {
         nombre.setText(playlist.getNombre());
         creador.setText(creadorObj.getUsername());
         likes.setText(gestionBD.getPlaylistFav(playId)+" 'me gusta' . Duracion");
+
+
     }
 
     public void mostrarDatos() {

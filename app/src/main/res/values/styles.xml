@@ -10,6 +10,10 @@
         <!-- el hint cuando se convierte en etiqueta flotante -->
         <item name="hintTextColor">@color/base_claro</item>
         <item name="android:textStyle">bold</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
     </style>
 
     <style name="buscador" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
