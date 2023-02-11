@@ -19,9 +19,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,20 +32,25 @@ import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.ReproductorActivity;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MusicaFragment extends Fragment {
 
     AdapterCancionLocal adapterCancionLocal;
     RecyclerView recycler;
+    TextView saludos;
+    ShapeableImageView btnPerfil;
     ArrayList<Cancion> canciones;
     ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
     private int idUser;
@@ -78,6 +85,27 @@ public class MusicaFragment extends Fragment {
 
         canciones = new ArrayList<>();
         EditText filtro = view.findViewById(R.id.filtroCancion);
+
+        saludos = view.findViewById(R.id.cancion_saludos);
+        darLosBuenosDias();
+
+        GestionBD gestionBD = new GestionBD(this.getContext());
+        Usuario user = gestionBD.getUsuario(idUser);
+
+        btnPerfil = view.findViewById(R.id.cancion_btn_perfil);
+
+        if(user.getImgAvatar() != null){
+            // establecer imagen al view
+            btnPerfil.setImageBitmap(Metodos.convertByteArrayToBitmap(user.getImgAvatar()));
+        }
+
+        btnPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsuarioFragment usuarioFragment = UsuarioFragment.newInstance(idUser);
+                loadFragment(usuarioFragment);
+            }
+        });
 
         //if(savedInstanceState == null){
         recycler = (RecyclerView) view.findViewById(recyclerBibliotecaLocal);
@@ -199,6 +227,24 @@ public class MusicaFragment extends Fragment {
 
             v.getContext().startActivity(intent);
         });
+    }
+
+    private void darLosBuenosDias(){
+        String mensaje = "";
+        int hora = new Date().getHours();
+
+        if(hora >= 7 && hora <= 12) mensaje = "¡Buenas mañanas!";
+        else if(hora > 12 && hora <= 21) mensaje = "¡Buenas tardes!";
+        else mensaje = "!Buenas noches¡";
+
+        saludos.setText(mensaje);
+    }
+
+    public void loadFragment(Fragment fragment){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

@@ -184,6 +184,44 @@ public class GestionBD {
         }
         return canciones;
     }
+    public ArrayList<Cancion> getCanciones(ArrayList<Integer> indices){
+        ArrayList<Cancion> canciones = new ArrayList<>();
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        try {
+
+            String busq = "";
+            for(int i = 0; i<indices.size(); i++){
+                busq += indices.get(i);
+                if(i < indices.size()-1){
+                    busq += ",";
+                }
+            }
+            String sql = "select * from cancion where idCancion in ("+busq+")";
+
+            Cursor fila = bd.rawQuery(sql, null);
+
+            while (fila.moveToNext()) {
+                int idCancion = fila.getInt(0);
+                String titulo = fila.getString(1);
+                String descripcion = fila.getString(2);
+                int artista = fila.getInt(3);
+                String nombreArtista = fila.getString(4);
+                String fechaCreacion = fila.getString(5);
+                String duracion = fila.getString(6);
+                byte[] portada = fila.getBlob(7);
+                String ruta = fila.getString(8);
+
+                canciones.add(new Cancion(idCancion, titulo, descripcion, artista, nombreArtista, fechaCreacion, duracion, portada, ruta));
+
+            }
+        }catch (Exception e){
+            return null;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+        return canciones;
+    }
 
    /* public ArrayList<Cancion> getCancionesFiltradas(ArrayList<Integer> id_cancionesFiltradas){
         ArrayList<Cancion> canciones = new ArrayList<>();
@@ -421,9 +459,27 @@ public class GestionBD {
         return cant;
     }
 
-    public boolean setCancionFav(int idUser, int idCancion){
-        SQLiteDatabase bd = admin.getWritableDatabase();
+    public ArrayList<Integer> getCancionesFav(int idUser){
+        ArrayList<Integer> lista = new ArrayList<>();
         try{
+            SQLiteDatabase bd = admin.getWritableDatabase();
+
+            Cursor fila = bd.rawQuery("SELECT DISTINCT * FROM "+TABLA_USUARIO_CANCION_FAV+" where idUser = "+idUser, null);
+
+            while(fila.moveToNext()){
+                    lista.add(fila.getInt(1));
+            }
+
+        }catch (Exception e){
+            String hola = e.toString();
+        }
+
+        return  lista;
+    }
+    public boolean setCancionFav(int idUser, int idCancion){
+        SQLiteDatabase bd = null;
+        try{
+            bd = admin.getWritableDatabase();
             ContentValues registro = new ContentValues();
 
             registro.put("idUser", idUser);
@@ -439,9 +495,15 @@ public class GestionBD {
         }
     }
     public int eliminarCancionFav(int idUser, int idCancion){
-        SQLiteDatabase db = admin.getWritableDatabase();
-        int cant = db.delete(TABLA_USUARIO_CANCION_FAV, "where idUser = "+idUser+" and idCancion = "+idCancion, null);
-        db.close();
+        int cant = 0;
+
+        try{
+            SQLiteDatabase db = admin.getWritableDatabase();
+            cant = db.delete(TABLA_USUARIO_CANCION_FAV, "idUser = "+idUser+" and idCancion = "+idCancion, null);
+            db.close();
+        }catch (Exception e){
+            e.toString();
+        }
 
         return cant;
     }

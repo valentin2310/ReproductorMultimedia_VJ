@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
+import com.example.reproductormultimedia_vj.Clases.Usuario;
+import com.example.reproductormultimedia_vj.MenuActivity;
 import com.example.reproductormultimedia_vj.R;
+import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
@@ -40,6 +44,7 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
     public AdapterCancionLocal(Context context, ArrayList<Cancion> canciones) {
         this.inflater = LayoutInflater.from(context);
         this.canciones = canciones;
+        this.context = context;
 
     }
 
@@ -53,33 +58,48 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String nombre = canciones.get(position).getTitulo();
-        String artista = canciones.get(position).getNombreArtista();
-        String portada = new String(canciones.get(position).getPortada(), StandardCharsets.UTF_8);
+        final boolean[] activado = {false};
+        GestionBD gestionBD = new GestionBD(context);
+        Cancion c = canciones.get(position);
+        Usuario user = MenuActivity.USUARIO;
+
+        String nombre = c.getTitulo();
+        String artista = c.getNombreArtista();
+        String portada = new String(c.getPortada(), StandardCharsets.UTF_8);
         holder.nombre.setText(nombre);
         holder.artista.setText(artista);
 
-        if (!canciones.get(position).getRuta().startsWith("audio/"))
+        if(user.getListaCanciones().contains(c.getIdCancion())){
+            holder.like.setImageResource(R.drawable.ic_baseline_favorite_24);
+            holder.like.setColorFilter(Color.argb(255, 0,170,255));
+            activado[0] = true;
+        }else{
+            holder.like.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+        }
+
+        if (!c.getRuta().startsWith("audio/"))
             if (!portada.equals(""))
                 holder.imagen.setImageURI(Uri.parse(portada));
             else
                 holder.imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
         else {
-            holder.imagen.setImageBitmap(Metodos.convertByteArrayToBitmap(canciones.get(position).getPortada()));
+            holder.imagen.setImageBitmap(Metodos.convertByteArrayToBitmap(c.getPortada()));
         }
-
-
-        final boolean[] activado = {false};
 
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!activado[0]) {
+                    gestionBD.setCancionFav(user.getIdUser(), c.getIdCancion());
                     holder.like.setImageResource(R.drawable.ic_baseline_favorite_24);
                     holder.like.setColorFilter(Color.argb(255, 0,170,255));
+                    Toast.makeText(context, "Cancion añadida en favoritos", Toast.LENGTH_SHORT).show();
                 }
-                else
+                else{
+                    gestionBD.eliminarCancionFav(user.getIdUser(), c.getIdCancion());
                     holder.like.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                    Toast.makeText(context, "Cancion eliminada de favoritos", Toast.LENGTH_SHORT).show();
+                }
 
                 activado[0] = !activado[0];
             }

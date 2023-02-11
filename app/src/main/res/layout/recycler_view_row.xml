@@ -54,17 +54,16 @@
             android:id="@+id/like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:src="@drawable/ic_baseline_favorite_border_24"
-            android:background="@null"
-            android:outlineProvider="none"
-            app:borderWidth="0dp"
-            app:backgroundTint="@android:color/transparent"
-            app:tint="#000000"
-            app:fabSize="normal"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
-            ></com.google.android.material.floatingactionbutton.FloatingActionButton>
+            android:layout_marginHorizontal="10dp"
+            android:background="@null"
+            android:outlineProvider="none"
+            android:src="@drawable/ic_baseline_favorite_border_24"
+            app:backgroundTint="@android:color/transparent"
+            app:borderWidth="0dp"
+            app:fabSize="normal"
+            app:tint="#000000"></com.google.android.material.floatingactionbutton.FloatingActionButton>
     </RelativeLayout>
 
 

@@ -122,6 +122,7 @@ public class BibliotecaFragment extends Fragment {
         ArrayList<Playlist> lista = new GestionBD(getContext()).getPlaylist(idUser);
 
         lista.add(0, new Playlist(-1, -1, "Canciones locales", null));
+        lista.add(1, new Playlist(-2, idUser, "Mis favoritos", null));
 
         txt_n_play.setText("Tienes "+lista.size()+" playlist");
 

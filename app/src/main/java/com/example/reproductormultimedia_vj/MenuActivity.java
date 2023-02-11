@@ -15,9 +15,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.Fragments.BibliotecaFragment;
 import com.example.reproductormultimedia_vj.Fragments.MusicaFragment;
 import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
+import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -27,7 +29,9 @@ public class MenuActivity extends AppCompatActivity {
     MusicaFragment musicaFragment = new MusicaFragment();
     MusicaLocalFragment musicaLocalFragment = new MusicaLocalFragment();
 
-    int USER_ID = -1;
+    public static int USER_ID = -1;
+    public static Usuario USUARIO = null;
+    GestionBD gestionBD = new GestionBD(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,8 @@ public class MenuActivity extends AppCompatActivity {
 
         if(extras != null){
             USER_ID = extras.getInt("USER_ID");
+            USUARIO = gestionBD.getUsuario(USER_ID);
+            USUARIO.setListaCanciones(gestionBD.getCancionesFav(USER_ID));
         }
 
         bibliotecaFragment = BibliotecaFragment.newInstance(USER_ID);

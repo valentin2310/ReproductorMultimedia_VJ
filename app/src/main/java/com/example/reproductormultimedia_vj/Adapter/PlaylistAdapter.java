@@ -78,7 +78,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         public void bindData(Playlist p){
             nombre.setText(p.getNombre());
-            if(p.getIdCreador() == -1) autor.setText(" · Yo");
+            if(p.getIdCreador() < 0) autor.setText(" · Yo");
             else autor.setText(new GestionBD(context).getUsuario(p.getIdCreador()).getUsername());
             if(p.getImgPortada() != null) img.setImageBitmap(Metodos.convertByteArrayToBitmap(p.getImgPortada()));
 

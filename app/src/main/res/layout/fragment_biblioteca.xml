@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".Fragments.BibliotecaFragment">
 
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_baseline_add_42"
             app:tint="@color/text_light" />
-    </Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"

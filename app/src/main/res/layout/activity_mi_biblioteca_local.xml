@@ -6,10 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.MusicaLocalFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/cancion_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/fondo_toolbar"
+        android:layout_marginBottom="10dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/cancion_btn_perfil"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="10dp"
+            android:padding="15dp"
+            android:background="@drawable/fondo_linear_img"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            android:src="@drawable/ic_baseline_person_42"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:id="@+id/cancion_saludos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:text="Saludo"
+            android:textColor="@color/white"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/buscador"
         android:id="@+id/filtro"
+        android:visibility="gone"
+        android:layout_below="@id/cancion_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"

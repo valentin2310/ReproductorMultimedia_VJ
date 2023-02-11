@@ -3,6 +3,7 @@ package com.example.reproductormultimedia_vj.Fragments;
 import static com.example.reproductormultimedia_vj.R.id.portada;
 import static com.example.reproductormultimedia_vj.R.id.recyclerBibliotecaLocal;
 
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +35,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MusicaLocalFragment extends Fragment {
 
@@ -66,6 +69,7 @@ public class MusicaLocalFragment extends Fragment {
     }
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

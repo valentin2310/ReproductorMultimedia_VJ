@@ -91,37 +91,21 @@ public class PlaylistFragment extends Fragment {
         initViews(view);
         mostrarDatos();
 
-        if(userId == playlist.getIdCreador()){
-            btn_edit.setVisibility(View.VISIBLE);
-        }else{
-            btn_edit.setVisibility(View.GONE);
-        }
-
-        buscador.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    ly_datos.setVisibility(View.GONE);
-                    btn_no_buscar.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        btn_no_buscar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ly_datos.setVisibility(View.VISIBLE);
-                v.setVisibility(View.INVISIBLE);
-            }
-        });
+        configurarBuscador();
 
         return view;
     }
     public void initViews(View view){
         gestionBD = new GestionBD(getContext());
         playlist = gestionBD.getPlaylistId(playId);
-        canciones = gestionBD.getPlaylistCanciones(playId);
-        Usuario creadorObj = gestionBD.getUsuario(playlist.getIdCreador());
+        Usuario creadorObj = null;
+
+        if(playId == -2){
+            canciones = gestionBD.getCanciones(gestionBD.getCancionesFav(userId));
+        }else{
+            canciones = gestionBD.getPlaylistCanciones(playId);
+            creadorObj = gestionBD.getUsuario(playlist.getIdCreador());
+        }
 
         buscador = view.findViewById(R.id.play_buscador);
         img = view.findViewById(R.id.play_img);
@@ -137,13 +121,18 @@ public class PlaylistFragment extends Fragment {
         btn_no_buscar = view.findViewById(R.id.play_no_buscar);
         btn_edit = view.findViewById(R.id.play_edit);
 
+        if(playlist == null){
+            nombre.setText("Mis canciones favoritas");
+            creador.setText("Yo");
+            likes.setText("");
+            return;
+        }
         if(playlist.getImgPortada() != null){
             img.setImageBitmap(Metodos.convertByteArrayToBitmap(playlist.getImgPortada()));
         }
         nombre.setText(playlist.getNombre());
         creador.setText(creadorObj.getUsername());
         likes.setText(gestionBD.getPlaylistFav(playId)+" 'me gusta' . Duracion");
-
 
     }
 
@@ -180,5 +169,37 @@ public class PlaylistFragment extends Fragment {
 
             v.getContext().startActivity(intent);
         });
+    }
+
+    private void configurarBuscador(){
+        buscador.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    ly_datos.setVisibility(View.GONE);
+                    btn_no_buscar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        btn_no_buscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ly_datos.setVisibility(View.VISIBLE);
+                v.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        if(playlist == null) {
+            btn_like.setVisibility(View.GONE);
+            btn_edit.setVisibility(View.GONE);
+            return;
+        }
+
+        if(userId == playlist.getIdCreador()){
+            btn_edit.setVisibility(View.VISIBLE);
+        }else{
+            btn_edit.setVisibility(View.GONE);
+        }
     }
 }
