@@ -81,6 +81,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             if(p.getIdCreador() < 0) autor.setText(" · Yo");
             else autor.setText(new GestionBD(context).getUsuario(p.getIdCreador()).getUsername());
             if(p.getImgPortada() != null) img.setImageBitmap(Metodos.convertByteArrayToBitmap(p.getImgPortada()));
+            if(p.getIdPlaylist() == -2) {
+                img.setImageResource(R.drawable.favorites_confondo);
+            }
 
             this.play = p;
         }

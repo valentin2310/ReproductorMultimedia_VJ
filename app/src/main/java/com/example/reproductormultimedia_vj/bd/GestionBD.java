@@ -128,6 +128,39 @@ public class GestionBD {
         }
     }
 
+    public boolean cambiarAvatar(int idUser, byte[] nuevaImg){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            ContentValues registro = new ContentValues();
+
+            registro.put("avatar", nuevaImg);
+
+            bd.update(TABLA_USUARIO, registro, "idUser = "+idUser, null);
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+    public boolean cambiarUsername(int idUser, String newUsername){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            ContentValues registro = new ContentValues();
+
+            registro.put("username", newUsername);
+
+            bd.update(TABLA_USUARIO, registro, "idUser = "+idUser, null);
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+
     public Cancion getCancionSimple(int idCancion){
         Cancion c = null;
         SQLiteDatabase bd = admin.getWritableDatabase();

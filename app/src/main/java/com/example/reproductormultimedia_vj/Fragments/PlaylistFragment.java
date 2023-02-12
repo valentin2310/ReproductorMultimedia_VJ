@@ -2,6 +2,8 @@ package com.example.reproductormultimedia_vj.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
@@ -55,9 +59,10 @@ public class PlaylistFragment extends Fragment {
     private ImageView img;
     private RelativeLayout ly_datos;
     private TextView nombre, creador, likes;
-    private ImageButton btn_like, btn_bucle, btn_aleatorio, btn_play, btn_no_buscar;
+    private ImageButton btn_bucle, btn_aleatorio, btn_play, btn_no_buscar;
     private FloatingActionButton btn_edit;
     private RecyclerView recycler;
+    LottieAnimationView btn_like;
 
     public PlaylistFragment() {
         // Required empty public constructor
@@ -92,6 +97,9 @@ public class PlaylistFragment extends Fragment {
         mostrarDatos();
 
         configurarBuscador();
+        view.setBackgroundColor(Metodos.getDominantColor(((BitmapDrawable) img.getDrawable()).getBitmap()));
+
+        darLike();
 
         return view;
     }
@@ -100,6 +108,20 @@ public class PlaylistFragment extends Fragment {
         playlist = gestionBD.getPlaylistId(playId);
         Usuario creadorObj = null;
 
+        buscador = view.findViewById(R.id.play_buscador);
+        img = view.findViewById(R.id.play_img);
+        ly_datos = view.findViewById(R.id.play_datos);
+        nombre = view.findViewById(R.id.play_nombre);
+        likes = view.findViewById(R.id.play_likes);
+        creador = view.findViewById(R.id.play_creador);
+        btn_aleatorio = view.findViewById(R.id.play_btn_aleatorio);
+        btn_bucle = view.findViewById(R.id.play_btn_bucle);
+        btn_play = view.findViewById(R.id.play_btn_play);
+        recycler = view.findViewById(R.id.play_recycler);
+        btn_no_buscar = view.findViewById(R.id.play_no_buscar);
+        btn_edit = view.findViewById(R.id.play_edit);
+        btn_like = view.findViewById(R.id.btn_animacion);
+
         if(playId == -2){
             canciones = gestionBD.getCanciones(gestionBD.getCancionesFav(userId));
         }else{
@@ -107,24 +129,11 @@ public class PlaylistFragment extends Fragment {
             creadorObj = gestionBD.getUsuario(playlist.getIdCreador());
         }
 
-        buscador = view.findViewById(R.id.play_buscador);
-        img = view.findViewById(R.id.play_img);
-        ly_datos = view.findViewById(R.id.play_datos);
-        nombre = view.findViewById(R.id.play_nombre);
-        likes = view.findViewById(R.id.play_likes);
-        creador = view.findViewById(R.id.play_creador);
-        btn_like = view.findViewById(R.id.play_btn_like);
-        btn_aleatorio = view.findViewById(R.id.play_btn_aleatorio);
-        btn_bucle = view.findViewById(R.id.play_btn_bucle);
-        btn_play = view.findViewById(R.id.play_btn_play);
-        recycler = view.findViewById(R.id.play_recycler);
-        btn_no_buscar = view.findViewById(R.id.play_no_buscar);
-        btn_edit = view.findViewById(R.id.play_edit);
-
         if(playlist == null){
             nombre.setText("Mis canciones favoritas");
             creador.setText("Yo");
             likes.setText("");
+            img.setImageResource(R.drawable.favorites_confondo);
             return;
         }
         if(playlist.getImgPortada() != null){
@@ -201,5 +210,17 @@ public class PlaylistFragment extends Fragment {
         }else{
             btn_edit.setVisibility(View.GONE);
         }
+    }
+
+    private void darLike(){
+        btn_like.setAnimation(R.raw.heart_like);
+        final boolean[] like = {false};
+        btn_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                like[0] = !like[0];
+                Metodos.darLike(like[0], btn_like);
+            }
+        });
     }
 }

@@ -20,4 +20,6 @@
     <color name="text_dark_2">#000C1B</color>
     <color name="text_light">#BEDBFF</color>
     <color name="text">#9AC7FF</color>
+
+    <color name="oscuro">#2C2C2C</color>
 </resources>

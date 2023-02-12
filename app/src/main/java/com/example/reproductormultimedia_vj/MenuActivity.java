@@ -53,7 +53,9 @@ public class MenuActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true).commit();
-        loadFragment(musicaFragment);
+
+        if(savedInstanceState == null)
+            loadFragment(musicaFragment);
     }
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override

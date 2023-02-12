@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
@@ -69,13 +70,8 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         holder.nombre.setText(nombre);
         holder.artista.setText(artista);
 
-        if(user.getListaCanciones().contains(c.getIdCancion())){
-            holder.like.setImageResource(R.drawable.ic_baseline_favorite_24);
-            holder.like.setColorFilter(Color.argb(255, 0,170,255));
-            activado[0] = true;
-        }else{
-            holder.like.setImageResource(R.drawable.ic_baseline_favorite_border_24);
-        }
+        activado[0] = user.getListaCanciones().contains(c.getIdCancion());
+        if(activado[0]) holder.like.setProgress(0.5f);
 
         if (!c.getRuta().startsWith("audio/"))
             if (!portada.equals(""))
@@ -89,15 +85,14 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Metodos.darLike(activado[0], holder.like);
+
                 if (!activado[0]) {
                     gestionBD.setCancionFav(user.getIdUser(), c.getIdCancion());
-                    holder.like.setImageResource(R.drawable.ic_baseline_favorite_24);
-                    holder.like.setColorFilter(Color.argb(255, 0,170,255));
                     Toast.makeText(context, "Cancion añadida en favoritos", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     gestionBD.eliminarCancionFav(user.getIdUser(), c.getIdCancion());
-                    holder.like.setImageResource(R.drawable.ic_baseline_favorite_border_24);
                     Toast.makeText(context, "Cancion eliminada de favoritos", Toast.LENGTH_SHORT).show();
                 }
 
@@ -125,7 +120,7 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nombre, artista;
         ImageView imagen;
-        FloatingActionButton like;
+        LottieAnimationView like;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -133,6 +128,7 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
             artista = itemView.findViewById(R.id.artista);
             imagen = itemView.findViewById(R.id.imagenCancion);
             like = itemView.findViewById(R.id.like);
+            like.setAnimation(R.raw.heart_like);
         }
     }
 

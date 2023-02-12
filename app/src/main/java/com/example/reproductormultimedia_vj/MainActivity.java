@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void iniciarSesion(View view){
 
-        if(idUser == -1){
+       // if(idUser == -1){
             Usuario user = comprobarRegistro();
 
             if(user == null){
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
             idUser = user.getIdUser();
             new GestionBD(this).setUsuarioDefault(idUser);
-        }
+        //}
 
         Intent intent = new Intent(this, MenuActivity.class);
         intent.putExtra("USER_ID", idUser);

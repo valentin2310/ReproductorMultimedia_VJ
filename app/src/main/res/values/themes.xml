@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.ReproductorMultimedia_VJ" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/base_oscuro</item>
+        <item name="colorPrimary">@color/base</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorOnPrimary">@color/text</item>
         <!-- Secondary brand color. -->

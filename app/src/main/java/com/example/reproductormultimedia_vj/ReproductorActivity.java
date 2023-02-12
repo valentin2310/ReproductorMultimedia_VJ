@@ -7,9 +7,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -56,6 +58,8 @@ public class ReproductorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reproductor);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         GestionBD gestion = new GestionBD(this);
 
         if (getIntent().hasExtra("esLocal")) {
@@ -260,6 +264,9 @@ public class ReproductorActivity extends AppCompatActivity {
         }
 
         tiempoTotal.setText(convertir_MMSS(cancion.getDuracion()));
+
+        // cambiar color fondo a color imagen
+        findViewById(R.id.reproductor_background).setBackgroundColor(Metodos.getDominantColor(((BitmapDrawable)imagen.getDrawable()).getBitmap()));
 
         empezarMusica();
 

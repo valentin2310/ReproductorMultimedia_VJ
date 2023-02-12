@@ -5,6 +5,7 @@ import static com.example.reproductormultimedia_vj.R.id.recyclerBibliotecaLocal;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +23,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -51,11 +54,14 @@ public class MusicaFragment extends Fragment {
     RecyclerView recycler;
     TextView saludos;
     ShapeableImageView btnPerfil;
+    Toolbar toolbar;
     ArrayList<Cancion> canciones;
     ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
     private int idUser;
+    private boolean edicion = false;
 
     private static final String ARG_PARAM1 = "USER_ID";
+    private static final String ARG_PARAM2 = "EDICION";
 
     public MusicaFragment() {
         // Required empty public constructor
@@ -67,12 +73,23 @@ public class MusicaFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    public static MusicaFragment newInstance(int idUser, boolean edicion) {
+        MusicaFragment fragment = new MusicaFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, idUser);
+        args.putBoolean(ARG_PARAM2, edicion);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
             if (getArguments() != null) {
                 idUser = getArguments().getInt(ARG_PARAM1);
+                if(getArguments().size() > 1){
+                    edicion = getArguments().getBoolean(ARG_PARAM2);
+                }
             }
     }
 
@@ -91,6 +108,13 @@ public class MusicaFragment extends Fragment {
 
         GestionBD gestionBD = new GestionBD(this.getContext());
         Usuario user = gestionBD.getUsuario(idUser);
+
+        toolbar = view.findViewById(R.id.cancion_toolbar);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE || edicion){
+            toolbar.setVisibility(View.GONE);
+        }else{
+            toolbar.setVisibility(View.VISIBLE);
+        }
 
         btnPerfil = view.findViewById(R.id.cancion_btn_perfil);
 
@@ -132,8 +156,6 @@ public class MusicaFragment extends Fragment {
 
         return view;
     }
-
-
 
     public void initRecycler(){
         agregarCancionesBaseDatos();
@@ -235,7 +257,7 @@ public class MusicaFragment extends Fragment {
 
         if(hora >= 7 && hora <= 12) mensaje = "¡Buenas mañanas!";
         else if(hora > 12 && hora <= 21) mensaje = "¡Buenas tardes!";
-        else mensaje = "!Buenas noches¡";
+        else mensaje = "¡Buenas noches!";
 
         saludos.setText(mensaje);
     }
