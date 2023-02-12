@@ -2,30 +2,27 @@ package com.example.reproductormultimedia_vj.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
+import com.example.reproductormultimedia_vj.AddPlaylistActivity;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
@@ -36,8 +33,6 @@ import com.example.reproductormultimedia_vj.ReproductorActivity;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -54,6 +49,7 @@ public class PlaylistFragment extends Fragment {
     private Playlist playlist;
     private ArrayList<Cancion> canciones;
     private ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
+    private boolean isLike = false;
 
     private TextInputEditText buscador;
     private ImageView img;
@@ -106,7 +102,6 @@ public class PlaylistFragment extends Fragment {
     public void initViews(View view){
         gestionBD = new GestionBD(getContext());
         playlist = gestionBD.getPlaylistId(playId);
-        Usuario creadorObj = null;
 
         buscador = view.findViewById(R.id.play_buscador);
         img = view.findViewById(R.id.play_img);
@@ -121,6 +116,15 @@ public class PlaylistFragment extends Fragment {
         btn_no_buscar = view.findViewById(R.id.play_no_buscar);
         btn_edit = view.findViewById(R.id.play_edit);
         btn_like = view.findViewById(R.id.btn_animacion);
+
+        cargarDatosPlaylist();
+
+        btn_edit.setOnClickListener(v -> editarPlaylist(v));
+
+    }
+
+    public void cargarDatosPlaylist(){
+        Usuario creadorObj = null;
 
         if(playId == -2){
             canciones = gestionBD.getCanciones(gestionBD.getCancionesFav(userId));
@@ -143,6 +147,29 @@ public class PlaylistFragment extends Fragment {
         creador.setText(creadorObj.getUsername());
         likes.setText(gestionBD.getPlaylistFav(playId)+" 'me gusta' . Duracion");
 
+        isLike = isLike();
+        if(isLike) btn_like.setProgress(0.5f);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(gestionBD.getPlaylistId(playId) == null && playId >= 0){
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.remove(this);
+            transaction.commit();
+        }
+    }
+
+    public boolean isLike(){
+        ArrayList<Playlist> lista = gestionBD.getFavPlaylist(userId);
+
+        if(lista.isEmpty()) return false;
+
+        for(Playlist p : lista){
+            if(p.getIdPlaylist() == playId) return true;
+        }
+        return false;
     }
 
     public void mostrarDatos() {
@@ -180,6 +207,15 @@ public class PlaylistFragment extends Fragment {
         });
     }
 
+
+    public void editarPlaylist(View view){
+        Intent intent = new Intent(getContext(), AddPlaylistActivity.class);
+        intent.putExtra("USER_ID", userId);
+        intent.putExtra("PLAY_ID", playId);
+
+        startActivity(intent);
+    }
+
     private void configurarBuscador(){
         buscador.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -214,12 +250,20 @@ public class PlaylistFragment extends Fragment {
 
     private void darLike(){
         btn_like.setAnimation(R.raw.heart_like);
-        final boolean[] like = {false};
         btn_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                like[0] = !like[0];
-                Metodos.darLike(like[0], btn_like);
+                Metodos.darLike(isLike, btn_like);
+
+                isLike = !isLike;
+
+                if(isLike){
+                    gestionBD.setPlaylistFav(userId, playId);
+                    Toast.makeText(getContext(), "La playlist se ha añadido correctamente a favoritos", Toast.LENGTH_SHORT).show();
+                }else{
+                    gestionBD.eliminarPlaylistFav(userId, playId);
+                    Toast.makeText(getContext(), "La playlist se ha eliminada de favoritos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

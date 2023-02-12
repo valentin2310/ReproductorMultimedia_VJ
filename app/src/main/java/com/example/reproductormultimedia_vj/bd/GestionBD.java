@@ -331,7 +331,11 @@ public class GestionBD {
         ArrayList<Playlist> lista = new ArrayList<>();
         SQLiteDatabase bd = admin.getWritableDatabase();
 
-        Cursor fila = bd.rawQuery("SELECT DISTINCT * FROM "+TABLA_USUARIO_PLAYLIST_FAV+" where idUser = "+idUser, null);
+        String sql = "SELECT DISTINCT p.* FROM "+TABLA_PLAYLIST+" p JOIN "+TABLA_USUARIO_PLAYLIST_FAV+" uf " +
+                "ON p.idPlaylist = uf.idPlaylist\n" +
+                "WHERE uf.idUser = "+idUser;
+
+        Cursor fila = bd.rawQuery(sql, null);
 
         while(fila.moveToNext()){
             int idPlay = fila.getInt(0);
@@ -382,6 +386,24 @@ public class GestionBD {
             if(bd.isOpen()) bd.close();
         }
     }
+    public boolean updatePlaylist(Playlist play){
+
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            ContentValues registro = new ContentValues();
+
+            registro.put("nombre", play.getNombre());
+            registro.put("portada", play.getImgPortada());
+
+            bd.update(TABLA_PLAYLIST, registro, "idPlaylist = "+play.getIdPlaylist(), null);
+            bd.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
     public Playlist getPlaylistId(int idPlay){
         Playlist play = null;
         SQLiteDatabase bd = admin.getWritableDatabase();
@@ -412,6 +434,8 @@ public class GestionBD {
     public boolean setCancionesPlaylist(int idPlaylist, ArrayList<Integer> listaCanciones){
         SQLiteDatabase bd = admin.getWritableDatabase();
         try{
+
+            bd.delete(TABLA_PLAYLIST_CANCION, "idPlaylist = "+idPlaylist, null);
 
             for(Integer i : listaCanciones){
                 ContentValues registro = new ContentValues();
@@ -464,6 +488,33 @@ public class GestionBD {
 
         return  lista;
     }
+    public ArrayList<Integer> getPlaylistCancionesIds(int idPlaylist){
+        ArrayList<Integer> lista = new ArrayList<>();
+        try{
+            SQLiteDatabase bd = admin.getWritableDatabase();
+
+            Cursor fila = bd.rawQuery("SELECT * FROM "+TABLA_PLAYLIST_CANCION+" where idPlaylist = "+idPlaylist, null);
+
+            while(fila.moveToNext()){
+                lista.add(fila.getInt(1));
+            }
+
+        }catch (Exception e){
+
+        }
+
+        return  lista;
+    }
+    public int eliminarPlaylist(int idPlaylist){
+        SQLiteDatabase db = admin.getWritableDatabase();
+        int cant = db.delete(TABLA_PLAYLIST, "idPlaylist = "+idPlaylist, null);
+        cant += db.delete(TABLA_USUARIO_PLAYLIST_FAV, "idPlaylist = "+idPlaylist, null);
+        cant += db.delete(TABLA_PLAYLIST_CANCION, "idPlaylist = "+ idPlaylist, null);
+
+        db.close();
+
+        return cant;
+    }
     public boolean setCancionPlaylist(int idPlaylist, int idCancion){
         SQLiteDatabase bd = admin.getWritableDatabase();
         try{
@@ -483,7 +534,7 @@ public class GestionBD {
     }
     public int eliminarCancionPlaylist(int idPlaylist, int idCancion){
         SQLiteDatabase db = admin.getWritableDatabase();
-        int cant = db.delete(TABLA_PLAYLIST_CANCION, "where idPlaylist = "+idPlaylist+" and idCancion = "+idCancion, null);
+        int cant = db.delete(TABLA_PLAYLIST_CANCION, "idPlaylist = "+idPlaylist+" and idCancion = "+idCancion, null);
         db.close();
 
         return cant;
@@ -525,7 +576,7 @@ public class GestionBD {
     }
     public int eliminarPlaylistFav(int idUser, int idPlaylist){
         SQLiteDatabase db = admin.getWritableDatabase();
-        int cant = db.delete(TABLA_USUARIO_PLAYLIST_FAV, "where idUser = "+idUser+" and idPlaylist = "+idPlaylist, null);
+        int cant = db.delete(TABLA_USUARIO_PLAYLIST_FAV, "idUser = "+idUser+" and idPlaylist = "+idPlaylist, null);
         db.close();
 
         return cant;

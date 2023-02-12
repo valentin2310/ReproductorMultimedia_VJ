@@ -75,7 +75,9 @@ public class AddCancionPlaylistAdapter extends RecyclerView.Adapter<AddCancionPl
             }
             this.cancion = c;
 
-            check.setChecked(playlist.getListaCanciones().contains(c));
+            if(playlist.getIdPlaylist() != -1){
+                check.setChecked(playlist.getListaCanciones().contains((Integer) c.getIdCancion()));
+            }
 
         }
 

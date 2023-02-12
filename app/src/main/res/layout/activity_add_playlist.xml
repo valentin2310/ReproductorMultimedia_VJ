@@ -87,6 +87,7 @@
                         android:id="@+id/registro_sw_privada"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:layout_gravity="end|center"
                         android:text="Privada"
                         android:textColor="@color/text"
@@ -139,12 +140,15 @@
                         android:text="Cancelar"/>
                 </LinearLayout>
                 <Button
+                    style="@style/btn_form"
+                    android:id="@+id/addplay_btn_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:text="Eliminar"
                     android:layout_gravity="center"
                     android:visibility="gone"
+                    android:backgroundTint="@color/black"
                     android:textColor="@color/design_default_color_error"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

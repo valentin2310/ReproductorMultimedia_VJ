@@ -48,14 +48,15 @@
                         android:layout_height="wrap_content"
                         android:inputType="text"/>
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/play_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    app:tint="@color/white"
                     android:backgroundTint="@color/text_dark"
-                    android:src="@drawable/ic_baseline_edit_24"/>
+                    android:src="@drawable/ic_baseline_edit_24"
+                    app:tint="@color/white" />
             </LinearLayout>
             <RelativeLayout
                 android:id="@+id/play_datos"

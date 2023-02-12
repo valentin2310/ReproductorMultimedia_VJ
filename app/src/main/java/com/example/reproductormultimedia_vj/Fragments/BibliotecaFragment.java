@@ -80,7 +80,7 @@ public class BibliotecaFragment extends Fragment {
         Usuario user = gestionBD.getUsuario(idUser);
 
         usuarioFragment = UsuarioFragment.newInstance(idUser);
-        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.MIS_CANCIONES_Y_FAV, ListaPlaylistFragment.INVISIBLE);
+        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.MIS_PLAYLIST_Y_FAV, ListaPlaylistFragment.INVISIBLE);
 
         txt_usuario = (TextView) view.findViewById(R.id.bibl_txt_usuario);
         txt_n_play = (TextView) view.findViewById(R.id.bibl_txt_n_play);
@@ -121,39 +121,6 @@ public class BibliotecaFragment extends Fragment {
         super.onStart();
         loadFragmentInside(listaPlaylistFragment);
     }
-
-    /*
-    public void initRecycler(){
-
-        ArrayList<Playlist> lista = gestionBD.getPlaylist(idUser);
-        ArrayList<Playlist> lista2 = gestionBD.getFavPlaylist(idUser);
-
-        lista.add(0, new Playlist(-1, -1, "Canciones locales", null));
-        lista.add(1, new Playlist(-2, idUser, "Mis favoritos", null));
-        lista.addAll(lista2);
-
-        txt_n_play.setText("Tienes "+lista.size()+" playlist");
-
-        PlaylistAdapter adapter = new PlaylistAdapter(idUser, lista, this.getContext());
-        recycler.setHasFixedSize(true);
-        GridLayoutManager grid = new GridLayoutManager(this.getContext(), columnasGrid());
-        recycler.setLayoutManager(grid);
-        recycler.setAdapter(adapter);
-    }
-
-    public int columnasGrid(){
-        int orientation = getResources().getConfiguration().orientation;
-
-        switch (orientation){
-            case Configuration.ORIENTATION_LANDSCAPE:
-                return 4;
-            case Configuration.ORIENTATION_PORTRAIT:
-                return 2;
-        }
-
-        return 2;
-    }
-*/
     public void loadFragment(Fragment fragment){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);

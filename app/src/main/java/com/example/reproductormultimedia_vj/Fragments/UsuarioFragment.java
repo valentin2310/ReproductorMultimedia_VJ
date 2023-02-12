@@ -78,7 +78,7 @@ public class UsuarioFragment extends Fragment {
         usuario = gestionBD.getUsuario(idUser);
 
         musicaFragment = MusicaFragment.newInstance(idUser, true, false);
-        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.MIS_CANCIONES, ListaPlaylistFragment.INVISIBLE);
+        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.MIS_PLAYLIST, ListaPlaylistFragment.INVISIBLE);
 
         txt_seleccion = (TextView) view.findViewById(R.id.txt_seleccion);
         img = view.findViewById(R.id.usuario_img);

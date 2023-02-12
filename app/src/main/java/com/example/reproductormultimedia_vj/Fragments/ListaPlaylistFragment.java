@@ -17,14 +17,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.example.reproductormultimedia_vj.Adapter.PlaylistAdapter;
+import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
-import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ListaPlaylistFragment extends Fragment {
@@ -34,7 +32,7 @@ public class ListaPlaylistFragment extends Fragment {
     private static final String ARG_PARAM3 = "TOOLBAR";
 
     // MODO
-    public static int MIS_CANCIONES = 0, MIS_CANCIONES_Y_FAV = 1, TODAS = 2;
+    public static int MIS_PLAYLIST = 0, MIS_PLAYLIST_Y_FAV = 1, TODAS = 2;
 
     // TOOLBAR VISIBLE
     public static boolean VISIBLE = true, INVISIBLE = false;
@@ -124,15 +122,23 @@ public class ListaPlaylistFragment extends Fragment {
     public void initRecycler(){
 
         listaPlaylist = new ArrayList<>();
-        if(modo == 0 || modo == 1){
+        if(modo == MIS_PLAYLIST || modo == MIS_PLAYLIST_Y_FAV){
             listaPlaylist.addAll(gestionBD.getPlaylist(idUser));
         }
-        if(modo == 1){
-            listaPlaylist.addAll(gestionBD.getFavPlaylist(idUser));
+        if(modo == MIS_PLAYLIST_Y_FAV){
+            ArrayList<Integer> ids = new ArrayList<>();
+
+            for(Playlist p: listaPlaylist){
+                ids.add(p.getIdPlaylist());
+            }
+            for (Playlist p : gestionBD.getFavPlaylist(idUser)){
+                if(!ids.contains((Integer) p.getIdPlaylist())) listaPlaylist.add(p);
+            }
+
             listaPlaylist.add(0, new Playlist(-1, -1, "Canciones locales", null));
             listaPlaylist.add(1, new Playlist(-2, idUser, "Mis favoritos", null));
         }
-        if(modo == 2){
+        if(modo == TODAS){
             listaPlaylist.addAll(gestionBD.getAllPlaylist());
         }
 

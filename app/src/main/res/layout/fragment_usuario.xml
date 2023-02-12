@@ -134,6 +134,7 @@
                     <ImageButton
                         android:layout_width="40dp"
                         android:layout_height="40dp"
+                        android:visibility="gone"
                         android:layout_marginHorizontal="5dp"
                         android:src="@drawable/ic_baseline_edit_24"
                         android:backgroundTint="@android:color/transparent"
