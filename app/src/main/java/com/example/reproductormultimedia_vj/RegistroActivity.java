@@ -136,8 +136,20 @@ public class RegistroActivity extends AppCompatActivity {
             return null;
         }
 
-        byte[] avatar = imageUri != null? Metodos.convertBitmapToByteArray(imgV): null;
         int sexo = sexoSeleccionado();
+        byte[] avatar = imageUri != null? Metodos.convertBitmapToByteArray(imgV): null;
+
+        if(avatar == null){
+            if(sexo == 0){ // hombre
+                imgV.setImageResource(R.drawable.hombre_arana);
+            }else if(sexo == 1){
+                imgV.setImageResource(R.drawable.unicornio);
+            }else{
+                imgV.setImageResource(R.drawable.decepticons);
+            }
+            avatar = Metodos.convertBitmapToByteArray(imgV);
+        }
+
 
         Usuario user = new Usuario(0, nombre, username, passwd, sexo, fecha, avatar, null, null);
 

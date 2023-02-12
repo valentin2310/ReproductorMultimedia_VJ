@@ -16,12 +16,13 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.regex.Pattern;
 
 public class Metodos {
 
-    public static final String FILTRO_USUARIO = "^[A-Za-zÑñ_0-9]{3,23}$";
+    public static final String FILTRO_USUARIO = "^[A-Za-zÑñ_0-9\\-]{8,23}$";
     public static final String FILTRO_NOMBRE = "^[A-Za-zÑñ]{3}[A-Za-zÑñ ]{0,20}$";
     public static final String FILTRO_FECHA = "^[\\d]{2}/[\\d]{2}/[\\d]{4}$";
 
@@ -49,7 +50,7 @@ public class Metodos {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         try{
             Date date = format.parse(fecha);
-            if(new Date().before(date)) return null;
+            if(new Date().getYear()-16 <= date.getYear()) return null;
             return date;
         } catch (ParseException e) {
             return null;
