@@ -289,11 +289,49 @@ public class GestionBD {
         return canciones;
     }*/
 
+    public ArrayList<Playlist> getAllPlaylist(){
+        ArrayList<Playlist> lista = new ArrayList<>();
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        Cursor fila = bd.rawQuery("SELECT * FROM "+TABLA_PLAYLIST+" where privada = 0", null);
+
+        while(fila.moveToNext()){
+            int idPlay = fila.getInt(0);
+            int idCreador = fila.getInt(1);
+            String nombre = fila.getString(2);
+            byte[] portada = fila.getBlob(3);
+            int privada  = fila.getInt(4);
+
+            Playlist play = new Playlist(idPlay, idCreador, nombre, portada, privada == 1, null, null);
+            lista.add(play);
+        }
+
+        return  lista;
+    }
     public ArrayList<Playlist> getPlaylist(int idUser){
         ArrayList<Playlist> lista = new ArrayList<>();
         SQLiteDatabase bd = admin.getWritableDatabase();
 
         Cursor fila = bd.rawQuery("SELECT * FROM "+TABLA_PLAYLIST+" where idCreador = "+idUser, null);
+
+        while(fila.moveToNext()){
+            int idPlay = fila.getInt(0);
+            int idCreador = fila.getInt(1);
+            String nombre = fila.getString(2);
+            byte[] portada = fila.getBlob(3);
+            int privada  = fila.getInt(4);
+
+            Playlist play = new Playlist(idPlay, idCreador, nombre, portada, privada == 1, null, null);
+            lista.add(play);
+        }
+
+        return  lista;
+    }
+    public ArrayList<Playlist> getFavPlaylist(int idUser){
+        ArrayList<Playlist> lista = new ArrayList<>();
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        Cursor fila = bd.rawQuery("SELECT DISTINCT * FROM "+TABLA_USUARIO_PLAYLIST_FAV+" where idUser = "+idUser, null);
 
         while(fila.moveToNext()){
             int idPlay = fila.getInt(0);
@@ -451,6 +489,7 @@ public class GestionBD {
         return cant;
     }
 
+    // los likes que tiene una cancion
     public int getPlaylistFav(int idPlaylist){
         int n = 0;
         SQLiteDatabase db = admin.getWritableDatabase();

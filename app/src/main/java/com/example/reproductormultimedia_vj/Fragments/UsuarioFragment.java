@@ -45,6 +45,7 @@ public class UsuarioFragment extends Fragment {
     Uri imageUri;
 
     MusicaFragment musicaFragment = new MusicaFragment();
+    ListaPlaylistFragment listaPlaylistFragment = new ListaPlaylistFragment();
 
     public UsuarioFragment() {
         // Required empty public constructor
@@ -77,6 +78,7 @@ public class UsuarioFragment extends Fragment {
         usuario = gestionBD.getUsuario(idUser);
 
         musicaFragment = MusicaFragment.newInstance(idUser, true);
+        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser);
 
         txt_seleccion = (TextView) view.findViewById(R.id.txt_seleccion);
         img = view.findViewById(R.id.usuario_img);
@@ -116,9 +118,11 @@ public class UsuarioFragment extends Fragment {
                 switch (item.getItemId()){
                     case R.id.gest_canciones:
                         txt_seleccion.setText("Mis canciones");
+                        loadFragment(musicaFragment);
                         return true;
                     case R.id.gest_playlist:
                         txt_seleccion.setText("Mis playlist");
+                        loadFragment(listaPlaylistFragment);
                         return true;
                 }
 
