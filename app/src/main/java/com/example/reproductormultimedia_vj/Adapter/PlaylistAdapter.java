@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
@@ -113,5 +114,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             transaction.addToBackStack(null);
             transaction.commit();
         }
+    }
+    public void filtrar(ArrayList<Playlist> cancionesFiltradas) {
+        lista = cancionesFiltradas;
+        notifyDataSetChanged();
     }
 }

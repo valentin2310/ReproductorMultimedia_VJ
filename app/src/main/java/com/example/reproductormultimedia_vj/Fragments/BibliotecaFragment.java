@@ -79,6 +79,9 @@ public class BibliotecaFragment extends Fragment {
         gestionBD = new GestionBD(this.getContext());
         Usuario user = gestionBD.getUsuario(idUser);
 
+        usuarioFragment = UsuarioFragment.newInstance(idUser);
+        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.MIS_CANCIONES_Y_FAV, ListaPlaylistFragment.INVISIBLE);
+
         txt_usuario = (TextView) view.findViewById(R.id.bibl_txt_usuario);
         txt_n_play = (TextView) view.findViewById(R.id.bibl_txt_n_play);
         btnPerfil = (ImageView) view.findViewById(R.id.bibl_btn_perfil);
@@ -91,12 +94,11 @@ public class BibliotecaFragment extends Fragment {
             btnPerfil.setImageBitmap(Metodos.convertByteArrayToBitmap(user.getImgAvatar()));
         }
 
-        initRecycler();
+        //loadFragmentInside(listaPlaylistFragment);
 
         btnPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                usuarioFragment = UsuarioFragment.newInstance(idUser);
                 loadFragment(usuarioFragment);
             }
         });
@@ -117,9 +119,10 @@ public class BibliotecaFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initRecycler();
+        loadFragmentInside(listaPlaylistFragment);
     }
 
+    /*
     public void initRecycler(){
 
         ArrayList<Playlist> lista = gestionBD.getPlaylist(idUser);
@@ -150,13 +153,18 @@ public class BibliotecaFragment extends Fragment {
 
         return 2;
     }
-
+*/
     public void loadFragment(Fragment fragment){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
+    public void loadFragmentInside(Fragment fragment){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.bibl_frame, fragment);
+        //transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
 }

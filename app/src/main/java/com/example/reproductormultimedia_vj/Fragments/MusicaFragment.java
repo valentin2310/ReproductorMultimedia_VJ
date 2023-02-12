@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,8 @@ import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.ReproductorActivity;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,13 +59,20 @@ public class MusicaFragment extends Fragment {
     TextView saludos;
     ShapeableImageView btnPerfil;
     Toolbar toolbar;
+    LinearLayout txt_filtro;
+    ImageButton btn_no_buscar;
+    TextInputEditText filtro;
+
     ArrayList<Cancion> canciones;
     ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
+
     private int idUser;
     private boolean edicion = false;
+    private boolean buscadorOn = false;
 
     private static final String ARG_PARAM1 = "USER_ID";
     private static final String ARG_PARAM2 = "EDICION";
+    private static final String ARG_PARAM3 = "BUSCADOR";
 
     public MusicaFragment() {
         // Required empty public constructor
@@ -73,11 +84,12 @@ public class MusicaFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    public static MusicaFragment newInstance(int idUser, boolean edicion) {
+    public static MusicaFragment newInstance(int idUser, boolean edicion, boolean buscadorOn) {
         MusicaFragment fragment = new MusicaFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, idUser);
         args.putBoolean(ARG_PARAM2, edicion);
+        args.putBoolean(ARG_PARAM3, buscadorOn);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,6 +101,7 @@ public class MusicaFragment extends Fragment {
                 idUser = getArguments().getInt(ARG_PARAM1);
                 if(getArguments().size() > 1){
                     edicion = getArguments().getBoolean(ARG_PARAM2);
+                    buscadorOn = getArguments().getBoolean(ARG_PARAM3);
                 }
             }
     }
@@ -101,7 +114,7 @@ public class MusicaFragment extends Fragment {
 
 
         canciones = new ArrayList<>();
-        EditText filtro = view.findViewById(R.id.filtroCancion);
+        filtro = view.findViewById(R.id.filtroCancion);
 
         saludos = view.findViewById(R.id.cancion_saludos);
         darLosBuenosDias();
@@ -116,7 +129,11 @@ public class MusicaFragment extends Fragment {
             toolbar.setVisibility(View.VISIBLE);
         }
 
+        txt_filtro = view.findViewById(R.id.filtro);
+        txt_filtro.setVisibility(buscadorOn?View.VISIBLE:View.GONE);
+
         btnPerfil = view.findViewById(R.id.cancion_btn_perfil);
+        btn_no_buscar = view.findViewById(R.id.cancion_no_buscar);
 
         if(user.getImgAvatar() != null){
             // establecer imagen al view
@@ -130,6 +147,8 @@ public class MusicaFragment extends Fragment {
                 loadFragment(usuarioFragment);
             }
         });
+
+        configurarBuscador();
 
         //if(savedInstanceState == null){
         recycler = (RecyclerView) view.findViewById(recyclerBibliotecaLocal);
@@ -267,6 +286,28 @@ public class MusicaFragment extends Fragment {
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void configurarBuscador(){
+        filtro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    btn_no_buscar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        btn_no_buscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    public void ocultarBuscador(boolean ocultar){
+        txt_filtro.setVisibility(!ocultar?View.VISIBLE:View.GONE);
     }
 
 }

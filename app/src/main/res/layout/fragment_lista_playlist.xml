@@ -6,17 +6,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.ListaPlaylistFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:layout_marginTop="20dp">
+        android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/play_lista_recycler"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/play_lista_toolbar"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fondo_toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/play_lista_no_buscar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:tint="@color/base"
+                    android:layout_marginEnd="5dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:visibility="invisible"
+                    android:src="@drawable/ic_baseline_keyboard_backspace_24"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/formInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_weight="1"
+                    app:startIconDrawable="@drawable/lupa"
+                    android:hint="Buscar en la lista">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/play_lista_buscador"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"/>
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"/>
-    </androidx.core.widget.NestedScrollView>
+            android:fillViewport="true"
+            android:layout_marginTop="20dp">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/play_lista_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="10dp"/>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 </FrameLayout>

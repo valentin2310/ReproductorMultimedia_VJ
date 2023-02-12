@@ -77,8 +77,8 @@ public class UsuarioFragment extends Fragment {
         gestionBD = new GestionBD(this.getContext());
         usuario = gestionBD.getUsuario(idUser);
 
-        musicaFragment = MusicaFragment.newInstance(idUser, true);
-        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser);
+        musicaFragment = MusicaFragment.newInstance(idUser, true, false);
+        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.MIS_CANCIONES, ListaPlaylistFragment.INVISIBLE);
 
         txt_seleccion = (TextView) view.findViewById(R.id.txt_seleccion);
         img = view.findViewById(R.id.usuario_img);
@@ -167,7 +167,7 @@ public class UsuarioFragment extends Fragment {
     public void loadFragment(Fragment fragment){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.usuario_ly_frame, fragment);
-        transaction.addToBackStack(null);
+        //transaction.addToBackStack(null);
         transaction.commit();
     }
 }

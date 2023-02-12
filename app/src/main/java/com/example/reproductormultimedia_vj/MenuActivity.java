@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.Fragments.BibliotecaFragment;
+import com.example.reproductormultimedia_vj.Fragments.BuscadorFragment;
 import com.example.reproductormultimedia_vj.Fragments.ListaPlaylistFragment;
 import com.example.reproductormultimedia_vj.Fragments.MusicaFragment;
 import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
@@ -29,7 +30,7 @@ public class MenuActivity extends AppCompatActivity {
     BibliotecaFragment bibliotecaFragment = new BibliotecaFragment();
     MusicaFragment musicaFragment = new MusicaFragment();
     MusicaLocalFragment musicaLocalFragment = new MusicaLocalFragment();
-    ListaPlaylistFragment listaPlaylistFragment = new ListaPlaylistFragment();
+    BuscadorFragment buscadorFragment = new BuscadorFragment();
 
     public static int USER_ID = -1;
     public static Usuario USUARIO = null;
@@ -50,7 +51,7 @@ public class MenuActivity extends AppCompatActivity {
 
         bibliotecaFragment = BibliotecaFragment.newInstance(USER_ID);
         musicaFragment = MusicaFragment.newInstance(USER_ID);
-        listaPlaylistFragment = ListaPlaylistFragment.newInstance(USER_ID);
+        buscadorFragment = BuscadorFragment.newInstance(USER_ID);
 
         BottomNavigationView navigation = findViewById(R.id.botton_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -74,7 +75,7 @@ public class MenuActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.buscadorFragment:
-                    loadFragment(listaPlaylistFragment);
+                    loadFragment(buscadorFragment);
                     return true;
             }
 
