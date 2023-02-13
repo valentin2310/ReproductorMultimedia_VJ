@@ -97,12 +97,12 @@ public class BuscadorFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
 
                 switch (item.getItemId()){
-                    case R.id.gest_canciones:
+                    case R.id.busq_canciones:
                         txt_seleccion.setText("Todas las Canciones");
                         loadFragment(musicaFragment);
                         seleccion = 0;
                         return true;
-                    case R.id.gest_playlist:
+                    case R.id.busq_playlist:
                         txt_seleccion.setText("Todas las Playlist");
                         loadFragment(listaPlaylistFragment);
                         seleccion = 1;
@@ -114,7 +114,7 @@ public class BuscadorFragment extends Fragment {
         });
 
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.gestionar_usuario_opc, popup.getMenu());
+        inflater.inflate(R.menu.buscar_opc, popup.getMenu());
         popup.show();
     }
 

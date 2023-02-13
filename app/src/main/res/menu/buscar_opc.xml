@@ -3,19 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/gest_canciones"
+        android:id="@+id/busq_canciones"
         android:icon="@drawable/notas_musicales"
-        android:title="Mis canciones"
+        android:title="Canciones"
         android:iconTint="@color/text"/>
     <item
-        android:id="@+id/gest_playlist"
+        android:id="@+id/busq_playlist"
         android:icon="@drawable/notas_musicales"
-        android:title="Mis playlist"
-        android:iconTint="@color/text"/>
-
-    <item
-        android:id="@+id/gest_sesion"
-        android:icon="@drawable/ic_baseline_person_42"
-        android:title="Cerrar sesion"
+        android:title="Playlist"
         android:iconTint="@color/text"/>
 </menu>

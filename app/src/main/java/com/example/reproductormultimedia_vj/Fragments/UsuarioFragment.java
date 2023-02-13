@@ -124,6 +124,9 @@ public class UsuarioFragment extends Fragment {
                         txt_seleccion.setText("Mis playlist");
                         loadFragment(listaPlaylistFragment);
                         return true;
+                    case R.id.gest_sesion:
+                        getActivity().finish();
+                        return true;
                 }
 
                 return false;

@@ -35,6 +35,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 
 public class PlaylistFragment extends Fragment {
@@ -145,7 +146,7 @@ public class PlaylistFragment extends Fragment {
         }
         nombre.setText(playlist.getNombre());
         creador.setText(creadorObj.getUsername());
-        likes.setText(gestionBD.getPlaylistFav(playId)+" 'me gusta' . Duracion");
+        likes.setText(gestionBD.getPlaylistFav(playId)+" 'me gusta' - Duracion: "+obtenerDuracion());
 
         isLike = isLike();
         if(isLike) btn_like.setProgress(0.5f);
@@ -172,6 +173,7 @@ public class PlaylistFragment extends Fragment {
         return false;
     }
 
+
     public void mostrarDatos() {
         recycler.setLayoutManager(new LinearLayoutManager(recycler.getContext()));
         AdapterCancionLocal adapterCancionLocal = new AdapterCancionLocal(recycler.getContext(), canciones);
@@ -195,18 +197,25 @@ public class PlaylistFragment extends Fragment {
 
             Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
 
-           /*if (!cancionesFiltradas.isEmpty()) {
-               ArrayList<Integer> id_canciones = new ArrayList<Integer>();
-               for (Cancion cancion : cancionesFiltradas) {
-                   id_canciones.add(cancion.getIdCancion());
-               }
-                intent.putExtra("cancionesFiltradas", id_canciones);
-            }*/
-
             v.getContext().startActivity(intent);
         });
     }
 
+    public String obtenerDuracion(){
+        long duracion = 0;
+
+        for(Cancion c: canciones){
+            duracion += Long.parseLong(c.getDuracion());
+        }
+
+        return convertir_MMSS(duracion);
+    }
+
+    public String convertir_MMSS (Long milisegundos){
+        return String.format("%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(milisegundos) % TimeUnit.HOURS.toMinutes(1),
+                TimeUnit.MILLISECONDS.toSeconds(milisegundos) % TimeUnit.MINUTES.toSeconds(1));
+    }
 
     public void editarPlaylist(View view){
         Intent intent = new Intent(getContext(), AddPlaylistActivity.class);
