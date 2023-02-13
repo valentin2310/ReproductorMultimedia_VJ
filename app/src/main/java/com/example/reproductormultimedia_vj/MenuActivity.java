@@ -75,13 +75,19 @@ public class MenuActivity extends AppCompatActivity {
         findViewById(R.id.frame_prevCancion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!prevCancionFragment.obtenerSiEsLocal()) {
+                if (prevCancionFragment.obtenerSiEsPlayList()) {
                     Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
+                    intent.putExtra("esPlayList", true);
                     v.getContext().startActivity(intent);
-                }else {
-                    Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
-                    intent.putExtra("esLocal", true);
-                    v.getContext().startActivity(intent);
+                } else {
+                    if (!prevCancionFragment.obtenerSiEsLocal()) {
+                        Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
+                        v.getContext().startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
+                        intent.putExtra("esLocal", true);
+                        v.getContext().startActivity(intent);
+                    }
                 }
             }
         });
@@ -113,7 +119,11 @@ public class MenuActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             musicaFragment.getNotificationManager().cancelAll();
         }
-        unregisterReceiver(musicaFragment.obtenerBroadcast());
+        try {
+            unregisterReceiver(musicaFragment.obtenerBroadcast());
+        } catch (Exception e) {
+
+        }
     }
 
 

@@ -2,6 +2,8 @@ package com.example.reproductormultimedia_vj.Fragments;
 
 import static com.example.reproductormultimedia_vj.Fragments.MusicaFragment.saludos;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +48,10 @@ public class prevCancionFragment extends Fragment {
     private static ImageButton playPause;
     private static MediaPlayer mediaPlayer;
     private static boolean esLocal = false;
+    private static boolean esPlayList = false;
     static LottieAnimationView like;
     static Cancion cancion;
+    static RelativeLayout prevCancion;
 
     // TODO: Rename and change types of parameters
     private int iduser;
@@ -95,6 +101,10 @@ public class prevCancionFragment extends Fragment {
         nombreCancion.setSelected(true);
         playPause = view.findViewById(R.id.playPausePrev);
         final boolean[] play = {true};
+        prevCancion = view.findViewById(R.id.prevCancion);
+        prevCancion.setVisibility(View.GONE);
+
+        //Toast.makeText(container.getContext(), "se ha creado", Toast.LENGTH_SHORT).show();
 
 
         playPause.setOnClickListener(new View.OnClickListener() {
@@ -122,9 +132,10 @@ public class prevCancionFragment extends Fragment {
         });
 
 
-
         return view;
     }
+
+
 
     public static void establecerMediaPlayer(MediaPlayer mediaPlayer2) {
         mediaPlayer = mediaPlayer2;
@@ -159,6 +170,8 @@ public class prevCancionFragment extends Fragment {
     }
 
     public static void actualizarDatos(Cancion cancion2) {
+        esPlayList = false;
+        prevCancion.setVisibility(View.VISIBLE);
         cancion = cancion2;
 
         if (!cancion.getRuta().startsWith("audio/")) {
@@ -183,6 +196,14 @@ public class prevCancionFragment extends Fragment {
         }
         playPause.setImageResource(R.drawable.ic_baseline_pause_40);
 
+    }
+
+    public static void esUnaPlaylist() {
+        esPlayList = true;
+    }
+
+    public static boolean obtenerSiEsPlayList() {
+        return esPlayList;
     }
 
 }

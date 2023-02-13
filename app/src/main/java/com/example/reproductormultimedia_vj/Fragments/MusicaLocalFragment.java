@@ -211,6 +211,7 @@ public class MusicaLocalFragment extends Fragment {
                 getActivity().registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
                 getActivity().startService(new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class));
                 MusicaFragment.desactivarBroadCast();
+                PlaylistFragment.desactivarBroadCast();
 
             }
 

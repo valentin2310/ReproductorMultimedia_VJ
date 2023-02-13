@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -31,6 +32,7 @@ import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.CrearNotificacion;
 import com.example.reproductormultimedia_vj.Fragments.MusicaFragment;
 import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
+import com.example.reproductormultimedia_vj.Fragments.PlaylistFragment;
 import com.example.reproductormultimedia_vj.Fragments.prevCancionFragment;
 import com.example.reproductormultimedia_vj.Servicios.OnClearFromRecentService;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
@@ -49,6 +51,7 @@ public class ReproductorActivity extends AppCompatActivity {
     SeekBar barra;
     boolean aleatorio;
     boolean bucle;
+    boolean playlist = false;
 
     ArrayList<Cancion> listaCanciones;
     MediaPlayer mediaPlayer;
@@ -64,10 +67,15 @@ public class ReproductorActivity extends AppCompatActivity {
 
         GestionBD gestion = new GestionBD(this);
 
-        if (getIntent().hasExtra("esLocal")) {
-            listaCanciones = MusicaLocalFragment.obtenerCanciones();
+        if (getIntent().hasExtra("esPlayList")) {
+            listaCanciones = PlaylistFragment.obtenerCanciones();
+            playlist = true;
         } else {
-            listaCanciones = gestion.getCanciones();
+            if (getIntent().hasExtra("esLocal")) {
+                listaCanciones = MusicaLocalFragment.obtenerCanciones();
+            } else {
+                listaCanciones = gestion.getCanciones();
+            }
         }
 
         mediaPlayer = MusicaFragment.obtenerMediaPlayer();
@@ -271,6 +279,8 @@ public class ReproductorActivity extends AppCompatActivity {
         cancion = listaCanciones.get(MyMediaPlayer.currentIndex);
 
         prevCancionFragment.actualizarDatos(cancion);
+        if (playlist)
+            prevCancionFragment.esUnaPlaylist();
 
         nombre.setText(cancion.getTitulo());
         artista.setText(cancion.getNombreArtista());
