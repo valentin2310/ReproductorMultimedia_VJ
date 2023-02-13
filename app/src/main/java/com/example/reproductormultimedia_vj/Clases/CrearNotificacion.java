@@ -30,7 +30,7 @@ public class CrearNotificacion {
     public static final String ACTION_NEXT = "actionnext";
     public static Notification notification;
 
-    public static void createNotification (Context context, Cancion cancion, int playbutton, int pos, int size) throws IOException {
+    public static void createNotification (Context context, Cancion cancion, int playbutton) throws IOException {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
@@ -40,17 +40,14 @@ public class CrearNotificacion {
 
             PendingIntent pendingIntentPrevious;
             int drw_previous;
-            if (pos == 0) {
-                pendingIntentPrevious = null;
-                drw_previous = 0;
-            } else  {
+
                 Intent intentPrevious = new Intent (context, NotificationActionService.class)
                         .setAction(ACTION_PREVIUOS);
                 pendingIntentPrevious
                         = PendingIntent.getBroadcast(context, 0,
                         intentPrevious, PendingIntent.FLAG_IMMUTABLE);
                 drw_previous = R.drawable.ic_baseline_skip_previous_24;
-        }
+
 
             Intent intentPlay= new Intent (context, NotificationActionService.class)
                     .setAction(ACTION_PLAY);
@@ -59,15 +56,11 @@ public class CrearNotificacion {
 
             PendingIntent pendingIntentNext;
             int drw_next;
-            if (pos == size) {
-                pendingIntentNext = null;
-                drw_next = 0;
-            } else {
                     Intent intentNext = new Intent (context, NotificationActionService.class).setAction (ACTION_NEXT);
             pendingIntentNext = PendingIntent.getBroadcast (context,  0,
                     intentNext, PendingIntent.FLAG_IMMUTABLE);
             drw_next = R.drawable.ic_baseline_skip_next_24;
-        }
+
             Bitmap icon = null;
 
             if (cancion.getRuta().startsWith("audio/"))

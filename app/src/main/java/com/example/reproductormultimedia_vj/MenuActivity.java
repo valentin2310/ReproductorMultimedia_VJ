@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -14,13 +16,15 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.example.reproductormultimedia_vj.Fragments.BuscadorFragment;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.Fragments.BibliotecaFragment;
-import com.example.reproductormultimedia_vj.Fragments.BuscadorFragment;
 import com.example.reproductormultimedia_vj.Fragments.ListaPlaylistFragment;
 import com.example.reproductormultimedia_vj.Fragments.MusicaFragment;
 import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
+import com.example.reproductormultimedia_vj.Fragments.prevCancionFragment;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -30,7 +34,9 @@ public class MenuActivity extends AppCompatActivity {
     BibliotecaFragment bibliotecaFragment = new BibliotecaFragment();
     MusicaFragment musicaFragment = new MusicaFragment();
     MusicaLocalFragment musicaLocalFragment = new MusicaLocalFragment();
+    prevCancionFragment prevCancionFragment = new prevCancionFragment();
     BuscadorFragment buscadorFragment = new BuscadorFragment();
+
 
     public static int USER_ID = -1;
     public static Usuario USUARIO = null;
@@ -49,17 +55,36 @@ public class MenuActivity extends AppCompatActivity {
             USUARIO.setListaCanciones(gestionBD.getCancionesFav(USER_ID));
         }
 
+
+
         bibliotecaFragment = BibliotecaFragment.newInstance(USER_ID);
         musicaFragment = MusicaFragment.newInstance(USER_ID);
         buscadorFragment = BuscadorFragment.newInstance(USER_ID);
+
 
         BottomNavigationView navigation = findViewById(R.id.botton_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true).commit();
 
-        if(savedInstanceState == null)
+        if(savedInstanceState == null) {
             loadFragment(musicaFragment);
+            loadFragmentPrevCancion(prevCancionFragment);
+        }
+
+        findViewById(R.id.frame_prevCancion).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!prevCancionFragment.obtenerSiEsLocal()) {
+                    Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
+                    v.getContext().startActivity(intent);
+                }else {
+                    Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
+                    intent.putExtra("esLocal", true);
+                    v.getContext().startActivity(intent);
+                }
+            }
+        });
     }
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -83,10 +108,25 @@ public class MenuActivity extends AppCompatActivity {
         }
     };
 
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            musicaFragment.getNotificationManager().cancelAll();
+        }
+        unregisterReceiver(musicaFragment.obtenerBroadcast());
+    }
+
+
     public void loadFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void loadFragmentPrevCancion(Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_prevCancion, fragment);
         transaction.commit();
     }
 

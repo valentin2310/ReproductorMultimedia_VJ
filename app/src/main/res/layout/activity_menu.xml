@@ -18,18 +18,32 @@
             android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="150dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 <!--
     </androidx.core.widget.NestedScrollView>
 -->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        >
+
+        <FrameLayout
+            android:id="@+id/frame_prevCancion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"></FrameLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/botton_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="8dp"
-        android:layout_gravity="bottom"
+        android:layout_below="@+id/frame_prevCancion"
         app:menu="@menu/bottom_navigation"
         app:labelVisibilityMode="selected"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         style="@style/BottomNavigation"/>
+    </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

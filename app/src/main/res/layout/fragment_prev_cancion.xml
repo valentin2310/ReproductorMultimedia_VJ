@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".Fragments.prevCancionFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:backgroundTint="@color/oscuro"
+        android:layout_marginHorizontal="10dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="10dp">
+
+            <ImageView
+                android:id="@+id/portadaPrev"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/photo_1614680376573_df3480f0c6ff"
+                android:background="@color/oscuro"
+                ></ImageView>
+
+            <TextView
+                android:id="@+id/nombrePrev"
+                android:width="225dp"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre Cancion"
+                android:layout_toEndOf="@+id/portadaPrev"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                ></TextView>
+
+            <TextView
+                android:id="@+id/artistaPrev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artista"
+                android:layout_below="@+id/nombrePrev"
+                android:textColor="#838282"
+                android:singleLine="true"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="55dp"
+
+                ></TextView>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/likePrev"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_centerInParent="true"
+                android:layout_toStartOf="@+id/playPausePrev"></com.airbnb.lottie.LottieAnimationView>
+
+
+            <ImageButton
+                android:id="@+id/playPausePrev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_play_arrow_50"></ImageButton>
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

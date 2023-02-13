@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/reproductor_background">
+    android:id="@+id/reproductor_background"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,38 +14,20 @@
         <ImageView
             android:id="@+id/portada"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="400dp"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:layout_marginTop="100dp"
             android:padding="20dp"
             android:src="@drawable/photo_1614680376573_df3480f0c6ff"></ImageView>
 
-        <ImageButton
-            android:id="@+id/bucle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/portada"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="35dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_baseline_repeat_50"></ImageButton>
-        <ImageButton
-            android:id="@+id/aleatorio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/portada"
-            android:layout_toStartOf="@+id/bucle"
-            android:layout_marginHorizontal="5dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_baseline_shuffle_24"></ImageButton>
-        <RelativeLayout
 
+        <RelativeLayout
+            android:background="@drawable/fondo_reproductor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@id/portada"
-            android:layout_marginTop="70dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginBottom="50dp">
 
             <TextView
@@ -139,24 +122,42 @@
                 android:src="@drawable/ic_baseline_skip_previous_24"></ImageButton>
 
             <ImageButton
+                android:id="@+id/aleatorio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="120dp"
+                android:layout_marginEnd="40dp"
+                android:layout_toStartOf="@+id/anterior"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_shuffle_24"></ImageButton>
+
+            <ImageButton
                 android:id="@+id/primeraCancion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="125dp"
-                android:layout_marginHorizontal="20dp"
-                android:layout_toStartOf="@+id/anterior"
+                android:layout_below="@+id/aleatorio"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_baseline_first_page_40"></ImageButton>
 
-
+            <ImageButton
+                android:id="@+id/bucle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="120dp"
+                android:layout_toEndOf="@+id/siguiente"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_repeat_50"></ImageButton>
 
             <ImageButton
                 android:id="@+id/ultimaCancion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="125dp"
-                android:layout_toEndOf="@+id/siguiente"
+                android:layout_below="@+id/bucle"
+                android:layout_marginStart="333dp"
+                android:layout_marginTop="20dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_baseline_last_page_24"></ImageButton>
 

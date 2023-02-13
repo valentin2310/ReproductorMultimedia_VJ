@@ -1,13 +1,23 @@
 package com.example.reproductormultimedia_vj.Fragments;
 
+import static com.example.reproductormultimedia_vj.Fragments.MusicaFragment.mediaPlayer;
 import static com.example.reproductormultimedia_vj.R.id.portada;
 import static com.example.reproductormultimedia_vj.R.id.recyclerBibliotecaLocal;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
@@ -18,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,14 +36,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
+import com.example.reproductormultimedia_vj.Clases.CrearNotificacion;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.cargarCancionesLocalReproductor;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import com.example.reproductormultimedia_vj.ReproductorActivity;
+import com.example.reproductormultimedia_vj.Servicios.OnClearFromRecentService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,10 +54,14 @@ import java.util.Date;
 public class MusicaLocalFragment extends Fragment {
 
     AdapterCancionLocal adapterCancionLocal;
-    RecyclerView recycler;
+    static RecyclerView recycler;
     static ArrayList<Cancion> canciones;
     ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
     EditText filtro;
+    static Cancion cancion;
+    static NotificationManager notificationManager;
+    static boolean broadCastCreado = false;
+    static BroadcastReceiver broadcastReceiver;
 
     private static final String ARG_PARAM1 = "USER_ID";
     private int idUser;
@@ -111,9 +129,22 @@ public class MusicaLocalFragment extends Fragment {
     public void initRecycler(){
             cargarLista();
             mostrarDatos();
+            createChannel();
+            broadCastCreado = true;
             recycler.setHasFixedSize(true);
 
 
+
+
+    }
+
+    public static void desactivarBroadCast() {
+        if (broadcastReceiver != null)
+            try {
+                recycler.getContext().unregisterReceiver(broadcastReceiver);
+            } catch (Exception e) {
+
+            }
     }
 
     public void filtro(String s) {
@@ -143,7 +174,6 @@ public class MusicaLocalFragment extends Fragment {
 
         adapterCancionLocal.setOnClickListener(v -> {
             MyMediaPlayer.getInstance().reset();
-            Intent intent = new Intent(v.getContext(), ReproductorActivity.class);
 
             if (!cancionesFiltradas.isEmpty()) {
                 for (int i=0; i < canciones.size(); ++i) {
@@ -155,14 +185,143 @@ public class MusicaLocalFragment extends Fragment {
                 MyMediaPlayer.currentIndex = recycler.getChildAdapterPosition(v);
             }
 
-            intent.putExtra("esLocal", true);
+            establecerDatosMusica();
+            prevCancionFragment.establecerMediaPlayer(mediaPlayer);
 
-            v.getContext().startActivity(intent);
+            desactivarBroadCast();
+            broadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent)  {
+                    String action = intent.getExtras().getString("actionname");
+                    switch (action) {
+                        case CrearNotificacion.ACTION_PREVIUOS:
+                            anteriorCancion();
+                            break;
+                        case CrearNotificacion.ACTION_PLAY:
+                            pausePlay();
+                            break;
+                        case CrearNotificacion.ACTION_NEXT:
+                            siguienteCancion();
+                            break;
+                    }
+                }
+            };
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                getActivity().registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
+                getActivity().startService(new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class));
+                MusicaFragment.desactivarBroadCast();
+
+            }
+
         });
+    }
+
+    public static void establecerDatosMusica() {
+        cancion = canciones.get(MyMediaPlayer.currentIndex);
+
+        prevCancionFragment.actualizarDatos(cancion);
+
+        try {
+            CrearNotificacion.createNotification(recycler.getContext(), cancion, R.drawable.ic_baseline_pause_circle_filled_24);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        empezarMusica();
+
+    }
+
+    public static void empezarMusica() {
+        mediaPlayer.reset();
+        try {
+            mediaPlayer.setDataSource(cancion.getRuta());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static ArrayList<Cancion> obtenerCanciones() {
         return canciones;
     }
 
+    public static MediaPlayer obtenerMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    public static BroadcastReceiver obtenerBroadcast() {
+        return broadcastReceiver;
+    }
+
+    private void createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CrearNotificacion.CHANNEL_ID,
+                    "Javi Valentin", NotificationManager.IMPORTANCE_LOW);
+            notificationManager = getActivity().getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+    public static void anteriorCancion() {
+
+        if (mediaPlayer.getCurrentPosition() < 3000) {
+            if (MyMediaPlayer.currentIndex == 0) {
+                mediaPlayer.reset();
+                establecerDatosMusica();
+            } else {
+                MyMediaPlayer.currentIndex -= 1;
+                mediaPlayer.reset();
+                establecerDatosMusica();
+            }
+        } else {
+            mediaPlayer.reset();
+            establecerDatosMusica();
+        }
+
+        try {
+            CrearNotificacion.createNotification(recycler.getContext(), cancion, R.drawable.ic_baseline_pause_circle_filled_24);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static NotificationManager getNotificationManager() {
+        return notificationManager;
+    }
+
+
+    public static void siguienteCancion() {
+        if (MyMediaPlayer.currentIndex == canciones.size() - 1)
+            return;
+        MyMediaPlayer.currentIndex += 1;
+        mediaPlayer.reset();
+        establecerDatosMusica();
+    }
+
+    private static void pausePlay() {
+
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            try {
+                CrearNotificacion.createNotification(recycler.getContext(), cancion, R.drawable.ic_baseline_play_circle_filled_24);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            mediaPlayer.start();
+            try {
+                CrearNotificacion.createNotification(recycler.getContext(), cancion, R.drawable.ic_baseline_pause_circle_filled_24);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 }

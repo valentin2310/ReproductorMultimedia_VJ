@@ -73,6 +73,10 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         activado[0] = user.getListaCanciones().contains(c.getIdCancion());
         if(activado[0]) holder.like.setProgress(0.5f);
 
+        if (c.getRuta().startsWith("audio/"))
+        holder.like.setAnimation(R.raw.heart_like);
+
+
         if (!c.getRuta().startsWith("audio/"))
             if (!portada.equals(""))
                 holder.imagen.setImageURI(Uri.parse(portada));
@@ -128,7 +132,6 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
             artista = itemView.findViewById(R.id.artista);
             imagen = itemView.findViewById(R.id.imagenCancion);
             like = itemView.findViewById(R.id.like);
-            like.setAnimation(R.raw.heart_like);
         }
     }
 
