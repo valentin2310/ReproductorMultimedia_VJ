@@ -58,7 +58,7 @@ public class MenuActivity extends AppCompatActivity {
 
 
         bibliotecaFragment = BibliotecaFragment.newInstance(USER_ID);
-        musicaFragment = MusicaFragment.newInstance(USER_ID);
+        musicaFragment = MusicaFragment.newInstance(USER_ID, false, false);
         buscadorFragment = BuscadorFragment.newInstance(USER_ID);
 
 

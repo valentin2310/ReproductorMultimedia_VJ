@@ -10,8 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/fondo_toolbar">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"

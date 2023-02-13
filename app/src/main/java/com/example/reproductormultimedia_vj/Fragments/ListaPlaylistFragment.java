@@ -151,15 +151,17 @@ public class ListaPlaylistFragment extends Fragment {
 
     public int columnasGrid(){
         int orientation = getResources().getConfiguration().orientation;
+        int witdth = getResources().getConfiguration().screenWidthDp;
 
+/*
         switch (orientation){
             case Configuration.ORIENTATION_LANDSCAPE:
                 return 4;
             case Configuration.ORIENTATION_PORTRAIT:
                 return 2;
         }
-
-        return 2;
+*/
+        return (int)witdth/160;
     }
 
     private void configurarBuscador(){

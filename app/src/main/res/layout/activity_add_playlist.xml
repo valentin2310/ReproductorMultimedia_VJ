@@ -73,6 +73,7 @@
                         android:id="@+id/addplay_txt_nombre"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        style="@style/formText"
                         android:inputType="text"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -129,7 +130,7 @@
                         android:layout_weight="1"
                         android:layout_margin="10dp"
                         android:onClick="creaPlaylist"
-                        android:text="Crear"/>
+                        android:text="Aceptar"/>
                     <Button
                         style="@style/btn_form"
                         android:layout_width="match_parent"

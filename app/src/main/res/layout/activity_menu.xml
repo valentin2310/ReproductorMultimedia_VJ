@@ -12,38 +12,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true">
--->
+
         <FrameLayout
             android:id="@+id/frame_container"
             android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="150dp"
+            android:layout_marginBottom="50dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-<!--
+
     </androidx.core.widget.NestedScrollView>
 -->
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        >
+        android:orientation="vertical">
 
+        <FrameLayout
+            android:id="@+id/frame_container"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         <FrameLayout
             android:id="@+id/frame_prevCancion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_marginBottom="5dp"></FrameLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/botton_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="8dp"
-        android:layout_below="@+id/frame_prevCancion"
-        app:menu="@menu/bottom_navigation"
-        app:labelVisibilityMode="selected"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        style="@style/BottomNavigation"/>
-    </RelativeLayout>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/botton_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:elevation="8dp"
+            android:layout_gravity="bottom"
+            app:menu="@menu/bottom_navigation"
+            app:labelVisibilityMode="selected"
+            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+            style="@style/BottomNavigation"/>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

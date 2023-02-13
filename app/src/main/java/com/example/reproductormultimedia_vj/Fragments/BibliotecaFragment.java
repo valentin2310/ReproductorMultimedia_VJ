@@ -94,6 +94,8 @@ public class BibliotecaFragment extends Fragment {
             btnPerfil.setImageBitmap(Metodos.convertByteArrayToBitmap(user.getImgAvatar()));
         }
 
+        txt_n_play.setText("Tienes "+gestionBD.getPlaylist(idUser).size()+" playlist");
+
         //loadFragmentInside(listaPlaylistFragment);
 
         btnPerfil.setOnClickListener(new View.OnClickListener() {

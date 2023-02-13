@@ -14,8 +14,9 @@
         android:padding="20dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="top|center"
             android:orientation="vertical">
 
             <TextView
@@ -75,6 +76,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/registro_txt_usuario"
+                        style="@style/formText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text">
@@ -91,6 +93,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/registro_txt_nombre"
+                        style="@style/formText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text">
@@ -109,6 +112,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/registro_txt_passwd"
                         android:layout_width="match_parent"
+                        style="@style/formText"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword">
 
@@ -126,6 +130,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/registro_txt_passwd2"
                         android:layout_width="match_parent"
+                        style="@style/formText"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword">
 
@@ -191,6 +196,7 @@
                         android:inputType="date"
                         android:focusable="false"
                         android:clickable="true"
+                        style="@style/formText"
                         android:maxLines="1" >
 
                     </com.google.android.material.textfield.TextInputEditText>

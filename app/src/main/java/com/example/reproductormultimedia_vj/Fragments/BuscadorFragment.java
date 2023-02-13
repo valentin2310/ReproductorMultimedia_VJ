@@ -124,4 +124,9 @@ public class BuscadorFragment extends Fragment {
         //transaction.addToBackStack(null);
         transaction.commit();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 }

@@ -91,7 +91,7 @@ public class MusicaFragment extends Fragment {
     private static final String ARG_PARAM2 = "EDICION";
     private static final String ARG_PARAM3 = "BUSCADOR";
 
-    private static boolean buscadorOn = false;
+    private boolean buscadorOn = false;
 
 
     public MusicaFragment() {

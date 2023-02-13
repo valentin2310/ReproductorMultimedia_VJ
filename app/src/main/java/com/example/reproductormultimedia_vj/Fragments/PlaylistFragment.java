@@ -107,7 +107,10 @@ public class PlaylistFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_playlist, container, false);
 
+        gestionBD = new GestionBD(getContext());
         initViews(view);
+
+        cargarDatosPlaylist();
         mostrarDatos();
 
         configurarBuscador();
@@ -118,9 +121,6 @@ public class PlaylistFragment extends Fragment {
         return view;
     }
     public void initViews(View view){
-        gestionBD = new GestionBD(getContext());
-        playlist = gestionBD.getPlaylistId(playId);
-
         buscador = view.findViewById(R.id.play_buscador);
         img = view.findViewById(R.id.play_img);
         ly_datos = view.findViewById(R.id.play_datos);
@@ -135,7 +135,7 @@ public class PlaylistFragment extends Fragment {
         btn_edit = view.findViewById(R.id.play_edit);
         btn_like = view.findViewById(R.id.btn_animacion);
 
-        cargarDatosPlaylist();
+        //cargarDatosPlaylist();
 
         btn_edit.setOnClickListener(v -> editarPlaylist(v));
 
@@ -144,6 +144,7 @@ public class PlaylistFragment extends Fragment {
 
 
     public void cargarDatosPlaylist(){
+        playlist = gestionBD.getPlaylistId(playId);
         Usuario creadorObj = null;
 
         if(playId == -2){
@@ -174,11 +175,16 @@ public class PlaylistFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         if(gestionBD.getPlaylistId(playId) == null && playId >= 0){
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.remove(this);
             transaction.commit();
+        }else{
+            cargarDatosPlaylist();
+            mostrarDatos();
         }
+
     }
 
     public boolean isLike(){

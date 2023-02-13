@@ -20,7 +20,9 @@
         <item name="boxCornerRadiusBottomEnd">0dp</item>
     </style>
 
-
+    <style name="formText" parent="ThemeOverlay.Material3.TextInputEditText">
+        <item name="android:textColor">@color/text_light</item>
+    </style>
 
     <style name="buscador" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <!-- linea inferior -->

@@ -99,7 +99,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
     public void creaPlaylist(View view){
 
         String nombre = txt_nombre.getText().toString();
-        byte[] img = null;
+        byte[] img = playlist.getImgPortada();
 
         if(nombre.isEmpty()){
             txt_nombre.setError("El nombre no puede estar vacio");
