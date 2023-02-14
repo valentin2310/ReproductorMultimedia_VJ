@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
+import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
+import com.example.reproductormultimedia_vj.Clases.PlayListActual;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
@@ -87,6 +90,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             }
 
             this.play = p;
+
+
+            if (MyMediaPlayer.currentIndex != -1 && PlayListActual.idPlaylist != -8)
+                if (p.getIdPlaylist() == PlayListActual.idPlaylist)
+                    nombre.setTextColor(Color.GREEN);
+
         }
 
         public void setOnClickListeners(){

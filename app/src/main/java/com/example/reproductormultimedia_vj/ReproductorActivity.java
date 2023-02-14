@@ -3,7 +3,6 @@ package com.example.reproductormultimedia_vj;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -18,6 +17,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -30,6 +31,7 @@ import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.CrearNotificacion;
+import com.example.reproductormultimedia_vj.Clases.PlayListActual;
 import com.example.reproductormultimedia_vj.Fragments.MusicaFragment;
 import com.example.reproductormultimedia_vj.Fragments.MusicaLocalFragment;
 import com.example.reproductormultimedia_vj.Fragments.PlaylistFragment;
@@ -54,7 +56,6 @@ public class ReproductorActivity extends AppCompatActivity {
     boolean playlist = false;
 
     ArrayList<Cancion> listaCanciones;
-    MediaPlayer mediaPlayer;
 
     NotificationManager notificationManager;
 
@@ -78,9 +79,8 @@ public class ReproductorActivity extends AppCompatActivity {
             }
         }
 
-        mediaPlayer = MusicaFragment.obtenerMediaPlayer();
-
-
+        TextView reproducirDesde = findViewById(R.id.reproduccionDesde);
+        reproducirDesde.setText(PlayListActual.nombrePlaylist);
         imagen = findViewById(R.id.portada);
         nombre = findViewById(R.id.nombre);
         artista = findViewById(R.id.artista);
@@ -97,34 +97,24 @@ public class ReproductorActivity extends AppCompatActivity {
         ultimaCancion = findViewById(R.id.ultimaCancion);
         aleatorio = false;
         bucle = false;
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel();
-            registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
-            startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
-        }
-
+        barra.setProgress(0);
 
         establecerDatosMusica();
-        try {
-            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.setOnCompletionListener(v -> {
-            tiempoActual.setText(convertir_MMSS(mediaPlayer.getDuration() + ""));
+        empezarMusica();
+
+        MyMediaPlayer.getInstance().setOnCompletionListener(v -> {
+            tiempoActual.setText(convertir_MMSS(MyMediaPlayer.getInstance().getDuration() + ""));
             siguienteCancion();
         });
 
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mediaPlayer != null) {
-                    barra.setProgress(mediaPlayer.getCurrentPosition());
-                    tiempoActual.setText(convertir_MMSS(mediaPlayer.getCurrentPosition() + ""));
+                if (MyMediaPlayer.getInstance() != null) {
+                    barra.setProgress(MyMediaPlayer.getInstance().getCurrentPosition());
+                    tiempoActual.setText(convertir_MMSS(MyMediaPlayer.getInstance().getCurrentPosition() + ""));
 
-                    if (mediaPlayer.isPlaying()) {
+                    if (MyMediaPlayer.getInstance().isPlaying()) {
                         pausePlay.setImageResource(R.drawable.ic_baseline_pause_circle_filled_24);
 
                     } else {
@@ -139,8 +129,8 @@ public class ReproductorActivity extends AppCompatActivity {
         barra.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (mediaPlayer != null && fromUser) {
-                    mediaPlayer.seekTo(progress);
+                if (MyMediaPlayer.getInstance() != null && fromUser) {
+                    MyMediaPlayer.getInstance().seekTo(progress);
                 }
             }
 
@@ -163,168 +153,97 @@ public class ReproductorActivity extends AppCompatActivity {
         primeraCancion.setOnClickListener(v -> primeraCancion());
         ultimaCancion.setOnClickListener(v -> ultimaCancion());
 
+        if (PlayListActual.aleatorio)
+            shuffle.setColorFilter(Color.argb(255, 0,170,255));
+        else
+            shuffle.clearColorFilter();
 
-    }
+        if (PlayListActual.bucle)
+            loop.setColorFilter(Color.argb(255, 0,170,255));
+        else
+            loop.clearColorFilter();
 
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent)  {
-            String action = intent.getExtras().getString("actionname");
-            switch (action) {
-                case CrearNotificacion.ACTION_PREVIUOS:
-                    establecerDatosMusica();
-                    break;
-                case CrearNotificacion.ACTION_PLAY:
-                    establecerDatosMusica();
-                    break;
-                case CrearNotificacion.ACTION_NEXT:
-                    establecerDatosMusica();
-                    break;
-            }
-        }
-    };
-
-    private void createChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CrearNotificacion.CHANNEL_ID,
-                    "Javi Valentin", NotificationManager.IMPORTANCE_LOW);
-            notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
-    }
-
-    public void primeraCancion() {
-        MyMediaPlayer.currentIndex = 0;
-        mediaPlayer.reset();
-        establecerDatosMusica();
-        reproducirMusica();
-        restartActivity(this);
-        try {
-            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void ultimaCancion() {
-        MyMediaPlayer.currentIndex = listaCanciones.size()-1;
-        mediaPlayer.reset();
-        establecerDatosMusica();
-        reproducirMusica();
-        restartActivity(this);
-        try {
-            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void cancionAleatoria() {
-        aleatorio = !aleatorio;
-        if (aleatorio)
-        shuffle.setColorFilter(Color.argb(255, 0,170,255));
+        PlayListActual.aleatorio = !PlayListActual.aleatorio;
+        if (PlayListActual.aleatorio)
+            shuffle.setColorFilter(Color.argb(255, 0,170,255));
         else
             shuffle.clearColorFilter();
     }
 
     public void cancionBucle() {
-        bucle = !bucle;
-        if (bucle)
+        PlayListActual.bucle = !PlayListActual.bucle;
+        if (PlayListActual.bucle)
             loop.setColorFilter(Color.argb(255, 0,170,255));
         else
             loop.clearColorFilter();
     }
 
+    public void siguienteCancion() {
+        PlayListActual.siguienteCancion(getApplicationContext(), PlayListActual.cancion.getRuta().startsWith("audio/")? false:true);
+        establecerDatosMusica();
+        empezarMusica();
+    }
 
+    public void anteriorCancion() {
+        PlayListActual.anteriorCancion(getApplicationContext(), PlayListActual.cancion.getRuta().startsWith("audio/")? false:true);
+        establecerDatosMusica();
+        empezarMusica();
+    }
+
+    public void pausePlay() {
+        PlayListActual.pausePlay(getApplicationContext());
+    }
+
+    public void primeraCancion() {
+        PlayListActual.primeraCancion(getApplicationContext(), PlayListActual.cancion.getRuta().startsWith("audio/")? false:true);
+        establecerDatosMusica();
+        empezarMusica();
+    }
+
+    public void ultimaCancion() {
+        PlayListActual.ultimaCancion(getApplicationContext(), PlayListActual.cancion.getRuta().startsWith("audio/")? false:true);
+        establecerDatosMusica();
+        empezarMusica();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     public void empezarMusica() {
-        barra.setProgress(0);
         barra.setMax(Integer.parseInt(cancion.getDuracion()));
     }
 
-    public void reproducirMusica() {
-
-
-            mediaPlayer.reset();
-        if (!cancion.getRuta().startsWith("audio/")) {
-            try {
-                mediaPlayer.setDataSource(cancion.getRuta());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                AssetManager assetManager = getResources().getAssets();
-                AssetFileDescriptor afd = assetManager.openFd(cancion.getRuta());
-                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        MusicaFragment.setCancion(cancion);
-    }
-
-
     public void establecerDatosMusica () {
-        cancion = listaCanciones.get(MyMediaPlayer.currentIndex);
+        try {
+            cancion = PlayListActual.getCancionesActuales().get(MyMediaPlayer.currentIndex);
 
-        prevCancionFragment.actualizarDatos(cancion);
-        if (playlist)
-            prevCancionFragment.esUnaPlaylist();
+            nombre.setText(cancion.getTitulo());
+            artista.setText(cancion.getNombreArtista());
 
-        nombre.setText(cancion.getTitulo());
-        artista.setText(cancion.getNombreArtista());
-
-        if (!cancion.getRuta().startsWith("audio/"))
-            if (!new String(cancion.getPortada(), StandardCharsets.UTF_8).equals(""))
-                imagen.setImageURI(Uri.parse(new String(cancion.getPortada(), StandardCharsets.UTF_8)));
-            else
-                imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
-        else {
-            imagen.setImageBitmap(Metodos.convertByteArrayToBitmap(cancion.getPortada()));
-        }
-
-        tiempoTotal.setText(convertir_MMSS(cancion.getDuracion()));
-
-        // cambiar color fondo a color imagen
-        findViewById(R.id.reproductor_background).setBackgroundColor(Metodos.getDominantColor(((BitmapDrawable)imagen.getDrawable()).getBitmap()));
-
-        empezarMusica();
-
-    }
-
-    public static void restartActivity(Activity activity){
-
-    }
-
-    private void pausePlay(){
-
-        if(mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-            try {
-                CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_play_circle_filled_24);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (!cancion.getRuta().startsWith("audio/"))
+                if (!new String(cancion.getPortada(), StandardCharsets.UTF_8).equals(""))
+                    imagen.setImageURI(Uri.parse(new String(cancion.getPortada(), StandardCharsets.UTF_8)));
+                else
+                    imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
+            else {
+                imagen.setImageBitmap(Metodos.convertByteArrayToBitmap(cancion.getPortada()));
             }
 
-        }
-        else {
-            mediaPlayer.start();
-            try {
-                CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24);
-            } catch (IOException e) {
-                e.printStackTrace();
+            tiempoTotal.setText(convertir_MMSS(cancion.getDuracion()));
+
+            // cambiar color fondo a color imagen
+            findViewById(R.id.reproductor_background).setBackgroundColor(Metodos.getDominantColor(((BitmapDrawable) imagen.getDrawable()).getBitmap()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(Metodos.darker(Metodos.getDominantColor(((BitmapDrawable) imagen.getDrawable()).getBitmap()), (float) 0.5));
             }
+        } catch (Exception e) {
 
         }
 
@@ -337,71 +256,5 @@ public class ReproductorActivity extends AppCompatActivity {
                 TimeUnit.MILLISECONDS.toSeconds(milisegundos) % TimeUnit.MINUTES.toSeconds(1));
     }
 
-    public void siguienteCancion() {
-
-        if (bucle && !aleatorio && MyMediaPlayer.currentIndex == listaCanciones.size() - 1)  {
-            MyMediaPlayer.currentIndex = 0;
-            mediaPlayer.reset();
-            establecerDatosMusica();
-            reproducirMusica();
-        }else if (!aleatorio) {
-            if (MyMediaPlayer.currentIndex == listaCanciones.size() - 1)
-                return;
-            MyMediaPlayer.currentIndex += 1;
-            mediaPlayer.reset();
-            establecerDatosMusica();
-            reproducirMusica();
-        }else {
-            boolean comprobar = false;
-            while (!comprobar) {
-                Random r = new Random();
-                int index_cancion = r.nextInt(listaCanciones.size());
-                if (index_cancion != MyMediaPlayer.currentIndex) {
-                    comprobar = true;
-                    MyMediaPlayer.currentIndex = index_cancion;
-                    mediaPlayer.reset();
-                    establecerDatosMusica();
-                    reproducirMusica();
-                }
-            }
-        }
-        restartActivity(this);
-        try {
-            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void anteriorCancion() {
-
-        if (mediaPlayer.getCurrentPosition() < 3000) {
-            if (MyMediaPlayer.currentIndex == 0) {
-                mediaPlayer.reset();
-                establecerDatosMusica();
-                reproducirMusica();
-
-            } else {
-                MyMediaPlayer.currentIndex -= 1;
-                mediaPlayer.reset();
-                establecerDatosMusica();
-                reproducirMusica();
-
-            }
-        } else {
-            mediaPlayer.reset();
-            establecerDatosMusica();
-            reproducirMusica();
-
-        }
-        restartActivity(this);
-        try {
-            CrearNotificacion.createNotification(this, cancion, R.drawable.ic_baseline_pause_circle_filled_24);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
 }

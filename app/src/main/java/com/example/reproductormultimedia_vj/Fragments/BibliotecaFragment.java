@@ -1,11 +1,15 @@
 package com.example.reproductormultimedia_vj.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -22,12 +26,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.AddPlaylistActivity;
+import com.example.reproductormultimedia_vj.Clases.CrearNotificacion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
+import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
+import com.example.reproductormultimedia_vj.Clases.PlayListActual;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.Adapter.PlaylistAdapter;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.MenuActivity;
 import com.example.reproductormultimedia_vj.R;
+import com.example.reproductormultimedia_vj.Servicios.OnClearFromRecentService;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -45,6 +53,7 @@ public class BibliotecaFragment extends Fragment {
     ImageView btnPerfil;
     TextView txt_usuario, txt_n_play;
     ImageButton btnAddPlay;
+    BroadcastReceiver broadcastReceiver;
 
     GestionBD gestionBD;
 
@@ -123,6 +132,14 @@ public class BibliotecaFragment extends Fragment {
         super.onStart();
         loadFragmentInside(listaPlaylistFragment);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        PlayListActual.comprobarSiSeHaGirado(getContext());
+
+    }
+
     public void loadFragment(Fragment fragment){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);

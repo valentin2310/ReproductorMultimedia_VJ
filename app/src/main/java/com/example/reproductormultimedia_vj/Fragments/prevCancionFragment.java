@@ -46,9 +46,8 @@ public class prevCancionFragment extends Fragment {
     private static TextView nombreArtista;
     private static ImageView imagen;
     private static ImageButton playPause;
-    private static MediaPlayer mediaPlayer;
+    private static MediaPlayer mediaPlayer = MyMediaPlayer.getInstance();
     private static boolean esLocal = false;
-    private static boolean esPlayList = false;
     static LottieAnimationView like;
     static Cancion cancion;
     static RelativeLayout prevCancion;
@@ -136,11 +135,6 @@ public class prevCancionFragment extends Fragment {
     }
 
 
-
-    public static void establecerMediaPlayer(MediaPlayer mediaPlayer2) {
-        mediaPlayer = mediaPlayer2;
-    }
-
     private static void pausePlay(){
 
         if(mediaPlayer.isPlaying()) {
@@ -165,12 +159,11 @@ public class prevCancionFragment extends Fragment {
 
     }
 
-    public static boolean obtenerSiEsLocal() {
-        return esLocal;
+    public static void setCancion(Cancion cancion) {
+        prevCancionFragment.cancion = cancion;
     }
 
     public static void actualizarDatos(Cancion cancion2) {
-        esPlayList = false;
         prevCancion.setVisibility(View.VISIBLE);
         cancion = cancion2;
 
@@ -186,7 +179,7 @@ public class prevCancionFragment extends Fragment {
         nombreCancion.setText(cancion.getTitulo());
         nombreArtista.setText(cancion.getNombreArtista());
 
-        if (!cancion.getRuta().startsWith("audio/"))
+        if (esLocal)
             if (!new String(cancion.getPortada(), StandardCharsets.UTF_8).equals(""))
                 imagen.setImageURI(Uri.parse(new String(cancion.getPortada(), StandardCharsets.UTF_8)));
             else
@@ -198,12 +191,5 @@ public class prevCancionFragment extends Fragment {
 
     }
 
-    public static void esUnaPlaylist() {
-        esPlayList = true;
-    }
-
-    public static boolean obtenerSiEsPlayList() {
-        return esPlayList;
-    }
 
 }

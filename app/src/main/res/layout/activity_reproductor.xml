@@ -11,6 +11,31 @@
         android:layout_height="match_parent"
         android:background="@drawable/fondo_reproductor">
 
+        <TextView
+            android:id="@+id/mensaje"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REPRODUCIENDO DESDE LISTA"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+
+            android:textSize="15dp"></TextView>
+
+        <TextView
+            android:id="@+id/reproduccionDesde"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:singleLine="true"
+            android:layout_below="@+id/mensaje"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15dp"></TextView>
+
         <ImageView
             android:id="@+id/portada"
             android:layout_width="match_parent"

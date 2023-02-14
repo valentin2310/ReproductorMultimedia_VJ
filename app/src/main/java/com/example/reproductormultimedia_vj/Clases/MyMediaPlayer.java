@@ -1,5 +1,6 @@
 package com.example.reproductormultimedia_vj.Clases;
 
+import android.content.BroadcastReceiver;
 import android.media.MediaPlayer;
 
 public class MyMediaPlayer {
