@@ -153,8 +153,6 @@ public class MusicaFragment extends Fragment {
         txt_filtro.setVisibility(buscadorOn?View.VISIBLE:View.GONE);
 
         btn_no_buscar = view.findViewById(R.id.cancion_no_buscar);
-
-
         configurarBuscador();
 
         toolbar = view.findViewById(R.id.cancion_toolbar);

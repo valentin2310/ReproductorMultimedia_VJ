@@ -12,6 +12,11 @@
         android:icon="@drawable/notas_musicales"
         android:title="Mis playlist"
         android:iconTint="@color/text"/>
+    <item
+        android:id="@+id/add_playlist"
+        android:icon="@drawable/notas_musicales"
+        android:title="Añadir canciones"
+        android:iconTint="@color/text"/>
 
     <item
         android:id="@+id/gest_sesion"

@@ -1,6 +1,7 @@
 package com.example.reproductormultimedia_vj.Adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class AddCancionPlaylistAdapter extends RecyclerView.Adapter<AddCancionPlaylistAdapter.ViewHolder>{
@@ -70,8 +72,20 @@ public class AddCancionPlaylistAdapter extends RecyclerView.Adapter<AddCancionPl
 
         public void bindData(Cancion c){
             nombre.setText(c.getTitulo());
+            String portada = new String(c.getPortada(), StandardCharsets.UTF_8);
+
             if(c.getPortada() != null){
-                img.setImageBitmap(Metodos.convertByteArrayToBitmap(c.getPortada()));
+
+                if(!c.getRuta().startsWith("audio/") && !portada.isEmpty()){ // cancion añadida desde canciones locales
+                    img.setImageURI(Uri.parse(portada));
+                }else if(portada.isEmpty()){
+                    // imagen por defecto
+                    img.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
+                }
+                else{ // cancion añadida desde assets
+                    img.setImageBitmap(Metodos.convertByteArrayToBitmap(c.getPortada()));
+                }
+
             }
             this.cancion = c;
 
