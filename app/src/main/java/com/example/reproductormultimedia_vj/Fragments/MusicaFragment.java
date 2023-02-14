@@ -72,6 +72,7 @@ public class MusicaFragment extends Fragment {
     static TextView saludos;
     ShapeableImageView btnPerfil;
     Toolbar toolbar;
+
     static ArrayList<Cancion> canciones;
     ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
     static BroadcastReceiver broadcastReceiver = null;
@@ -86,12 +87,13 @@ public class MusicaFragment extends Fragment {
     static Cancion cancion;
     private int idUser;
     private boolean edicion = false;
+    private boolean buscadorOn = false;
+    private boolean misCanciones = false;
 
     private static final String ARG_PARAM1 = "USER_ID";
     private static final String ARG_PARAM2 = "EDICION";
     private static final String ARG_PARAM3 = "BUSCADOR";
 
-    private boolean buscadorOn = false;
 
 
     public MusicaFragment() {
@@ -123,6 +125,9 @@ public class MusicaFragment extends Fragment {
                 if(getArguments().size() > 1){
                     edicion = getArguments().getBoolean(ARG_PARAM2);
                     buscadorOn = getArguments().getBoolean(ARG_PARAM3);
+                }else {
+                    edicion = true;
+                    misCanciones = true;
                 }
             }
     }
@@ -264,7 +269,7 @@ public class MusicaFragment extends Fragment {
                 byte [] portada = metaRetriver.getEmbeddedPicture();
 
                 GestionBD gestion = new GestionBD(recycler.getContext());
-                gestion.agregarCancion(new Cancion(0, titulo, "descripcion pito",idUser, artist, fechaCreacion, duracion, portada, path + "/" + files[i] ));
+                gestion.agregarCancion(new Cancion(0, titulo, "descripcion pito",-1, artist, fechaCreacion, duracion, portada, path + "/" + files[i] ));
                 afd.close();
             }
         } catch (IOException e) {
@@ -278,7 +283,12 @@ public class MusicaFragment extends Fragment {
 
     public void cargarCancionesBaseDatos() {
         GestionBD gestion = new GestionBD(recycler.getContext());
-        canciones = gestion.getCanciones();
+
+        if(misCanciones){
+            canciones = gestion.getCancionesUser(idUser);
+        }else{
+            canciones = gestion.getCanciones();
+        }
     }
 
     public void mostrarDatos() {

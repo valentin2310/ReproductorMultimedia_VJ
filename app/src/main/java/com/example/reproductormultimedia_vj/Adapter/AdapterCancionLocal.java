@@ -2,11 +2,6 @@ package com.example.reproductormultimedia_vj.Adapter;
 
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
-import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.MenuActivity;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -36,6 +28,7 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
 
     LayoutInflater inflater;
     ArrayList<Cancion> canciones;
+    GestionBD gestionBD;
 
     //listener
     private View.OnClickListener listener;
@@ -46,7 +39,7 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         this.inflater = LayoutInflater.from(context);
         this.canciones = canciones;
         this.context = context;
-
+        this.gestionBD = new GestionBD(context);
     }
 
     @NonNull
@@ -59,8 +52,6 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final boolean[] activado = {false};
-        GestionBD gestionBD = new GestionBD(context);
         Cancion c = canciones.get(position);
         Usuario user = MenuActivity.USUARIO;
 
@@ -70,40 +61,72 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         holder.nombre.setText(nombre);
         holder.artista.setText(artista);
 
-        activado[0] = user.getListaCanciones().contains(c.getIdCancion());
-        if(activado[0]) holder.like.setProgress(0.5f);
+        // si su id es -1 es cancion local
+        if (c.getIdCancion() >= 0) { // cancion bd
+            Metodos.setAnimation(holder.like, Metodos.ANIMACION_LIKE); // establecer animacion
 
-        if (c.getRuta().startsWith("audio/"))
-        holder.like.setAnimation(R.raw.heart_like);
+            if(!c.getRuta().startsWith("audio/")){
+                if (!portada.equals(""))
+                    holder.imagen.setImageURI(Uri.parse(portada));
+                else
+                    holder.imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
+            }else{
+                holder.imagen.setImageBitmap(Metodos.convertByteArrayToBitmap(c.getPortada())); // establecer portada
+            }
+            holder.like.setOnClickListener(v -> onClickCancionBD(holder, c, user)); // dar like
 
-
-        if (!c.getRuta().startsWith("audio/"))
-            if (!portada.equals(""))
-                holder.imagen.setImageURI(Uri.parse(portada));
-            else
-                holder.imagen.setImageResource(R.drawable.photo_1614680376573_df3480f0c6ff);
-        else {
-            holder.imagen.setImageBitmap(Metodos.convertByteArrayToBitmap(c.getPortada()));
+        } else { // cancion local
+            Metodos.setAnimation(holder.like, Metodos.ANIMACION_ADD); // animacion
+            holder.like.setOnClickListener(v -> onClickCancionLocal(holder, c, user)); // añadir a la bd
+            if (!portada.isEmpty()) {
+                holder.imagen.setImageURI(Uri.parse(portada)); // portada
+            }
         }
 
-        holder.like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Metodos.darLike(activado[0], holder.like);
+        // comprobar si la cancion tiene like cancion bd
+        if(c.getIdCancion() != -1)
+            holder.activado = user.getListaCanciones().contains((Integer) c.getIdCancion());
 
-                if (!activado[0]) {
-                    gestionBD.setCancionFav(user.getIdUser(), c.getIdCancion());
-                    Toast.makeText(context, "Cancion añadida en favoritos", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    gestionBD.eliminarCancionFav(user.getIdUser(), c.getIdCancion());
-                    Toast.makeText(context, "Cancion eliminada de favoritos", Toast.LENGTH_SHORT).show();
-                }
+        // comprobar si la cancion pertenece al usuario, cancion local
+        else{
+            Cancion aux = gestionBD.getCancion(gestionBD.getCancionIdPorTitulo(c.getTitulo()));
+            int idArtista = aux != null? aux.getArtista():-1;
+            holder.activado = (idArtista == user.getIdUser() && 0 <= gestionBD.getCancionIdPorTitulo(c.getTitulo()));
+        }
 
-                activado[0] = !activado[0];
-            }
-        });
+        // establecer marcado, como like o añadido
+        if (holder.activado) holder.like.setProgress(0.5f);
+    }
 
+    private void onClickCancionBD(ViewHolder holder, Cancion c, Usuario user) {
+        Metodos.darLike(holder.activado, holder.like);
+
+        if (!holder.activado) {
+            gestionBD.setCancionFav(user.getIdUser(), c.getIdCancion());
+            user.getListaCanciones().add(c.getIdCancion());
+            Toast.makeText(context, "Cancion añadida en favoritos", Toast.LENGTH_SHORT).show();
+        } else {
+            gestionBD.eliminarCancionFav(user.getIdUser(), c.getIdCancion());
+            user.getListaCanciones().remove((Integer) c.getIdCancion());
+            Toast.makeText(context, "Cancion eliminada de favoritos", Toast.LENGTH_SHORT).show();
+        }
+
+        holder.activado = !holder.activado;
+    }
+
+    private void onClickCancionLocal(ViewHolder holder, Cancion c, Usuario user) {
+        if(!holder.activado){
+            c.setArtista(user.getIdUser());
+            boolean exito = gestionBD.agregarCancion(c);
+            Toast.makeText(context, exito?"Cancion añadida a la bd":"La cancion ya existe en la bd", Toast.LENGTH_SHORT).show();
+            if (!exito) return;
+        }else{
+            gestionBD.eliminarCancion(gestionBD.getCancionIdPorTitulo(c.getTitulo()));
+            Toast.makeText(context, "Cancion eliminada de la bd", Toast.LENGTH_SHORT).show();
+        }
+
+        Metodos.darLike(holder.activado, holder.like); // animacion
+        holder.activado = !holder.activado; // cambio de valor
     }
 
     @Override
@@ -125,6 +148,7 @@ public class AdapterCancionLocal extends RecyclerView.Adapter<AdapterCancionLoca
         TextView nombre, artista;
         ImageView imagen;
         LottieAnimationView like;
+        boolean activado = false;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

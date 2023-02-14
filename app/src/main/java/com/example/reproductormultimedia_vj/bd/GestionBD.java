@@ -4,13 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Playlist;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class GestionBD {
@@ -75,6 +73,39 @@ public class GestionBD {
             if(bd.isOpen()) bd.close();
         }
     }
+    public int getCancionIdPorTitulo(String titulo){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+            Cursor fila = bd.rawQuery("select * from cancion where titulo like '"+titulo+"'", null);
+
+            if(fila.moveToFirst()) return fila.getInt(0);
+            else return -1;
+
+        }catch (Exception e){
+            return -1;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
+    public Cancion getCancion(int idCancion){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        Cancion c = new Cancion();
+        try{
+            Cursor fila = bd.rawQuery("select * from cancion where idCancion = "+idCancion, null);
+
+            if(fila.moveToFirst()){
+                c.setIdCancion(fila.getInt(0));
+                c.setArtista(fila.getInt(3));
+            }
+
+            return c;
+
+        }catch (Exception e){
+            return null;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+    }
 
     public boolean crearUsuario(Usuario user){
         // si el usuario existe, no se puede sobreescribir
@@ -125,6 +156,23 @@ public class GestionBD {
             return false;
         }finally {
             if(bd.isOpen()) bd.close();
+        }
+    }
+    public int eliminarCancion(int idCancion){
+        int cant = 0;
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        try{
+
+            String sql = "idCancion = "+idCancion;
+            cant += bd.delete(TABLA_CANCION, sql, null);
+            cant += bd.delete(TABLA_PLAYLIST_CANCION, sql, null);
+            cant += bd.delete(TABLA_USUARIO_CANCION_FAV, sql, null);
+
+        }catch (Exception e){
+            return 0;
+        }finally {
+            if(bd.isOpen()) bd.close();
+            return cant;
         }
     }
 
@@ -193,6 +241,37 @@ public class GestionBD {
         try {
 
             String sql = "select * from cancion";
+
+            Cursor fila = bd.rawQuery(sql, null);
+
+            while (fila.moveToNext()) {
+                int idCancion = fila.getInt(0);
+                String titulo = fila.getString(1);
+                String descripcion = fila.getString(2);
+                int artista = fila.getInt(3);
+                String nombreArtista = fila.getString(4);
+                String fechaCreacion = fila.getString(5);
+                String duracion = fila.getString(6);
+                byte[] portada = fila.getBlob(7);
+                String ruta = fila.getString(8);
+
+                canciones.add(new Cancion(idCancion, titulo, descripcion, artista, nombreArtista, fechaCreacion, duracion, portada, ruta));
+
+            }
+        }catch (Exception e){
+            return null;
+        }finally {
+            if(bd.isOpen()) bd.close();
+        }
+        return canciones;
+    }
+    public ArrayList<Cancion> getCancionesUser(int idUser){
+        ArrayList<Cancion> canciones = new ArrayList<>();
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        try {
+
+            String sql = "select * from cancion where artista = "+idUser;
 
             Cursor fila = bd.rawQuery(sql, null);
 

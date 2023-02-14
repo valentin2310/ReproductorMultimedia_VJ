@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.reproductormultimedia_vj.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -25,6 +26,9 @@ public class Metodos {
     public static final String FILTRO_USUARIO = "^[A-Za-zÑñ_0-9\\-]{8,23}$";
     public static final String FILTRO_NOMBRE = "^[A-Za-zÑñ]{3}[A-Za-zÑñ ]{0,20}$";
     public static final String FILTRO_FECHA = "^[\\d]{2}/[\\d]{2}/[\\d]{4}$";
+
+    public static final int ANIMACION_LIKE = R.raw.heart_like;
+    public static final int ANIMACION_ADD = R.raw.add_new;
 
     public static Bitmap convertByteArrayToBitmap(byte[] byteArrayToBeCOnvertedIntoBitMap) {
         Bitmap bitMapImage = BitmapFactory.decodeByteArray(
@@ -95,6 +99,10 @@ public class Metodos {
                 greenBucket / pixelCount,
                 blueBucket / pixelCount
         );
+    }
+
+    public static void setAnimation(LottieAnimationView lottie, int animacion){
+        lottie.setAnimation(animacion);
     }
 
     public static void darLike (boolean like, LottieAnimationView lottie){

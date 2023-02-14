@@ -3,6 +3,8 @@ package com.example.reproductormultimedia_vj.Fragments;
 import static android.app.Activity.RESULT_OK;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
+import com.example.reproductormultimedia_vj.MainActivity;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -36,7 +39,7 @@ public class UsuarioFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "USER_ID";
 
-    TextView txt_seleccion;
+    TextView txt_seleccion, txt_username, txt_nombreCompleto;
     ShapeableImageView img;
 
     private int idUser;
@@ -77,11 +80,17 @@ public class UsuarioFragment extends Fragment {
         gestionBD = new GestionBD(this.getContext());
         usuario = gestionBD.getUsuario(idUser);
 
-        musicaFragment = MusicaFragment.newInstance(idUser, true, false);
+        musicaFragment = MusicaFragment.newInstance(idUser);
         listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.MIS_PLAYLIST, ListaPlaylistFragment.INVISIBLE);
 
         txt_seleccion = (TextView) view.findViewById(R.id.txt_seleccion);
         img = view.findViewById(R.id.usuario_img);
+
+        txt_username = view.findViewById(R.id.usuario_nombre);
+        txt_username.setText(usuario.getUsername());
+
+        txt_nombreCompleto = view.findViewById(R.id.usuario_nombre_completo);
+        txt_nombreCompleto.setText(usuario.getNombre()+" - "+usuario.getFechaNac());
 
         if(usuario.getImgAvatar() != null){
             // establecer imagen al view
@@ -125,7 +134,9 @@ public class UsuarioFragment extends Fragment {
                         loadFragment(listaPlaylistFragment);
                         return true;
                     case R.id.gest_sesion:
-                        getActivity().finish();
+
+                        ventanaConfirmacionSesion().show();
+
                         return true;
                 }
 
@@ -138,6 +149,25 @@ public class UsuarioFragment extends Fragment {
         popup.show();
     }
 
+    public AlertDialog ventanaConfirmacionSesion(){
+        return new AlertDialog
+                .Builder(getContext())
+                .setPositiveButton("Sí, cerrar sesion", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getActivity().finish();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setTitle("Confirmar")
+                .setMessage("¿Deseas cerrar tu sesion, volveras a la pantalla de login?")
+                .create();
+    }
     public void showFileChooser(View view){
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)

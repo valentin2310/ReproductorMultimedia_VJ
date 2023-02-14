@@ -46,12 +46,12 @@ public class cargarCancionesLocalReproductor {
                 ParcelFileDescriptor pfd = context.getContentResolver()
                         .openFileDescriptor(portadaLocal, "r");
                 if (pfd !=null) {
-                    Cancion cancion = new Cancion(0, titulo, "pito", 1, artista, fecha, duracion, portadaLocal.toString().getBytes(StandardCharsets.UTF_8), ruta);
+                    Cancion cancion = new Cancion(-1, titulo, "pito", -1, artista, fecha, duracion, portadaLocal.toString().getBytes(StandardCharsets.UTF_8), ruta);
                     if (new File(cancion.getRuta()).exists())
                         canciones.add(cancion);
                 }
             } catch (FileNotFoundException e) {
-                Cancion cancion = new Cancion(0, titulo, "pito", 1, artista, fecha, duracion, "".getBytes(StandardCharsets.UTF_8), ruta);
+                Cancion cancion = new Cancion(-1, titulo, "pito", -1, artista, fecha, duracion, "".getBytes(StandardCharsets.UTF_8), ruta);
                 if (new File(cancion.getRuta()).exists())
                     canciones.add(cancion);
             }

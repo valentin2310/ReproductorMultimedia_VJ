@@ -23,80 +23,81 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
                 android:padding="25dp">
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Inicio de sesion"
-                    android:textSize="35dp"
-                    android:textAlignment="center"
-                    android:textStyle="bold"
+                    android:layout_height="match_parent"
                     android:shadowColor="@color/text"
-                    android:shadowRadius="5"
-                    android:shadowDy="2"
                     android:shadowDx="2"
-                    android:textColor="@color/text_light"/>
+                    android:shadowDy="2"
+                    android:shadowRadius="5"
+                    android:text="Inicio de sesion"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_light"
+                    android:textSize="35dp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/formInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:startIconDrawable="@drawable/ic_baseline_person_42"
-                    android:hint="Usuario"
+                    android:layout_marginTop="30dp"
                     android:drawableLeft="@drawable/ic_baseline_person_42"
-                    android:layout_marginTop="30dp">
+                    android:hint="Usuario"
+                    app:startIconDrawable="@drawable/ic_baseline_person_42">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/login_txt_usuario"
+                        style="@style/formText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/formText"
-                        android:inputType="text"/>
+                        android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/formInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Contraseña"
-                    app:startIconDrawable="@drawable/ic_baseline_key_24"
-                    app:endIconMode="password_toggle"
                     android:drawableLeft="@drawable/ic_baseline_key_24"
-                    android:inputType="textPassword">
+                    android:hint="Contraseña"
+                    android:inputType="textPassword"
+                    app:endIconMode="password_toggle"
+                    app:startIconDrawable="@drawable/ic_baseline_key_24">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/login_txt_passwd"
+                        style="@style/formText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/formText"
-                        android:inputType="textPassword"/>
+                        android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <Button
                     style="@style/btn_form"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:onClick="iniciarSesion"
                     android:text="Iniciar sesion"
                     android:textSize="18dp"
-                    android:layout_marginTop="20dp"
-                    app:cornerRadius="20dp"/>
+                    app:cornerRadius="20dp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:onClick="registrarse"
+                    android:padding="5dp"
+                    android:shadowColor="@color/text_dark"
+                    android:shadowDx="3"
+                    android:shadowDy="3"
+                    android:shadowRadius="5"
                     android:text="No tienes una cuenta, Registrate"
                     android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:shadowColor="@color/text_dark"
-                    android:shadowRadius="5"
-                    android:shadowDy="3"
-                    android:shadowDx="3"
-                    android:padding="5dp"
-                    android:layout_marginTop="10dp"/>
+                    android:textColor="@color/white" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

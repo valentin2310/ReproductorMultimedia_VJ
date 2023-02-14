@@ -82,6 +82,14 @@ public class PlaylistFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public PlaylistFragment newInstance(int userId){ // canciones de un usuario
+        PlaylistFragment fragment = new PlaylistFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static PlaylistFragment newInstance(int userId, int playId) {
         PlaylistFragment fragment = new PlaylistFragment();
         Bundle args = new Bundle();
@@ -166,10 +174,14 @@ public class PlaylistFragment extends Fragment {
         }
         nombre.setText(playlist.getNombre());
         creador.setText(creadorObj.getUsername());
-        likes.setText(gestionBD.getPlaylistFav(playId)+" 'me gusta' - Duracion: "+obtenerDuracion());
+        setTxtLikes();
 
         isLike = isLike();
         if(isLike) btn_like.setProgress(0.5f);
+    }
+
+    public void setTxtLikes(){
+        likes.setText(gestionBD.getPlaylistFav(playId)+" 'me gusta' - Duracion: "+obtenerDuracion());
     }
 
     @Override
@@ -365,6 +377,7 @@ public class PlaylistFragment extends Fragment {
                     gestionBD.eliminarPlaylistFav(userId, playId);
                     Toast.makeText(getContext(), "La playlist se ha eliminada de favoritos", Toast.LENGTH_SHORT).show();
                 }
+                setTxtLikes();
             }
         });
     }
