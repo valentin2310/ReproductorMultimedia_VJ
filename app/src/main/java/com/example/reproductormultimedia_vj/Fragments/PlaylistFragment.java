@@ -265,7 +265,7 @@ public class PlaylistFragment extends Fragment {
             }
 
 
-            PlayListActual.establecerDatosMusica(getContext(), false);
+            PlayListActual.establecerDatosMusica(getContext());
         });
 
         //Toast.makeText(getContext(), ""+MyMediaPlayer.esPlaylist, Toast.LENGTH_SHORT).show();

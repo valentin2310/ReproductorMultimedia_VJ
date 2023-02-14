@@ -56,7 +56,6 @@ public class MenuActivity extends AppCompatActivity {
 
     NotificationManager notificationManager;
     BottomNavigationView navigation;
-    public static boolean esLocal =false;
 
 
     public static int USER_ID = -1;
@@ -118,7 +117,7 @@ public class MenuActivity extends AppCompatActivity {
         });
 
         MyMediaPlayer.getInstance().setOnCompletionListener(v -> {
-            PlayListActual.siguienteCancion(navigation.getContext(), PlayListActual.esPlaylist==0 || PlayListActual.esPlaylist==1 ? false: true);
+            PlayListActual.siguienteCancion(navigation.getContext());
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -155,13 +154,13 @@ public class MenuActivity extends AppCompatActivity {
             String action = intent.getExtras().getString("actionname");
             switch (action) {
                 case CrearNotificacion.ACTION_PREVIUOS:
-                    PlayListActual.anteriorCancion(navigation.getContext(), esLocal);
+                    PlayListActual.anteriorCancion(navigation.getContext());
                     break;
                 case CrearNotificacion.ACTION_PLAY:
                     PlayListActual.pausePlay(navigation.getContext());
                     break;
                 case CrearNotificacion.ACTION_NEXT:
-                    PlayListActual.siguienteCancion(navigation.getContext(), esLocal);
+                    PlayListActual.siguienteCancion(navigation.getContext());
                     break;
             }
         }

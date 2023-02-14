@@ -182,13 +182,13 @@ public class ReproductorActivity extends AppCompatActivity {
     }
 
     public void siguienteCancion() {
-        PlayListActual.siguienteCancion(getApplicationContext(), PlayListActual.cancion.getRuta().startsWith("audio/")? false:true);
+        PlayListActual.siguienteCancion(getApplicationContext());
         establecerDatosMusica();
         empezarMusica();
     }
 
     public void anteriorCancion() {
-        PlayListActual.anteriorCancion(getApplicationContext(), PlayListActual.cancion.getRuta().startsWith("audio/")? false:true);
+        PlayListActual.anteriorCancion(getApplicationContext());
         establecerDatosMusica();
         empezarMusica();
     }
@@ -198,13 +198,13 @@ public class ReproductorActivity extends AppCompatActivity {
     }
 
     public void primeraCancion() {
-        PlayListActual.primeraCancion(getApplicationContext(), PlayListActual.cancion.getRuta().startsWith("audio/")? false:true);
+        PlayListActual.primeraCancion(getApplicationContext());
         establecerDatosMusica();
         empezarMusica();
     }
 
     public void ultimaCancion() {
-        PlayListActual.ultimaCancion(getApplicationContext(), PlayListActual.cancion.getRuta().startsWith("audio/")? false:true);
+        PlayListActual.ultimaCancion(getApplicationContext());
         establecerDatosMusica();
         empezarMusica();
     }

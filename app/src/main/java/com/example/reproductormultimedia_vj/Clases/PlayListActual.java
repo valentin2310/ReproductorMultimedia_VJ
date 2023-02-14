@@ -40,9 +40,9 @@ public class PlayListActual {
         PlayListActual.cancionesActuales = cancionesActuales;
     }
 
-    public static void establecerDatosMusica(Context context, boolean esLocal) {
+    public static void establecerDatosMusica(Context context) {
         cancion = PlayListActual.getCancionesActuales().get(MyMediaPlayer.currentIndex);
-
+        Boolean esLocal = PlayListActual.getCancionesActuales().get(MyMediaPlayer.currentIndex).getRuta().startsWith("audio/")? false:true;
         prevCancionFragment.actualizarDatos(cancion);
 
         try {
@@ -80,20 +80,19 @@ public class PlayListActual {
             PlayListActual.orientacion = context.getResources().getConfiguration().orientation;
     }
 
-    public static void anteriorCancion(Context context, boolean esLocal) {
-
+    public static void anteriorCancion(Context context) {
         if (mediaPlayer.getCurrentPosition() < 3000) {
             if (MyMediaPlayer.currentIndex == 0) {
                 mediaPlayer.reset();
-                establecerDatosMusica(context, esLocal);
+                establecerDatosMusica(context);
             } else {
                 MyMediaPlayer.currentIndex -= 1;
                 mediaPlayer.reset();
-                establecerDatosMusica(context, esLocal);
+                establecerDatosMusica(context);
             }
         } else {
             mediaPlayer.reset();
-            establecerDatosMusica(context, esLocal);
+            establecerDatosMusica(context);
         }
 
         try {
@@ -104,19 +103,17 @@ public class PlayListActual {
 
     }
 
-    public static void siguienteCancion(Context context, boolean esLocal) {
+    public static void siguienteCancion(Context context) {
         if (bucle && !aleatorio && MyMediaPlayer.currentIndex == cancionesActuales.size() - 1)  {
             MyMediaPlayer.currentIndex = 0;
             mediaPlayer.reset();
-            establecerDatosMusica(context, esLocal);
-            empezarMusica(context, esLocal);
+            establecerDatosMusica(context);
         }else if (!aleatorio) {
             if (MyMediaPlayer.currentIndex == cancionesActuales.size() - 1)
                 return;
             MyMediaPlayer.currentIndex += 1;
             mediaPlayer.reset();
-            establecerDatosMusica(context, esLocal);
-            empezarMusica(context, esLocal);
+            establecerDatosMusica(context);
         }else {
             boolean comprobar = false;
             while (!comprobar) {
@@ -125,9 +122,7 @@ public class PlayListActual {
                 if (index_cancion != MyMediaPlayer.currentIndex) {
                     comprobar = true;
                     MyMediaPlayer.currentIndex = index_cancion;
-                    mediaPlayer.reset();
-                    establecerDatosMusica(context, esLocal);
-                    empezarMusica(context, esLocal);
+                    establecerDatosMusica(context);
                 }
             }
         }
@@ -170,19 +165,16 @@ public class PlayListActual {
         }
     }
 
-    public static void primeraCancion(Context context, boolean esLocal) {
+    public static void primeraCancion(Context context) {
         MyMediaPlayer.currentIndex = 0;
         mediaPlayer.reset();
-        establecerDatosMusica(context, esLocal);
-        empezarMusica(context, esLocal);
+        establecerDatosMusica(context);
     }
 
-    public static void ultimaCancion(Context context, boolean esLocal) {
+    public static void ultimaCancion(Context context) {
         MyMediaPlayer.currentIndex = PlayListActual.getCancionesActuales().size()-1;
         mediaPlayer.reset();
-        establecerDatosMusica(context, esLocal);
-        prevCancionFragment.actualizarDatos(cancion);
-        empezarMusica(context, esLocal);
+        establecerDatosMusica(context);
 
         try {
             CrearNotificacion.createNotification(context, cancion, R.drawable.ic_baseline_pause_circle_filled_24);

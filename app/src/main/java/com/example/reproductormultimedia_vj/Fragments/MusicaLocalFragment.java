@@ -164,7 +164,6 @@ public class MusicaLocalFragment extends Fragment {
             MyMediaPlayer.getInstance().reset();
 
             PlayListActual.esPlaylist = 2;
-            MenuActivity.esLocal = true;
             PlayListActual.nombrePlaylist = "Canciones locales";
             PlayListActual.idPlaylist = -1;
 
@@ -189,7 +188,7 @@ public class MusicaLocalFragment extends Fragment {
                 MyMediaPlayer.currentIndex = recycler.getChildAdapterPosition(v);
             }
 
-            PlayListActual.establecerDatosMusica(getContext(), true);
+            PlayListActual.establecerDatosMusica(getContext());
         });
     }
 
