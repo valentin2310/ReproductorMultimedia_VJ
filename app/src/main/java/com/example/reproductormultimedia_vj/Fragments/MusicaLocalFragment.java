@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -27,24 +28,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reproductormultimedia_vj.Adapter.AdapterCancionLocal;
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.CrearNotificacion;
+import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.MyMediaPlayer;
 import com.example.reproductormultimedia_vj.Clases.PlayListActual;
+import com.example.reproductormultimedia_vj.Clases.Usuario;
 import com.example.reproductormultimedia_vj.Clases.cargarCancionesLocalReproductor;
 import com.example.reproductormultimedia_vj.MenuActivity;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.Clases.RV_Cancion;
 import com.example.reproductormultimedia_vj.ReproductorActivity;
 import com.example.reproductormultimedia_vj.Servicios.OnClearFromRecentService;
+import com.example.reproductormultimedia_vj.bd.GestionBD;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,9 +67,16 @@ public class MusicaLocalFragment extends Fragment {
 
     AdapterCancionLocal adapterCancionLocal;
     static RecyclerView recycler;
+    TextInputEditText filtro;
+    static TextView saludos;
+    ShapeableImageView btnPerfil;
+    Toolbar toolbar;
+    LinearLayout txt_filtro;
+    ImageButton btn_no_buscar;
+
     static ArrayList<Cancion> canciones;
     ArrayList<Cancion> cancionesFiltradas = new ArrayList<>();
-    EditText filtro;
+
     static Cancion cancion;
     static NotificationManager notificationManager;
     static boolean broadCastCreado = false;
@@ -96,9 +113,42 @@ public class MusicaLocalFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_mi_biblioteca_local, container, false);
 
-
         canciones = new ArrayList<>();
         filtro = view.findViewById(R.id.filtroCancion);
+
+        saludos = view.findViewById(R.id.cancion_saludos);
+        darLosBuenosDias();
+
+        GestionBD gestionBD = new GestionBD(this.getContext());
+        Usuario user = gestionBD.getUsuario(idUser);
+
+        txt_filtro = view.findViewById(R.id.filtro);
+        txt_filtro.setVisibility(View.VISIBLE);
+
+        btn_no_buscar = view.findViewById(R.id.cancion_no_buscar);
+        configurarBuscador();
+
+        toolbar = view.findViewById(R.id.cancion_toolbar);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            toolbar.setVisibility(View.GONE);
+        }else{
+            toolbar.setVisibility(View.VISIBLE);
+        }
+
+        btnPerfil = view.findViewById(R.id.cancion_btn_perfil);
+
+        if(user.getImgAvatar() != null){
+            // establecer imagen al view
+            btnPerfil.setImageBitmap(Metodos.convertByteArrayToBitmap(user.getImgAvatar()));
+        }
+
+        btnPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsuarioFragment usuarioFragment = UsuarioFragment.newInstance(idUser);
+                loadFragment(usuarioFragment);
+            }
+        });
 
         //if(savedInstanceState == null){
             recycler = (RecyclerView) view.findViewById(recyclerBibliotecaLocal);
@@ -201,6 +251,42 @@ public class MusicaLocalFragment extends Fragment {
 
     public static ArrayList<Cancion> obtenerCanciones() {
         return canciones;
+    }
+
+    private void darLosBuenosDias(){
+        String mensaje = "";
+        int hora = new Date().getHours();
+
+        if(hora >= 7 && hora <= 12) mensaje = "¡Buenas mañanas!";
+        else if(hora > 12 && hora <= 21) mensaje = "¡Buenas tardes!";
+        else mensaje = "¡Buenas noches!";
+
+        saludos.setText(mensaje);
+    }
+
+    public void loadFragment(Fragment fragment){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void configurarBuscador(){
+        filtro.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    btn_no_buscar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        btn_no_buscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
 }
