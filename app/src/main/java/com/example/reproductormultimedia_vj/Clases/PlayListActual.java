@@ -25,7 +25,7 @@ public class PlayListActual {
 
     public static String nombrePlaylist = "";
 
-    public static int idPlaylist = -8;
+    public static int idPlaylist = -8; // -1 MusicaLocal // -8 MusicaFragment // -2 Favoritos
 
     public static boolean aleatorio = false;
 

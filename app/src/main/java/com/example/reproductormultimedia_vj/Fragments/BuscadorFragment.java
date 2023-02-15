@@ -60,33 +60,32 @@ public class BuscadorFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_buscador, container, false);
 
-        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.TODAS, ListaPlaylistFragment.VISIBLE);
-        musicaFragment = MusicaFragment.newInstance(idUser, true, true);
-
         txt_seleccion = view.findViewById(R.id.busq_txt_seleccion);
         more_opc = view.findViewById(R.id.busq_more_opc);
         busq_img = view.findViewById(R.id.busq_btn_busq);
 
         more_opc.setOnClickListener(this::showPopup);
+        busq_img.setOnClickListener(v -> mostrarOcultarBuscador());
+
+        listaPlaylistFragment = ListaPlaylistFragment.newInstance(idUser, ListaPlaylistFragment.TODAS, ListaPlaylistFragment.VISIBLE);
+        musicaFragment = MusicaFragment.newInstance(idUser, true, true);
 
         loadFragment(musicaFragment);
 
-        busq_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mostrarBusq = !mostrarBusq;
-
-                if(seleccion == 0)
-                    musicaFragment.ocultarBuscador(mostrarBusq);
-                else
-                    listaPlaylistFragment.ocultarBuscador(mostrarBusq);
-
-                if(mostrarBusq) busq_img.setImageResource(R.drawable.lupa);
-                else busq_img.setImageResource(R.drawable.lupa_off);
-            }
-        });
 
         return view;
+    }
+
+    private void mostrarOcultarBuscador(){
+        mostrarBusq = !mostrarBusq;
+
+        if(seleccion == 0)
+            musicaFragment.ocultarBuscador(mostrarBusq);
+        else
+            listaPlaylistFragment.ocultarBuscador(mostrarBusq);
+
+        if(mostrarBusq) busq_img.setImageResource(R.drawable.lupa);
+        else busq_img.setImageResource(R.drawable.lupa_off);
     }
 
     private void showPopup(View v){

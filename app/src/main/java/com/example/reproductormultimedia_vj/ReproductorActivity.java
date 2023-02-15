@@ -26,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.reproductormultimedia_vj.Clases.Cancion;
 import com.example.reproductormultimedia_vj.Clases.Metodos;
@@ -163,6 +165,8 @@ public class ReproductorActivity extends AppCompatActivity {
         else
             loop.clearColorFilter();
 
+        //reproducirDesde.setOnClickListener(v -> irAPlaylist(MenuActivity.USER_ID, PlayListActual.idPlaylist));
+
     }
 
     public void cancionAleatoria() {
@@ -207,6 +211,33 @@ public class ReproductorActivity extends AppCompatActivity {
         PlayListActual.ultimaCancion(getApplicationContext());
         establecerDatosMusica();
         empezarMusica();
+    }
+
+    public void irAPlaylist(int idUser, int idPlay){
+        if(idPlay == -1){
+            // musica local
+            MusicaLocalFragment musicaLocalFragment = MusicaLocalFragment.newInstance(idUser);
+            loadFragment(musicaLocalFragment);
+        }else if(idPlay == -2){
+            // favoritos
+            PlaylistFragment playlistFragment = PlaylistFragment.newInstance(idUser, -2);
+            loadFragment(playlistFragment);
+        }else if(idPlay == -8){
+            // todas las canciones
+            MusicaFragment musicaFragment = MusicaFragment.newInstance(idUser, true, true);
+            loadFragment(musicaFragment);
+        }
+        else{
+            // playlist normal
+            PlaylistFragment playlistFragment = PlaylistFragment.newInstance(idUser, idPlay);
+            loadFragment(playlistFragment);
+        }
+    }
+    public void loadFragment(Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override

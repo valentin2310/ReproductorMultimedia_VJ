@@ -21,7 +21,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:background="@drawable/fondo_toolbar"
+                android:gravity="center_vertical|start"
                 android:orientation="horizontal">
 
                 <ImageButton
@@ -35,17 +36,18 @@
                     android:src="@drawable/ic_baseline_keyboard_backspace_24"/>
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/formInput"
+                    android:visibility="visible"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_weight="1"
+                    android:padding="0dp"
                     app:startIconDrawable="@drawable/lupa"
-                    android:hint="Buscar en la lista">
+                    android:hint="Buscar">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/play_lista_buscador"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textSize="15dp"
                         style="@style/formText"
                         android:inputType="text"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -56,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="5dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/play_lista_recycler"

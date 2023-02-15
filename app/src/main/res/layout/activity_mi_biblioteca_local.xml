@@ -15,10 +15,10 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/cancion_btn_perfil"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_marginHorizontal="10dp"
-            android:padding="15dp"
+            android:padding="5dp"
             android:background="@drawable/fondo_linear_img"
             app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
             android:src="@drawable/ic_baseline_person_42"
@@ -39,9 +39,9 @@
         android:id="@+id/filtro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_below="@id/cancion_toolbar"
         android:background="@drawable/fondo_toolbar"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageButton
@@ -59,6 +59,7 @@
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
                 app:startIconDrawable="@drawable/lupa"
                 android:hint="Buscar">
 
@@ -66,6 +67,7 @@
                     android:id="@+id/filtroCancion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="15dp"
                     style="@style/formText"
                     android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -76,7 +78,7 @@
         android:layout_height="match_parent"
         android:layout_marginHorizontal="10dp"
         android:layout_below="@+id/filtro"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="5dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerBibliotecaLocal"

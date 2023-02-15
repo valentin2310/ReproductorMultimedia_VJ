@@ -3,7 +3,6 @@ package com.example.reproductormultimedia_vj.Fragments;
 import static android.app.Activity.RESULT_OK;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,8 +11,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
@@ -21,16 +18,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.reproductormultimedia_vj.Clases.Metodos;
 import com.example.reproductormultimedia_vj.Clases.Usuario;
-import com.example.reproductormultimedia_vj.MainActivity;
 import com.example.reproductormultimedia_vj.R;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -138,11 +132,14 @@ public class UsuarioFragment extends Fragment {
                         return true;
                     case R.id.add_playlist:
                         MusicaLocalFragment musicaLocalFragment = MusicaLocalFragment.newInstance(1);
-                        loadFragmentCancionLocal(musicaLocalFragment);
+                        loadFragmentEnMenu(musicaLocalFragment);
+                        return true;
+                    case R.id.ver_creditos:
+                        CreditosFragment creditosFragment = new CreditosFragment();
+                        loadFragmentEnMenu(creditosFragment);
                         return true;
                     case R.id.gest_sesion:
                         ventanaConfirmacionSesion().show();
-
                         return true;
                 }
 
@@ -209,7 +206,7 @@ public class UsuarioFragment extends Fragment {
         //transaction.addToBackStack(null);
         transaction.commit();
     }
-    public void loadFragmentCancionLocal(Fragment fragment){
+    public void loadFragmentEnMenu(Fragment fragment){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
         transaction.addToBackStack(null);

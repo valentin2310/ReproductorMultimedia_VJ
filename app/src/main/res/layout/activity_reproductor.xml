@@ -20,7 +20,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:textColor="@color/white"
-
             android:textSize="15dp"></TextView>
 
         <TextView
