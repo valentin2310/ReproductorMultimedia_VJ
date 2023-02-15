@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +50,7 @@ import com.example.reproductormultimedia_vj.Servicios.OnClearFromRecentService;
 import com.example.reproductormultimedia_vj.bd.GestionBD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,6 +82,8 @@ public class PlaylistFragment extends Fragment {
     private FloatingActionButton btn_edit;
     private RecyclerView recycler;
     LottieAnimationView btn_like;
+    private TextInputEditText buscar;
+    AdapterCancionLocal adapterCancionLocal;
 
     public PlaylistFragment() {
         // Required empty public constructor
@@ -149,8 +155,84 @@ public class PlaylistFragment extends Fragment {
 
         //cargarDatosPlaylist();
 
-        btn_edit.setOnClickListener(v -> editarPlaylist(v));
+        if (PlayListActual.aleatorio)
+            btn_aleatorio.setColorFilter(Color.argb(255, 0,170,255));
+        else
+            btn_aleatorio.clearColorFilter();
 
+        if (PlayListActual.bucle)
+            btn_bucle.setColorFilter(Color.argb(255, 0,170,255));
+        else
+            btn_bucle.clearColorFilter();
+
+        btn_edit.setOnClickListener(v -> editarPlaylist(v));
+        btn_aleatorio.setOnClickListener(v -> aleatorio());
+        btn_bucle.setOnClickListener(v -> bucle());
+        btn_play.setOnClickListener(v -> play());
+        buscar = view.findViewById(R.id.play_buscador);
+        buscar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filtro(s.toString());
+            }
+        });
+
+    }
+
+    public void aleatorio() {
+        PlayListActual.aleatorio = !PlayListActual.aleatorio;
+
+        if (PlayListActual.aleatorio)
+            btn_aleatorio.setColorFilter(Color.argb(255, 0,170,255));
+        else
+            btn_aleatorio.clearColorFilter();
+    }
+
+    public void filtro(String s) {
+        cancionesFiltradas = new ArrayList<>();
+
+        for (Cancion cancion : canciones) {
+            if (cancion.getTitulo().toLowerCase().contains(s.toLowerCase())) {
+                cancionesFiltradas.add(cancion);
+            }
+        }
+
+        adapterCancionLocal.filtrar(cancionesFiltradas);
+    }
+
+
+    public void bucle() {
+        PlayListActual.bucle = !PlayListActual.bucle;
+
+        if (PlayListActual.bucle)
+            btn_bucle.setColorFilter(Color.argb(255, 0,170,255));
+        else
+            btn_bucle.clearColorFilter();
+    }
+
+    public void play() {
+        if (PlayListActual.getCancionesActuales() != null) {
+            PlayListActual.cancionesActuales = null;
+            PlayListActual.setCancionesActuales(canciones);
+        }
+
+        if (PlayListActual.getCancionesActuales() == null) {
+            PlayListActual.setCancionesActuales(canciones);
+        }
+
+        if (!PlayListActual.aleatorio)
+        PlayListActual.primeraCancion(getContext());
+        else PlayListActual.play(getContext());
     }
 
 
@@ -225,7 +307,7 @@ public class PlaylistFragment extends Fragment {
 
     public void mostrarDatos() {
         recycler.setLayoutManager(new LinearLayoutManager(recycler.getContext()));
-        AdapterCancionLocal adapterCancionLocal = new AdapterCancionLocal(recycler.getContext(), canciones);
+        adapterCancionLocal = new AdapterCancionLocal(recycler.getContext(), canciones);
         recycler.setAdapter(adapterCancionLocal);
         recycler.setHasFixedSize(true);
 

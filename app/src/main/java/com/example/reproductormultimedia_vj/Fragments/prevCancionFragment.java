@@ -174,6 +174,7 @@ public class prevCancionFragment extends Fragment {
         else {
             esLocal = false;
             like.setVisibility(View.VISIBLE);
+            like.setVisibility(View.GONE);
         }
 
         nombreCancion.setText(cancion.getTitulo());

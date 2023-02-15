@@ -103,6 +103,24 @@ public class PlayListActual {
 
     }
 
+    public static void play(Context context) {
+            boolean comprobar = false;
+            while (!comprobar) {
+                if (cancionesActuales.size() != 1) {
+                    Random r = new Random();
+                    int index_cancion = r.nextInt(cancionesActuales.size());
+                    if (index_cancion != MyMediaPlayer.currentIndex) {
+                        comprobar = true;
+                        MyMediaPlayer.currentIndex = index_cancion;
+                        establecerDatosMusica(context);
+                    }
+                } else {
+                    comprobar = true;
+                    primeraCancion(context);
+                }
+            }
+    }
+
     public static void siguienteCancion(Context context) {
         if (bucle && !aleatorio && MyMediaPlayer.currentIndex == cancionesActuales.size() - 1)  {
             MyMediaPlayer.currentIndex = 0;
@@ -115,6 +133,8 @@ public class PlayListActual {
             mediaPlayer.reset();
             establecerDatosMusica(context);
         }else {
+            if (MyMediaPlayer.currentIndex == cancionesActuales.size() - 1)
+                return;
             boolean comprobar = false;
             while (!comprobar) {
                 Random r = new Random();
