@@ -221,6 +221,15 @@ public class PlaylistFragment extends Fragment {
     }
 
     public void play() {
+        if (playlist != null) {
+            PlayListActual.nombrePlaylist = playlist.getNombre();
+            PlayListActual.idPlaylist = playlist.getIdPlaylist();
+        }
+        else {
+            PlayListActual.nombrePlaylist = "Mis favoritos";
+            PlayListActual.idPlaylist = -2;
+        }
+
         if (PlayListActual.getCancionesActuales() != null) {
             PlayListActual.cancionesActuales = null;
             PlayListActual.setCancionesActuales(canciones);
