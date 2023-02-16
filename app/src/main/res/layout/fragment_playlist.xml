@@ -125,11 +125,13 @@
                                 android:layout_height="55dp"
                                 android:src="@drawable/ic_baseline_repeat_50"/>
                             <ImageButton
+
                                 android:id="@+id/play_btn_aleatorio"
                                 android:layout_width="55dp"
                                 android:layout_height="55dp"
                                 android:src="@drawable/ic_baseline_shuffle_24"/>
                             <ImageButton
+                                android:background="@android:color/transparent"
                                 android:id="@+id/play_btn_play"
                                 android:layout_width="55dp"
                                 android:layout_height="55dp"

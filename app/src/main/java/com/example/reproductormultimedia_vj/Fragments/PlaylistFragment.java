@@ -78,7 +78,8 @@ public class PlaylistFragment extends Fragment {
     private static ImageView img;
     private RelativeLayout ly_datos;
     private TextView nombre, creador, likes;
-    private ImageButton btn_bucle, btn_aleatorio, btn_play, btn_no_buscar;
+    public static ImageButton btn_bucle, btn_aleatorio;
+    private ImageButton btn_play, btn_no_buscar;
     private FloatingActionButton btn_edit;
     private RecyclerView recycler;
     LottieAnimationView btn_like;

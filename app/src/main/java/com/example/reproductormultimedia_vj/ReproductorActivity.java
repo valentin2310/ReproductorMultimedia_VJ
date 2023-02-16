@@ -171,18 +171,27 @@ public class ReproductorActivity extends AppCompatActivity {
 
     public void cancionAleatoria() {
         PlayListActual.aleatorio = !PlayListActual.aleatorio;
-        if (PlayListActual.aleatorio)
-            shuffle.setColorFilter(Color.argb(255, 0,170,255));
-        else
+
+        if (PlayListActual.aleatorio) {
+            shuffle.setColorFilter(Color.argb(255, 0, 170, 255));
+            PlaylistFragment.btn_aleatorio.setColorFilter(Color.argb(255, 0, 170, 255));
+        }
+        else {
             shuffle.clearColorFilter();
+            PlaylistFragment.btn_aleatorio.clearColorFilter();
+        }
     }
 
     public void cancionBucle() {
         PlayListActual.bucle = !PlayListActual.bucle;
-        if (PlayListActual.bucle)
-            loop.setColorFilter(Color.argb(255, 0,170,255));
-        else
+        if (PlayListActual.bucle) {
+            loop.setColorFilter(Color.argb(255, 0, 170, 255));
+            PlaylistFragment.btn_bucle.setColorFilter(Color.argb(255, 0, 170, 255));
+        }
+        else {
             loop.clearColorFilter();
+            PlaylistFragment.btn_bucle.clearColorFilter();
+        }
     }
 
     public void siguienteCancion() {
